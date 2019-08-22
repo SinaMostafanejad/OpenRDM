@@ -13,7 +13,6 @@ namespace mcpdft {
    double mcpdft_energy(const arma::mat &D1a,
                         const arma::mat &D1b,
                         const arma::mat &D2ab);
-
 }
 
 #endif // ENERGY_H

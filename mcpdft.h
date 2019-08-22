@@ -22,13 +22,7 @@ class MCPDFT {
                            const arma::mat &D1b,
                            const arma::mat &D2ab);
 
-      //=========== utility functions ============//
-      void read_grids_from_file();
-      void read_energies_from_file();
-      void read_cmat_from_file();
-
       //=============== accessors ===============//
-
       size_t get_npts() const;
       arma::vec get_w() const;
       arma::vec get_x() const;
@@ -48,8 +42,22 @@ class MCPDFT {
       void set_eref(const double eref);
       void set_eclass(const double eclass);
       void set_cmat(const arma::mat &cmat);
+      //==========================================// end of accessors
 
    protected:
+
+      /* Build the density function rho(r)
+         
+
+      */
+      arma::vec build_rho(arma::vec &phi,
+                          arma::vec &D);
+
+      //=========== utility functions ============//
+      void read_grids_from_file();
+      void read_energies_from_file();
+      void read_cmat_from_file();
+      //==========================================// end of utility functions
 
    private:
 
@@ -77,6 +85,9 @@ class MCPDFT {
 
       /// vector of z-coordinates for quadrature grid points
       arma::vec z_;
+
+      /// matrix of grids([w],[x],[y],[z]) columns [x], [y], ...
+      arma::mat grids_;
 
       /// vector of orbital values calculated on the grid points
       arma::vec phi_;
