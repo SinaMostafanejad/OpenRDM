@@ -1,0 +1,5 @@
+#/bin/cmake
+
+rm -rf cmake_install.cmake  CMakeFiles/ CMakeCache.txt
+
+cmake .
