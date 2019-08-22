@@ -10,7 +10,8 @@
 namespace mcpdft {
 
    /// calculates the MCPDFT energy
-   double mcpdft_energy(const arma::mat &D1a,
+   double mcpdft_energy(const MCPDFT* mc,
+                        const arma::mat &D1a,
                         const arma::mat &D1b,
                         const arma::mat &D2ab);
 }

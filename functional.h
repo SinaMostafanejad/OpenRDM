@@ -17,14 +17,14 @@ class Functional {
       ~Functional();
 
       /// Slater exchange functional 
-      double EX_LSDA(arma::vec &rho_a,
-                     arma::vec &rho_b,
-                     MCPDFT* mc);
+      double EX_LSDA(MCPDFT* mc,
+                     arma::vec &rho_a,
+                     arma::vec &rho_b);
 
       /// VWN RPA expression-3 correlation functional
-      double EC_VWN3_RPA_III(arma::vec &rho_a,
-                             arma::vec &rho_b,
-                             MCPDFT* mc);
+      double EC_VWN3(MCPDFT* mc,
+                     arma::vec &rho_a,
+                     arma::vec &rho_b);
 
 };
 

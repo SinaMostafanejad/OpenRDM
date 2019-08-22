@@ -11,6 +11,10 @@ This folder contains the data files:
                  The dimensions <#rows,#cols> is shown in the first 
                  line of the file.
 
-4- grids.txt:    The Cartesian grid points with the order w,x,y,z,
-                 and phi(r), the value of the orbitals on those points.
-                 The number of grid points is in the first line.
+4- grids.txt:    The Cartesian grid points with the order w,x,y,z
+                 with the number of grids on the first line.
+
+5- orbitals.txt  The super phi(p,i) matrix hosts the value of the
+                 i-th basis function calculated at each point p.
+                 The first line shows the number of grid points and
+                 number of basis functions, respectively. 

@@ -6,21 +6,22 @@
 namespace mcpdft {
 
    // calculates the MCPDFT energy
-   double mcpdft_energy(const arma::mat &D1a,
+   double mcpdft_energy(const MCPDFT* mc,
+                        const arma::mat &D1a,
                         const arma::mat &D1b,
                         const arma::mat &D2ab) {
 
       double tot_energy = 0.0;
       double ref_energy = 0.0;
 
-      MCPDFT* mc = new MCPDFT;
-
-      // initializes the MCPDFT class members
-      mc->common_init();
-
       // fetching the number of grid points
       size_t npts;
       npts = mc->get_npts();
+      // printf("npts = %d\n",(int)npts);
+
+      // fetching the number of basis functions
+      int nbfs;
+      nbfs = mc->get_nbfs();
       // printf("npts = %d\n",(int)npts);
 
       // fetching the weights and the coordinates of grids
@@ -34,7 +35,7 @@ namespace mcpdft {
       // Z.print("Z = ");
      
       // getting the values of the basis functions on grids
-      arma::vec Phi(mc->get_phi());
+      arma::mat Phi(mc->get_phi());
       // Phi.print("Phi = ");
 
       // getting the value of the reference energy
@@ -52,7 +53,7 @@ namespace mcpdft {
       ref_energy += eref;
       tot_energy += eclass;
 
-      delete mc;
+//       delete mc;
 
       return tot_energy;
    }
