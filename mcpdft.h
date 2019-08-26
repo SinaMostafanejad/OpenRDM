@@ -25,6 +25,9 @@ class MCPDFT {
       /// Build the 1-particle density matrices (OPDMs)
       void build_opdm();
 
+      /// Build the alpha-beta block of 2-particle density matrix (TPDM)
+      void build_tpdm();
+
       //=============== accessors ===============//
       size_t get_npts() const;
       int    get_nbfs() const;
@@ -38,6 +41,7 @@ class MCPDFT {
       arma::mat get_cmat() const;
       arma::mat get_D1a() const;
       arma::mat get_D1b() const;
+      arma::mat get_D2ab() const;
 
       void set_npts(const size_t npts);
       void set_nbfs(const int nbfs);
@@ -51,6 +55,7 @@ class MCPDFT {
       void set_cmat(const arma::mat &cmat);
       void set_D1a(const arma::mat &D1a);
       void set_D1b(const arma::mat &D1b);
+      void set_D2ab(const arma::mat &D2ab);
       //==========================================// end of accessors
 
    protected:
