@@ -28,6 +28,7 @@ int main() {
     mc->build_tpdm();
     arma::mat D2ab(mc->get_D2ab());
 
+    mc->build_rho();
 
     double e = mcpdft_energy(mc,D1a,D1b,D2ab);
 

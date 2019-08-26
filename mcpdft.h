@@ -28,6 +28,9 @@ class MCPDFT {
       /// Build the alpha-beta block of 2-particle density matrix (TPDM)
       void build_tpdm();
 
+      /// build spin and total density functions rhoa(r), rhob(r) and rho(r)
+      void build_rho();
+
       //=============== accessors ===============//
       size_t get_npts() const;
       int    get_nbfs() const;
@@ -42,6 +45,9 @@ class MCPDFT {
       arma::mat get_D1a() const;
       arma::mat get_D1b() const;
       arma::mat get_D2ab() const;
+      arma::vec get_rhoa() const;
+      arma::vec get_rhob() const;
+      arma::vec get_rho() const;
 
       void set_npts(const size_t npts);
       void set_nbfs(const int nbfs);
@@ -56,16 +62,12 @@ class MCPDFT {
       void set_D1a(const arma::mat &D1a);
       void set_D1b(const arma::mat &D1b);
       void set_D2ab(const arma::mat &D2ab);
+      void set_rhoa(const arma::vec &rhoa);
+      void set_rhob(const arma::vec &rhob);
+      void set_rho(const arma::vec &rho);
       //==========================================// end of accessors
 
    protected:
-
-      /* Build the density function rho(r)
-         
-
-      */
-      arma::vec build_rho(arma::mat &phi,
-                          arma::mat &D1);
 
       //=========== utility functions ============//
       void read_grids_from_file();
@@ -117,6 +119,15 @@ class MCPDFT {
 
       /// AO->MO transformation matrix C (read from file)
       arma::mat cmat_;
+
+      /// alpha density vector rho_a(r)
+      arma::vec rho_a_;
+
+      /// beta density vector rho_b(r)
+      arma::vec rho_b_;
+
+      /// total density vector rho_(r)
+      arma::vec rho_;
 };
 
 }
