@@ -1,5 +1,6 @@
 #include "energy.h"
 #include "mcpdft.h"
+#include "functional.h"
 #include <armadillo>
 
 
@@ -46,14 +47,33 @@ namespace mcpdft {
       double eclass = mc->get_eclass();
       // printf("eclass = %-20.15lf\n",eclass);
 
+      arma::vec rhoa(mc->get_rhoa());
+      arma::vec rhob(mc->get_rhob());
+
+      Functional* func = new Functional;
+
+      double Ex = 0.0;
+      double Ec = 0.0;
+      Ex = func->EX_LSDA(mc, rhoa, rhob);
+      Ec = func->EC_VWN3(mc, rhoa, rhob);
+
+      printf("------------------------------------------\n");
+      printf("   Classical energy = %-20.15lf\n", eclass);
+      printf("   Ex               = %-20.15lf\n", Ex);
+      printf("   Ec               = %-20.15lf\n", Ec);
+      printf("------------------------------------------\n\n");
+
+
       // getting the AO->MO transformation matrix C
-      arma::mat cmat(mc->get_cmat());
+      // arma::mat cmat(mc->get_cmat());
       // cmat.print("Cmat = ");
 
       ref_energy += eref;
       tot_energy += eclass;
+      tot_energy += Ex;
+      tot_energy += Ec;
 
-//       delete mc;
+      delete func;
 
       return tot_energy;
    }

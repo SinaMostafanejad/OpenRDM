@@ -8,9 +8,9 @@ namespace mcpdft {
    Functional::Functional()  {}
    Functional::~Functional() {}
 
-   double Functional::EX_LSDA(MCPDFT* mc,
-                              arma::vec &rho_a,
-                              arma::vec &rho_b) {
+   double Functional::EX_LSDA(const MCPDFT* mc,
+                              const arma::vec &rho_a,
+                              const arma::vec &rho_b) {
 
        const double alpha = (2.0/3.0);      // Slater value: a constant
        const double Cx = (9.0/8.0) * alpha * pow(3.0/M_PI,1.0/3.0);
@@ -28,9 +28,9 @@ namespace mcpdft {
        return exc;
    }
 
-    double Functional::EC_VWN3(MCPDFT* mc,
-                               arma::vec& rho_a,
-                               arma::vec& rho_b) {
+    double Functional::EC_VWN3(const MCPDFT* mc,
+                               const arma::vec& rho_a,
+                               const arma::vec& rho_b) {
 
        double tol = 1.0e-20;
 

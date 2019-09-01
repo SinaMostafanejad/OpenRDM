@@ -61,16 +61,18 @@ namespace mcpdft {
       // building the 1-electron reduced density matrices (1RDMs)
       arma::mat D1a(nbfs, nbfs, arma::fill::zeros);
       arma::mat D1b(nbfs, nbfs, arma::fill::zeros);
-      for (int mu = 0; mu < nbfs; mu++) { 
-          for (int nu = 0; nu < nbfs; nu++) { 
-              for (int i = 0; i < nbfs; i++) { 
-                  D1a(mu, nu) = ca(mu, i) * ca(nu, i);
-                  D1b(mu, nu) = cb(mu, i) * cb(nu, i);
-              }
-          }
-      }
-      // D1a.print("D1a = ");
-      // D1b.print("D1b = ");
+      // for (int mu = 0; mu < nbfs; mu++) { 
+      //     for (int nu = 0; nu < nbfs; nu++) { 
+      //         for (int i = 0; i < nbfs/2; i++) { 
+      //             D1a(mu, nu) = ca(mu, i) * ca(nu, i);
+      //             D1b(mu, nu) = cb(mu, i) * cb(nu, i);
+      //         }
+      //     }
+      // }
+      D1a(0,0) = 1.0;
+      D1b(0,0) = 1.0;
+      D1a.print("D1a = ");
+      D1b.print("D1b = ");
       set_D1a(D1a);
       set_D1b(D1b);
    }
@@ -90,7 +92,6 @@ namespace mcpdft {
       set_D2ab(D2ab);
 
    }
-
 
    size_t MCPDFT::get_npts() const { return npts_; }
    int    MCPDFT::get_nbfs() const { return nbfs_; }

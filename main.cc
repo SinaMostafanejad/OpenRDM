@@ -32,10 +32,15 @@ int main() {
 
     double e = mcpdft_energy(mc,D1a,D1b,D2ab);
 
+    // getting the value of the reference energy
+    double eref = mc->get_eref();
+    // printf("eref = %-20.15lf\n",eref);
 
-    printf("==========================================\n");
-    printf("   MCPDFT energy =  %-20.15lf\n",   e);
-    printf("==========================================\n");
+    printf("=================================================\n");
+    printf("   Reference energy      =  %-20.15lf\n",  eref);
+    printf("   MCPDFT energy         =  %-20.15lf\n",     e);
+    printf("   E(MCPDFT) - E(Ref)    =  %-20.2le\n", e-eref);
+    printf("=================================================\n");
 
     delete mc;
 
