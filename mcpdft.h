@@ -28,7 +28,7 @@ class MCPDFT {
       /// Build the alpha-beta block of 2-particle density matrix (TPDM)
       void build_tpdm();
 
-      /// build spin and total density functions rhoa(r), rhob(r) and rho(r)
+      /// Build spin and total density functions rhoa(r), rhob(r) and rho(r)
       void build_rho();
 
       //=============== accessors ===============//
@@ -73,6 +73,7 @@ class MCPDFT {
       void read_grids_from_file();
       void read_orbitals_from_file();
       void read_energies_from_file();
+      void read_opdm_from_file();
       void read_cmat_from_file();
       //==========================================// end of utility functions
 

@@ -14,7 +14,8 @@ namespace mcpdft {
        read_grids_from_file();
        read_orbitals_from_file();
        read_energies_from_file(); 
-       read_cmat_from_file();
+       read_opdm_from_file();
+       // read_cmat_from_file();
    }
 
    void MCPDFT::build_rho() {
@@ -69,8 +70,8 @@ namespace mcpdft {
       //         }
       //     }
       // }
-      D1a(0,0) = 1.0;
-      D1b(0,0) = 1.0;
+      // D1a(0,0) = 1.0;
+      // D1b(0,0) = 1.0;
       D1a.print("D1a = ");
       D1b.print("D1b = ");
       set_D1a(D1a);

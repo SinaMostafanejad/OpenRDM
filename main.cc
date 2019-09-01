@@ -18,7 +18,7 @@ int main() {
     /* building alpha and beta 1-electron reduced
      * density matrices (1RDMs)
      */
-    mc->build_opdm();
+    // mc->build_opdm();
     arma::mat D1a(mc->get_D1a());
     arma::mat D1b(mc->get_D1b());
 

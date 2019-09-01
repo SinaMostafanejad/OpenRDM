@@ -63,7 +63,6 @@ namespace mcpdft {
       printf("   Ec               = %-20.15lf\n", Ec);
       printf("------------------------------------------\n\n");
 
-
       // getting the AO->MO transformation matrix C
       // arma::mat cmat(mc->get_cmat());
       // cmat.print("Cmat = ");

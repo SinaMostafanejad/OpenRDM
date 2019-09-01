@@ -18,3 +18,7 @@ This folder contains the data files:
                  i-th basis function calculated at each point p.
                  The first line shows the number of grid points and
                  number of basis functions, respectively. 
+
+6- opdm.txt:     The 1-electron reduced-density matrix (1RDM) in the
+                 AO basis. The dimensions <#rows,#cols> is shown in 
+                 the first line of the file.

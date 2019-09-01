@@ -86,6 +86,30 @@ namespace mcpdft {
        file.close();
    }
 
+   void MCPDFT::read_opdm_from_file() {
+
+       std::ifstream file;
+
+       // reading the AO->MO transformation matrix C from file
+       file.open("./data/opdm.txt");
+
+       if (!file)
+          std::cout << "Error opening file.\n";
+       else {
+            int cols{ 0 };
+            int rows{ 0 };
+            file >> rows >> cols;
+            arma::mat D1a(rows, cols, arma::fill::zeros);
+            for (int i = 0; i < rows; i++)
+                for (int j = 0; j < cols; j++)
+                    file >> D1a(i,j);
+
+            set_D1a(D1a);
+            set_D1b(D1a);
+       }
+       file.close();
+   }
+
    void MCPDFT::read_cmat_from_file() {
 
        std::ifstream file;
