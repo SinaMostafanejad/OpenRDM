@@ -77,5 +77,4 @@ namespace mcpdft {
       return tot_energy;
    }
 
-
 }

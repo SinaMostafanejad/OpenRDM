@@ -49,6 +49,46 @@ namespace mcpdft {
       set_rho(rho);
    }
 
+   void MCPDFT::build_pi(const arma::mat &D2ab) {
+
+        int nbfs = get_nbfs();
+        size_t npts = get_npts();
+
+        arma::vec temp(npts);
+        arma::mat phi(get_phi());
+
+        for (int p = 0; p < npts; p++) {
+                double dum = 0.0;
+                // pi(r,r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
+                for (int mu = 0; mu < nbfs; mu++) {
+                    for (int nu = 0; nu < nbfs; nu++) {
+                        for (int lambda = 0; lambda < nbfs; lambda++) {
+                            for (int sigma = 0; sigma < nbfs; sigma++) {
+                                dum += phi(p, mu) * phi(p, nu) * phi(p, lambda) * phi(p, sigma) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                            }
+                        }
+                    }
+                }
+                temp(p) = dum;
+        }
+        set_pi(temp);
+   }
+
+   void MCPDFT::build_R() {
+
+        double tol = 1.0e-20;
+        size_t npts = get_npts();
+
+        arma::vec temp(npts);
+        arma::vec pi(get_pi());
+        arma::vec rho(get_rho());
+
+        for (int p = 0; p < npts; p++) {
+            temp(p) = 4.0 * pi(p) / ( rho(p) * rho(p) );
+        }
+        set_R(temp);
+   }
+
    void MCPDFT::build_opdm() {
 
       // fetching the number of basis functions
@@ -62,14 +102,18 @@ namespace mcpdft {
       // building the 1-electron reduced density matrices (1RDMs)
       arma::mat D1a(nbfs, nbfs, arma::fill::zeros);
       arma::mat D1b(nbfs, nbfs, arma::fill::zeros);
-      // for (int mu = 0; mu < nbfs; mu++) { 
-      //     for (int nu = 0; nu < nbfs; nu++) { 
-      //         for (int i = 0; i < nbfs/2; i++) { 
-      //             D1a(mu, nu) = ca(mu, i) * ca(nu, i);
-      //             D1b(mu, nu) = cb(mu, i) * cb(nu, i);
-      //         }
-      //     }
-      // }
+      for (int mu = 0; mu < nbfs; mu++) { 
+          for (int nu = 0; nu < nbfs; nu++) { 
+              double duma = 0.0;
+              double dumb = 0.0;
+              for (int i = 0; i < nbfs/2; i++) { 
+                   duma += ca(mu, i) * ca(nu, i);
+                   dumb += cb(mu, i) * cb(nu, i);
+              }
+	      D1a(mu, nu) = duma;
+              D1b(mu, nu) = dumb;
+	  }
+      }
       // D1a(0,0) = 1.0;
       // D1b(0,0) = 1.0;
       D1a.print("D1a = ");
@@ -91,7 +135,6 @@ namespace mcpdft {
       D2ab = arma::kron(D1a,D1b);
       // D2ab.print("D2ab = ");
       set_D2ab(D2ab);
-
    }
 
    size_t MCPDFT::get_npts() const { return npts_; }
@@ -110,6 +153,8 @@ namespace mcpdft {
    arma::vec MCPDFT::get_rhoa() const { return rho_a_; }
    arma::vec MCPDFT::get_rhob() const { return rho_b_; }
    arma::vec MCPDFT::get_rho() const { return rho_; }
+   arma::vec MCPDFT::get_pi() const { return pi_; }
+   arma::vec MCPDFT::get_R() const { return R_; }
 
    void MCPDFT::set_npts(const size_t npts) { npts_ = npts; }
    void MCPDFT::set_nbfs(const int nbfs)    { nbfs_ = nbfs; }
@@ -127,5 +172,7 @@ namespace mcpdft {
    void MCPDFT::set_rhoa(const arma::vec &rhoa) { rho_a_ = rhoa; }
    void MCPDFT::set_rhob(const arma::vec &rhob) { rho_b_ = rhob; }
    void MCPDFT::set_rho(const arma::vec &rho) { rho_ = rho; }
+   void MCPDFT::set_pi(const arma::vec &pi) { pi_ = pi; }
+   void MCPDFT::set_R(const arma::vec &R) { R_ = R; }
 
 }

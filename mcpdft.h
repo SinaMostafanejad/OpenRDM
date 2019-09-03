@@ -31,6 +31,12 @@ class MCPDFT {
       /// Build spin and total density functions rhoa(r), rhob(r) and rho(r)
       void build_rho();
 
+      /// Build on-top pair-density pi(r,r)
+      void build_pi(const arma::mat &D2ab);
+
+      /// Build R(r) factor
+      void build_R(); 
+
       //=============== accessors ===============//
       size_t get_npts() const;
       int    get_nbfs() const;
@@ -48,6 +54,8 @@ class MCPDFT {
       arma::vec get_rhoa() const;
       arma::vec get_rhob() const;
       arma::vec get_rho() const;
+      arma::vec get_pi() const;
+      arma::vec get_R() const;
 
       void set_npts(const size_t npts);
       void set_nbfs(const int nbfs);
@@ -65,6 +73,8 @@ class MCPDFT {
       void set_rhoa(const arma::vec &rhoa);
       void set_rhob(const arma::vec &rhob);
       void set_rho(const arma::vec &rho);
+      void set_pi(const arma::vec &pi);
+      void set_R(const arma::vec &R);
       //==========================================// end of accessors
 
    protected:
@@ -129,6 +139,12 @@ class MCPDFT {
 
       /// total density vector rho_(r)
       arma::vec rho_;
+
+      /// The on-top pair-density vector pi_(r)
+      arma::vec pi_;
+
+      /// The R(r) factor
+      arma::vec R_;
 };
 
 }
