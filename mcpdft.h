@@ -140,6 +140,15 @@ class MCPDFT {
       /// total density vector rho_(r)
       arma::vec rho_;
 
+      /// (fully-)translated alpha density vector tr_rho_a(r)
+      arma::vec tr_rho_a_;
+
+      /// (fully-)translated beta density vector tr_rho_b(r)
+      arma::vec tr_rho_b_;
+
+      /// (fully-)translated total density vector tr_rho_(r)
+      arma::vec tr_rho_;
+
       /// The on-top pair-density vector pi_(r)
       arma::vec pi_;
 
