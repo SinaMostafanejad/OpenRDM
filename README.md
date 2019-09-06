@@ -6,5 +6,7 @@
 </p>
 
 
-# libRDMInoles
+libRDMInoles
+============
+
 This is a prototype for the RDMInoles library
