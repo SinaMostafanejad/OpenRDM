@@ -26,11 +26,15 @@ namespace mcpdft {
       arma::mat phi(get_phi());
       arma::mat D1a(get_D1a());
       arma::mat D1b(get_D1b());
+      arma::vec W(get_w());
       
       arma::vec rhoa(npts, arma::fill::zeros);
       arma::vec rhob(npts, arma::fill::zeros);
       arma::vec rho(npts, arma::fill::zeros);
 
+      double dum_a = 0.0;
+      double dum_b = 0.0;
+      double dum_tot = 0.0;
       for(int p = 0; p < npts; p++) {
          double tempa = 0.0;
          double tempb = 0.0;
@@ -43,10 +47,20 @@ namespace mcpdft {
 	 rhoa(p) = tempa;
 	 rhob(p) = tempb;
 	 rho(p) = rhoa(p) + rhob(p);
+
+         dum_a += rhoa(p) * W(p);
+         dum_b += rhob(p) * W(p);
+         dum_tot += ( rhoa(p) + rhob(p) ) * W(p) ;
       }
       set_rhoa(rhoa);
       set_rhob(rhob);
       set_rho(rho);
+
+      printf("\n");
+      printf("  Integrated total density = %20.12lf\n",dum_tot);
+      printf("  Integrated alpha density = %20.12lf\n",dum_a);
+      printf("  Integrated beta density  = %20.12lf\n",dum_b);
+      printf("\n");
    }
 
    void MCPDFT::build_pi(const arma::mat &D2ab) {
@@ -87,6 +101,54 @@ namespace mcpdft {
             temp(p) = 4.0 * pi(p) / ( rho(p) * rho(p) );
         }
         set_R(temp);
+   }
+
+   void MCPDFT::translate() {
+
+     double tol = 1.0e-20;
+     size_t npts = get_npts();
+
+     arma::vec rho_vec(get_rho());
+     arma::vec pi_vec(get_pi());
+     arma::vec R_vec(get_R());
+     arma::vec W(get_w());
+     arma::vec tr_rhoa(npts);
+     arma::vec tr_rhob(npts);
+
+     double dum_a = 0.0;
+     double dum_b = 0.0;
+     double dum_tot = 0.0;
+     for (int p = 0; p < npts; p++) {
+
+         double rho = rho_vec(p);
+         double pi = pi_vec(p);
+         double zeta = 0.0;
+         double R = 0.0;
+         if ( !(rho < tol) && !(pi < 0.0) ) {
+            R = R_vec(p);
+            if ( (1.0 - R) > tol ) {
+               zeta = sqrt(1.0 - R);
+            }else{
+                 zeta = 0.0;
+            }
+            tr_rhoa(p) = (1.0 + zeta) * (rho/2.0);
+            tr_rhob(p) = (1.0 - zeta) * (rho/2.0);
+         }else {
+                tr_rhoa(p) = 0.0;
+                tr_rhob(p) = 0.0;
+         }
+         dum_a += tr_rhoa(p) * W(p);
+         dum_b += tr_rhob(p) * W(p);
+         dum_tot += ( tr_rhoa(p) + tr_rhob(p) ) * W(p) ;
+     }
+     set_tr_rhoa(tr_rhoa);
+     set_tr_rhob(tr_rhob);
+
+     printf("\n");
+     printf("  Integrated translated total density = %20.12lf\n",dum_tot);
+     printf("  Integrated translated alpha density = %20.12lf\n",dum_a);
+     printf("  Integrated translated beta density  = %20.12lf\n",dum_b);
+     printf("\n");
    }
 
    void MCPDFT::build_opdm() {
@@ -153,6 +215,9 @@ namespace mcpdft {
    arma::vec MCPDFT::get_rhoa() const { return rho_a_; }
    arma::vec MCPDFT::get_rhob() const { return rho_b_; }
    arma::vec MCPDFT::get_rho() const { return rho_; }
+   arma::vec MCPDFT::get_tr_rhoa() const { return tr_rho_a_; }
+   arma::vec MCPDFT::get_tr_rhob() const { return tr_rho_b_; }
+   arma::vec MCPDFT::get_tr_rho() const { return tr_rho_; }
    arma::vec MCPDFT::get_pi() const { return pi_; }
    arma::vec MCPDFT::get_R() const { return R_; }
 
@@ -172,6 +237,9 @@ namespace mcpdft {
    void MCPDFT::set_rhoa(const arma::vec &rhoa) { rho_a_ = rhoa; }
    void MCPDFT::set_rhob(const arma::vec &rhob) { rho_b_ = rhob; }
    void MCPDFT::set_rho(const arma::vec &rho) { rho_ = rho; }
+   void MCPDFT::set_tr_rhoa(const arma::vec &tr_rhoa) { tr_rho_a_ = tr_rhoa; }
+   void MCPDFT::set_tr_rhob(const arma::vec &tr_rhob) { tr_rho_b_ = tr_rhob; }
+   void MCPDFT::set_tr_rho(const arma::vec &tr_rho) { tr_rho_ = tr_rho; }
    void MCPDFT::set_pi(const arma::vec &pi) { pi_ = pi; }
    void MCPDFT::set_R(const arma::vec &R) { R_ = R; }
 

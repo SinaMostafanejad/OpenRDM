@@ -35,7 +35,10 @@ class MCPDFT {
       void build_pi(const arma::mat &D2ab);
 
       /// Build R(r) factor
-      void build_R(); 
+      void build_R();
+
+      /// Translate the one-electron densities 
+      void translate();
 
       //=============== accessors ===============//
       size_t get_npts() const;
@@ -54,6 +57,9 @@ class MCPDFT {
       arma::vec get_rhoa() const;
       arma::vec get_rhob() const;
       arma::vec get_rho() const;
+      arma::vec get_tr_rhoa() const;
+      arma::vec get_tr_rhob() const;
+      arma::vec get_tr_rho() const;
       arma::vec get_pi() const;
       arma::vec get_R() const;
 
@@ -73,6 +79,9 @@ class MCPDFT {
       void set_rhoa(const arma::vec &rhoa);
       void set_rhob(const arma::vec &rhob);
       void set_rho(const arma::vec &rho);
+      void set_tr_rhoa(const arma::vec &tr_rhoa);
+      void set_tr_rhob(const arma::vec &tr_rhob);
+      void set_tr_rho(const arma::vec &tr_rho);
       void set_pi(const arma::vec &pi);
       void set_R(const arma::vec &R);
       //==========================================// end of accessors
