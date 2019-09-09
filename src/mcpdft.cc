@@ -187,8 +187,8 @@ namespace mcpdft {
    void MCPDFT::build_tpdm() {
 
       // fetching the number of basis functions
-      int nbfs;
-      nbfs = get_nbfs();
+      int nbfs  = get_nbfs();
+      int nbfs2 = nbfs * nbfs;
 
       arma::mat D1a(get_D1a());
       arma::mat D1b(get_D1b());
