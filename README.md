@@ -19,7 +19,9 @@ An ab initio library for strongly-correlated many-body systems based on multicon
 
 ## OVERVIEW
 
-<b>libRDMInoles</b> is a source-independent version of the original <a href="https://github.com/edeprince3/RDMinoles">RDM-INOLES</a> plugin to the Psi4 quantum chemistry program package. <b>libRDMInoles</b> uses multiconfigurational pair-density functional theory (MCPDFT) to provide an accurate and efficient description of static and dynamical correlation effects. 
+<b>libRDMInoles</b> is a source-independent version of the original <a href="https://github.com/edeprince3/RDMinoles">RDM-INOLES</a> plugin to the Psi4 quantum chemistry program package. <b>libRDMInoles</b> uses multiconfigurational pair-density functional theory (MCPDFT) to provide an accurate and efficient description of static and dynamical correlation effects.
+
+Please refer to the <b>libRDMInoles</b>'<a href="https://sinamostafanejad.github.io/libRDMInoles/index.html">documentation</a> for further details about MCPDFT and its implementation.
 <!-- Both translated and fully-translated versions of Slater and Vosko-Wilk-Nusair random-phase approximation expression III (SVWN3), Perdew-Burke-Ernzerhof (PBE), revised PBE (revPBE), Becke88 exchange and one-parameter correlation functional (BOP) and Becke and Lee-Yang-Parr (BLYP) on-top pair-density exchange-correlation functionals are available at the moment. In addition, the global-, double- and range-separated hybrid multi-configurational OTPDs such as wPBE and LRC-wPBE have also been implemented. However, this part of the project also is under the ongoing developement.
 
 In summary, RDM-INOLES:
