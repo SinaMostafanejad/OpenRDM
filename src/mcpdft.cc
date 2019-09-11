@@ -193,7 +193,7 @@ namespace mcpdft {
       arma::mat D1a(get_D1a());
       arma::mat D1b(get_D1b());
 
-      arma::mat D2ab(nbfs*nbfs, nbfs*nbfs, arma::fill::zeros);
+      arma::mat D2ab(nbfs2, nbfs2, arma::fill::zeros);
       D2ab = arma::kron(D1a,D1b);
       // D2ab.print("D2ab = ");
       set_D2ab(D2ab);
