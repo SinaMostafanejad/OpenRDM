@@ -11,11 +11,12 @@ class MCPDFT {
 
       /// constructor
       MCPDFT();
+      MCPDFT(std::string test_case);
       /// destructor
       ~MCPDFT();
 
       /// initialize the class member variables
-      void common_init();
+      void common_init(std::string test_case);
 
       /// Computes the MCPDFT energy
       double mcpdft_energy(const arma::mat &D1a,
@@ -89,11 +90,11 @@ class MCPDFT {
    protected:
 
       //=========== utility functions ============//
-      void read_grids_from_file();
-      void read_orbitals_from_file();
-      void read_energies_from_file();
-      void read_opdm_from_file();
-      void read_cmat_from_file();
+      void read_grids_from_file(std::string test_case);
+      void read_orbitals_from_file(std::string test_case);
+      void read_energies_from_file(std::string test_case);
+      void read_opdm_from_file(std::string test_case);
+      void read_cmat_from_file(std::string test_case);
       //==========================================// end of utility functions
 
    private:

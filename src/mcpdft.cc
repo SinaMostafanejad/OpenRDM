@@ -6,15 +6,16 @@
 
 namespace mcpdft {
 
-   MCPDFT::MCPDFT()  { common_init(); }
+   MCPDFT::MCPDFT(std::string test_case)  { common_init(test_case); }
+   MCPDFT::MCPDFT() {}
    MCPDFT::~MCPDFT() {}
 
-   void MCPDFT::common_init() {
+   void MCPDFT::common_init(std::string test_case) {
 
-       read_grids_from_file();
-       read_orbitals_from_file();
-       read_energies_from_file(); 
-       read_opdm_from_file();
+       read_grids_from_file(test_case);
+       read_orbitals_from_file(test_case);
+       read_energies_from_file(test_case); 
+       read_opdm_from_file(test_case);
        // read_cmat_from_file();
    }
 
