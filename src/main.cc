@@ -7,9 +7,19 @@
 
 using namespace mcpdft;
 
-int main() {
+int main(int argc, char *argv[]) {
+
+
+    if ( argc < 2 ) { 
+
+       std::cout << "An argument is needed!" << std::endl;
+       printf("Usage: %s <test_case>\n", argv[0]);
+       return 1;
+    }
   
-    MCPDFT* mc = new MCPDFT;
+    // MCPDFT* mc = new MCPDFT(test_case);
+    MCPDFT *mc;
+    mc = new MCPDFT("h2_svwn_sto3g");
 
     // fetching the number of basis functions
     int nbfs;

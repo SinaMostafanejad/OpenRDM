@@ -2,11 +2,14 @@
 
 namespace mcpdft {
 
-   void MCPDFT::read_grids_from_file() {
+   void MCPDFT::read_grids_from_file(std::string test_case) {
 
+       std::string grids_fname = std::string("tests/")
+	                       + test_case
+			       + std::string("/grids.txt");
        std::ifstream file;
 
-       file.open("./data/grids.txt");
+       file.open(grids_fname);
 
        if (!file)
           std::cout << "Error opening file.\n";
@@ -31,11 +34,14 @@ namespace mcpdft {
        file.close();
    }
 
-   void MCPDFT::read_orbitals_from_file() {
+   void MCPDFT::read_orbitals_from_file(std::string test_case) {
 
+       std::string orbs_fname  = std::string("tests/")
+	                       + test_case
+			       + std::string("/orbitals.txt");
        std::ifstream file;
 
-       file.open("./data/orbitals.txt");
+       file.open(orbs_fname);
 
        if (!file)
           std::cout << "Error opening file.\n";
@@ -57,12 +63,19 @@ namespace mcpdft {
        file.close();
    }
 
-   void MCPDFT::read_energies_from_file() {
+   void MCPDFT::read_energies_from_file(std::string test_case) {
 
+       std::string eref_fname  = std::string("tests/")
+	                       + test_case
+			       + std::string("/eref.txt");
+
+       std::string eclass_fname  = std::string("tests/")
+	                         + test_case
+			         + std::string("/eclass.txt");
        std::ifstream file;
 
        // reading the reference energy from file
-       file.open("./data/eref.txt");
+       file.open(eref_fname);
 
        if (!file)
           std::cout << "Error opening file.\n";
@@ -74,7 +87,7 @@ namespace mcpdft {
        file.close();
 
        // reading the classical energy from file
-       file.open("./data/eclass.txt");
+       file.open(eclass_fname);
 
        if (!file)
           std::cout << "Error opening file.\n";
@@ -86,12 +99,15 @@ namespace mcpdft {
        file.close();
    }
 
-   void MCPDFT::read_opdm_from_file() {
+   void MCPDFT::read_opdm_from_file(std::string test_case) {
 
+       std::string opdm_fname  = std::string("tests/")
+	                       + test_case
+			       + std::string("/opdm.txt");
        std::ifstream file;
 
        // reading the AO->MO transformation matrix C from file
-       file.open("./data/opdm.txt");
+       file.open(opdm_fname);
 
        if (!file)
           std::cout << "Error opening file.\n";
@@ -110,12 +126,15 @@ namespace mcpdft {
        file.close();
    }
 
-   void MCPDFT::read_cmat_from_file() {
+   void MCPDFT::read_cmat_from_file(std::string test_case) {
 
+       std::string cmat_fname  = std::string("tests/")
+	                       + test_case
+			       + std::string("/cmat.txt");
        std::ifstream file;
 
        // reading the AO->MO transformation matrix C from file
-       file.open("./data/cmat.txt");
+       file.open(cmat_fname);
 
        if (!file)
           std::cout << "Error opening file.\n";
