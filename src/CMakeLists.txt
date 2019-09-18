@@ -1,9 +1,8 @@
-add_executable(mcpdft
-               main.cc
-               mcpdft.cc
-               energy.cc
-               functional.cc
-               utility.cc)
+add_executable(mcpdft main.cc
+                      mcpdft.cc
+                      energy.cc
+                      functional.cc
+                      utility.cc)
 
        #install(TARGETS mcpdft
        #        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
