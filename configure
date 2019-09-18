@@ -1,7 +1,11 @@
 #/bin/cmake
 
-rm -rf cmake_install.cmake  CMakeFiles/ CMakeCache.txt
-rm -rf build/
+rm -rf cmake_install.cmake \
+       CMakeFiles/ \
+       CMakeCache.txt \
+       Testing/ \
+       mcpdft \
+       build/
 
 mkdir build && cd build
 

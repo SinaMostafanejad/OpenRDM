@@ -18,4 +18,5 @@ set_property(TARGET mcpdft PROPERTY CXX_STANDARD 11)
 
 # list of test examples
 add_test(NAME h2-svwn-sto3g
-	 COMMAND mcpdft)
+	 COMMAND mcpdft
+	 WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
