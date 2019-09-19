@@ -8,6 +8,7 @@
 </a>
 <a href="https://lgtm.com/projects/g/SinaMostafanejad/libRDMInoles/alerts/"><img alt="Total alerts" src="https://img.shields.io/lgtm/alerts/g/SinaMostafanejad/libRDMInoles.svg?logo=lgtm&logoWidth=18"/></a>
 <a href="https://lgtm.com/projects/g/SinaMostafanejad/libRDMInoles/context:cpp"><img alt="Language grade: C/C++" src="https://img.shields.io/lgtm/grade/cpp/g/SinaMostafanejad/libRDMInoles.svg?logo=lgtm&logoWidth=18"/></a>
+<a href="https://www.codefactor.io/repository/github/sinamostafanejad/librdminoles/overview/master"><img src="https://www.codefactor.io/repository/github/sinamostafanejad/librdminoles/badge/master" alt="CodeFactor" /></a>
 <a href="http://hits.dwyl.io/SinaMostafanejad/libRDMInoles"><img alt="Hit counts" src="http://hits.dwyl.io/SinaMostafanejad/libRDMInoles.svg"></a>
 <a href="https://github.com/SinaMostafanejad/libRDMInoles"><img alt="GitHub license" src="https://img.shields.io/badge/license-BSD--3-blueviolet"></a>
 <br>
