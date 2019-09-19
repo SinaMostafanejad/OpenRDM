@@ -23,11 +23,17 @@
      </th>
   </tr>
   <tr>
+    <th align="left">Foundation</th>
+    <th align="left">
+      <a href="https://opensource.org/licenses/BSD-3-Clause"><img alt="GitHub license" src="https://img.shields.io/badge/license-BSD--3-blueviolet"></a>
+      <a href="https://www.linuxfoundation.org/"><img alt="GitHub license" src="https://img.shields.io/badge/Platforms-Linux-blue"></a>
+    </th>
+  </tr>
+  <tr>
     <th align="left">Miscellaneous</th>
-    <td>
+    <th align="left">
       <a href="http://hits.dwyl.io/SinaMostafanejad/libRDMInoles"><img alt="Hit counts" src="http://hits.dwyl.io/SinaMostafanejad/libRDMInoles.svg"></a>
-      <a href="https://github.com/SinaMostafanejad/libRDMInoles"><img alt="GitHub license" src="https://img.shields.io/badge/license-BSD--3-blueviolet"></a>
-    </td>
+    </th>
   </tr>
 </table>
 
