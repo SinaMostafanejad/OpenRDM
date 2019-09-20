@@ -6,9 +6,7 @@
 namespace mcpdft{
 
 class MCPDFT {
-
    public:
-
       /// constructor
       MCPDFT();
       MCPDFT(std::string test_case);
@@ -88,7 +86,6 @@ class MCPDFT {
       //==========================================// end of accessors
 
    protected:
-
       //=========== utility functions ============//
       void read_grids_from_file(std::string test_case);
       void read_orbitals_from_file(std::string test_case);
@@ -98,7 +95,6 @@ class MCPDFT {
       //==========================================// end of utility functions
 
    private:
-
        /// 1-electron reduced-density matrix of alpha spin
        arma::mat D1a_;
  

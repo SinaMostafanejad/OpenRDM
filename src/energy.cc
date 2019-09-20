@@ -11,7 +11,6 @@ namespace mcpdft {
                         const arma::mat &D1a,
                         const arma::mat &D1b,
                         const arma::mat &D2ab) {
-
       double tot_energy = 0.0;
       double ref_energy = 0.0;
 

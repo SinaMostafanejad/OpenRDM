@@ -11,7 +11,6 @@ namespace mcpdft {
    MCPDFT::~MCPDFT() {}
 
    void MCPDFT::common_init(std::string test_case) {
-
        read_grids_from_file(test_case);
        read_orbitals_from_file(test_case);
        read_energies_from_file(test_case); 
@@ -20,7 +19,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::build_rho() {
-      
       int nbfs = get_nbfs();
       size_t npts = get_npts();
 
@@ -65,7 +63,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::build_pi(const arma::mat &D2ab) {
-
         int nbfs = get_nbfs();
         size_t npts = get_npts();
 
@@ -90,7 +87,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::build_R() {
-
         double tol = 1.0e-20;
         size_t npts = get_npts();
 
@@ -105,7 +101,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::translate() {
-
      double tol = 1.0e-20;
      size_t npts = get_npts();
 
@@ -153,7 +148,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::build_opdm() {
-
       // fetching the number of basis functions
       int nbfs;
       nbfs = get_nbfs();
@@ -186,7 +180,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::build_tpdm() {
-
       // fetching the number of basis functions
       int nbfs  = get_nbfs();
       int nbfs2 = nbfs * nbfs;

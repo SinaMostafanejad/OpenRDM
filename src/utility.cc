@@ -3,7 +3,6 @@
 namespace mcpdft {
 
    void MCPDFT::read_grids_from_file(std::string test_case) {
-
        std::string grids_fname = std::string("tests/")
 	                       + test_case
 			       + std::string("/grids.txt");
@@ -35,7 +34,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::read_orbitals_from_file(std::string test_case) {
-
        std::string orbs_fname  = std::string("tests/")
 	                       + test_case
 			       + std::string("/orbitals.txt");
@@ -64,7 +62,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::read_energies_from_file(std::string test_case) {
-
        std::string eref_fname  = std::string("tests/")
 	                       + test_case
 			       + std::string("/eref.txt");
@@ -100,7 +97,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::read_opdm_from_file(std::string test_case) {
-
        std::string opdm_fname  = std::string("tests/")
 	                       + test_case
 			       + std::string("/opdm.txt");
@@ -127,7 +123,6 @@ namespace mcpdft {
    }
 
    void MCPDFT::read_cmat_from_file(std::string test_case) {
-
        std::string cmat_fname  = std::string("tests/")
 	                       + test_case
 			       + std::string("/cmat.txt");

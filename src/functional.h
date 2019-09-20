@@ -7,9 +7,7 @@
 namespace mcpdft {
 
 class Functional {
-
    public:
- 
       /// constructor
       Functional();
 

@@ -139,16 +139,13 @@ a.el {
 div.contents {
   width: 980px;
   padding: 40px;
-  margin-top: -1px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 10px;
+  margin: -1px auto 10px;
   border: 1px solid #d1d5da;
   border-radius: 2px;
 }
 
 div.toc {
-  border: 0px none;
+  border: 0 none;
   border-radius: 7px 7px 7px 7px;        
 }
 
@@ -167,11 +164,11 @@ div.header
 
 div.headertitle
 {
-	padding: 0px;
+	padding: 0;
 }
 
 .title ol {
-    margin: 0px;
+    margin: 0;
 }
 
 .title ol li {
@@ -192,7 +189,7 @@ div.headertitle
 div.fragment {
   padding: 16px;
   background-color: #f3f3f3;
-  border: 0px solid;
+  border: 0 solid;
 }
 
 div.line {
@@ -212,13 +209,12 @@ div.line.glow {
 }
 
 pre.fragment {
-  border: 0px solid #C4CFE5;
+  border: 0 solid #C4CFE5;
   padding: 16px;
   background-color: #f3f3f3;
   font-size: 85%;
   line-height: 1.45;
   font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  font-size: 85%;
 }
 
 /* @group Code Colorization */
