@@ -1,7 +1,8 @@
 language: cpp
 os: linux
 compiler: gcc
-
+env:
+   - CODECOV_TOKEN="e7f14d5c-3fb6-4225-ac24-0b22c4a19963"
 # This will run on Travis' 'new' container-based infrastructure
 sudo: false
 
