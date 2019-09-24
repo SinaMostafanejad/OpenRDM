@@ -1,11 +1,13 @@
 #/bin/cmake
 
+set -euo pipefail
+
 rm -rf cmake_install.cmake \
        CMakeFiles/ \
        CMakeCache.txt \
-       Testing/ \
        mcpdft \
        build/
+#       Testing/ \
 
 mkdir build && cd build
 
@@ -19,8 +21,14 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug \
 #      -Dgau2grid_DIR=/home/sina/MySoftwares/gau2grid/share/cmake/gau2grid \
 
 # Build
+cmake --build . --target clean
 cmake --build . --config Debug -- -j $(nproc)
 # Install
 make install
 # Test
-ctest -j $(nproc)
+#ctest -j $(nproc)
+ctest -j $(nproc) -M Experimental -T Start --track "Test Series" \
+      -T Configure \
+      -T Build \
+      -T Test \
+      -T Coverage
