@@ -38,7 +38,6 @@ if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   else()
     target_link_libraries(coverage_config INTERFACE --coverage)
   endif()
-  target_link_libraries(mcpdft gcov)
 endif()
 
 # Only build tests if we are the top-level project
