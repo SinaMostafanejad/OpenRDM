@@ -29,16 +29,6 @@ before_install:
 # Build your code e.g. by calling make
 script:
   - ./configure
-  - cd doc && doxygen Doxyfile
-
-# Generate and deploy documentation
-deploy:
-  provider: pages
-  skip_cleanup: true
-  local_dir: doc
-  github_token: $GH_REPO_TOKEN
-  on:
-    branch: master
 
 after_success:
 # Create lcov report
@@ -52,3 +42,16 @@ after_success:
 # Uploading to CodeCov
 # '-f' specifies file(s) to use and disables manual coverage gathering and file search which has already been done above
 - bash <(curl -s https://codecov.io/bash) -f coverage.info || echo "Codecov did not collect coverage reports"
+
+script:
+  - cd doc && doxygen Doxyfile
+
+# Generate and deploy documentation
+deploy:
+  provider: pages
+  skip_cleanup: true
+  local_dir: doc
+  github_token: $GH_REPO_TOKEN
+  on:
+    branch: master
+

@@ -10,7 +10,7 @@ rm -rf cmake_install.cmake \
 mkdir build && cd build
 
 # Configure
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug \
       -DCMAKE_INSTALL_PREFIX=./.. \
       -DCODE_COVERAGE=ON \
       -DBUILD_TESTING=ON \
@@ -19,7 +19,7 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 #      -Dgau2grid_DIR=/home/sina/MySoftwares/gau2grid/share/cmake/gau2grid \
 
 # Build
-cmake --build . --config RelWithDebInfo -- -j $(nproc)
+cmake --build . --config Debug -- -j $(nproc)
 # Install
 make install
 # Test
