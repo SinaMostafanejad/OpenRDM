@@ -9,12 +9,18 @@ rm -rf cmake_install.cmake \
 
 mkdir build && cd build
 
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
+# Configure
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RelWithDebInfo \
       -DCMAKE_INSTALL_PREFIX=./.. \
+      -DCODE_COVERAGE=ON \
+      -DBUILD_TESTING=ON \
       ..
 #      -DLibxc_DIR=/home/sina/MySoftwares/libxc/cmake \
 #      -Dgau2grid_DIR=/home/sina/MySoftwares/gau2grid/share/cmake/gau2grid \
 
-cmake --build . --config Release
-
+# Build
+cmake --build . --config RelWithDebInfo -- -j $(nproc)
+# Install
 make install
+# Test
+ctest -j $(nproc)
