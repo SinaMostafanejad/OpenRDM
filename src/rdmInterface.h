@@ -2,29 +2,31 @@
 #define RDMINTERFACE_H
 
 #include <armadillo>
-#include "mcpdft.h"
 
 namespace mcpdft {
 
 class IRDMInterface {
-
    public:
-       
-      /// Reads the 1- and 2- RDMs into memory
-      void virtual read_into_memory() = 0;
+      /// Calculates the required amount of memory needed for dealing with RDMs
+      virtual void calculate_memory(arma::mat &D1, arma::mat &D2ab) = 0;
+      
+      /// Calls read_opdm() and read_tpdm() fxns
+      virtual void read_rdms() = 0;
 
-      /// Reads the 1- and 2-RDMs into disk batches
-      void virtual read_into_disk() = 0;
+      /// Read 1RDM into memory/disk
+      virtual void read_opdm() = 0;
 
-      /// Calculate the required amount of memory needed for dealing with RDMs
-      void virtual calculate_memory(arma::mat &D1, arma::mat &D2ab) = 0;
+      /// Read 1RDM into memory/disk
+      virtual void read_tpdm() = 0;
 
-      /// Write 1RDM into disk
-      void virtual write_opdm_into_disk() = 0;
+      /// Calls write_opdm() and write_tpdm() fxns
+      virtual void write_rdms() = 0;
 
-      /// Write 2RDM into dist 
-      void virtual write_tpdm_into_disk() = 0;
- 
+      /// Write 1RDM into memory/disk
+      virtual void write_opdm() = 0;
+
+      /// Write 2RDM into memory/disk 
+      virtual void write_tpdm() = 0;
 };
 
 }
