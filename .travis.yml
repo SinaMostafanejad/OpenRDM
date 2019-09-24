@@ -21,6 +21,9 @@ addons:
     packages:
       - doxygen
       - lcov
+       
+before_install:
+  -sudo apt-get install libarmadillo-dev
 
 # Build your code e.g. by calling make
 script:
