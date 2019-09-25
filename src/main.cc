@@ -1,9 +1,11 @@
-#include "mcpdft.h"
-#include "energy.h"
 #include <stdio.h>
 #include <armadillo>
 #include <iostream>
 #include <fstream>
+#include <sys/sysinfo.h>
+#include "mcpdft.h"
+#include "energy.h"
+#include "libMem.h"
 
 using namespace mcpdft;
 
@@ -14,7 +16,16 @@ int main(int argc, char *argv[]) {
        printf("Usage: %s <test_case>\n", argv[0]);
        return 1;
     }
-  
+
+    // Query memory information from linux
+    struct sysinfo info;
+    sysinfo(&info);
+ 
+    // Calculating the amount of available memory
+    LibMem *libmem;
+    libmem = new LibMem();
+    libmem->query_system_memory(&info);
+
     // MCPDFT* mc = new MCPDFT(test_case);
     MCPDFT *mc;
     mc = new MCPDFT("h2_svwn_sto3g");
@@ -61,6 +72,7 @@ int main(int argc, char *argv[]) {
     printf("   E(MCPDFT) - E(Ref)    =  %-20.2le\n", e-eref);
     printf("=================================================\n");
 
+    delete libmem;
     delete mc;
 
     return 0;

@@ -1,9 +1,11 @@
-add_executable(mcpdft
-               main.cc
-               mcpdft.cc
-               energy.cc
-               functional.cc
-               utility.cc)
+add_executable(mcpdft main.cc
+                      mcpdft.cc
+                      energy.cc
+                      functional.cc
+                      utility.cc
+		      libMem.cc)
+
+target_include_directories(mcpdft PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_include_directories(mcpdft PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(mcpdft PUBLIC coverage_config)
