@@ -11,18 +11,26 @@ namespace mcpdft {
        struct sysinfo info;
        sysinfo(&info);
 
-       mem_unit_ = info.mem_unit;
-       totalram_ = info.totalram;
-       freeram_  = info.freeram;
+       mem_unit_   = info.mem_unit;
+       totalram_   = info.totalram;
+       freeram_    = info.freeram;
+       sharedram_  = info.sharedram;
+       bufferram_  = info.bufferram;
 
        unsigned long totalram_MB;
        unsigned long freeram_MB;
-       totalram_MB = (mem_unit_ * totalram_) /1024 /1024;
-       freeram_MB  = (mem_unit_ * freeram_ ) /1024 /1024;
+       unsigned long sharedram_MB;
+       unsigned long bufferram_MB;
+       totalram_MB   = (mem_unit_ * totalram_  ) /1024 /1024;
+       freeram_MB    = (mem_unit_ * freeram_   ) /1024 /1024;
+       sharedram_MB  = (mem_unit_ * sharedram_ ) /1024 /1024;
+       bufferram_MB  = (mem_unit_ * bufferram_ ) /1024 /1024;
 
        printf("\n===================================================\n");
-       printf("   Total usable main memory size:  %-8lu (MB)\n",totalram_MB);
-       printf("   Available memory size:          %-8lu (MB)\n",freeram_MB);
+       printf("   Total usable main memory size = %-8lu (MB)\n",totalram_MB);
+       printf("   Available memory size         = %-8lu (MB)\n",freeram_MB);
+       printf("   Amount of shared memory       = %-8lu (MB)\n",sharedram_MB);
+       printf("   Buffer memory size            = %-8lu (MB)\n",bufferram_MB);
        printf("===================================================\n");
     }
 
