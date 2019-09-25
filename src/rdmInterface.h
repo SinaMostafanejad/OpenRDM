@@ -1,8 +1,6 @@
 #ifndef RDMINTERFACE_H
 #define RDMINTERFACE_H
 
-#include <armadillo>
-
 namespace mcpdft {
 
 class IRDMInterface {

@@ -1,7 +1,9 @@
+#include <string>
 #include <stdio.h>
+#include <fstream>
+#include <limits>
 #include <sys/sysinfo.h>
 #include "libMem.h"
-
 
 namespace mcpdft {
    void LibMem::query_system_memory(const struct sysinfo *info) {
@@ -35,5 +37,24 @@ namespace mcpdft {
       printf("   Total swap space size         = %-8lu (MB)\n",totalswap_MB);
       printf("   Available swap sapce          = %-8lu (MB)\n",freeswap_MB);
       printf("===================================================\n");
+   }
+   unsigned long LibMem::get_mem_total() {
+      std::string token;
+      std::ifstream file("/proc/meminfo");
+      while(file >> token) {
+          if(token == "MemTotal:") {
+              unsigned long mem;
+              if(file >> mem) {
+                  return mem;
+                  file.close();
+              } else {
+                  return 0;
+              }
+          }
+          // ignore rest of the line
+          file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+          file.close();
+      }
+      return 0; // nothing found
    }
 } 

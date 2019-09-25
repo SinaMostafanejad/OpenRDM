@@ -30,9 +30,6 @@ class MemRW : public IRDMInterface {
 
        /// Write 2RDM into memory
        virtual void write_tpdm();
-
-       /// Get total memory using C++ function
-       unsigned long get_mem_total();
 };
 
 }

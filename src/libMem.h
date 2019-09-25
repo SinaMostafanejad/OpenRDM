@@ -7,6 +7,10 @@ class LibMem {
    public:
       /// Query memory information from linux
       void query_system_memory(const struct sysinfo *info);
+
+      /// Get total memory using C++ function
+      unsigned long get_mem_total();
+
    private:
       /// Uptime run since boot in seconds
       long uptime_;
