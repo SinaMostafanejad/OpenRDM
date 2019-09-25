@@ -2,7 +2,10 @@ add_executable(mcpdft main.cc
                       mcpdft.cc
                       energy.cc
                       functional.cc
-                      utility.cc)
+                      utility.cc
+		      memRW.cc)
+
+target_include_directories(mcpdft PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
        #install(TARGETS mcpdft
        #        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}

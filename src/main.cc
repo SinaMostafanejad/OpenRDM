@@ -1,15 +1,14 @@
-#include "mcpdft.h"
-#include "energy.h"
 #include <stdio.h>
 #include <armadillo>
 #include <iostream>
 #include <fstream>
+#include "mcpdft.h"
+#include "energy.h"
+#include "memRW.h"
 
 using namespace mcpdft;
 
 int main(int argc, char *argv[]) {
-
-
     if ( argc < 2 ) { 
 
        std::cout << "An argument is needed!" << std::endl;
@@ -17,6 +16,9 @@ int main(int argc, char *argv[]) {
        return 1;
     }
   
+    MemRW *memrw;
+    memrw = new MemRW();
+
     // MCPDFT* mc = new MCPDFT(test_case);
     MCPDFT *mc;
     mc = new MCPDFT("h2_svwn_sto3g");
@@ -37,6 +39,9 @@ int main(int argc, char *argv[]) {
      */
     mc->build_tpdm();
     arma::mat D2ab(mc->get_D2ab());
+
+    // Calculating the amount of available and required  memory
+    memrw->calculate_memory(D1a, D2ab);
 
     // building the one electron densities rho_a(r) and rho_b(r)
     mc->build_rho();
@@ -63,6 +68,7 @@ int main(int argc, char *argv[]) {
     printf("   E(MCPDFT) - E(Ref)    =  %-20.2le\n", e-eref);
     printf("=================================================\n");
 
+    delete memrw;
     delete mc;
 
     return 0;
