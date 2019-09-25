@@ -3,7 +3,7 @@ add_executable(mcpdft main.cc
                       energy.cc
                       functional.cc
                       utility.cc
-		      memRW.cc)
+		      libMem.cc)
 
 target_include_directories(mcpdft PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 

@@ -10,9 +10,6 @@ class IRDMInterface {
       /// Virtual destructor in case we want to delete an IRDMInterface pointer
       virtual ~IRDMInterface() {}
 
-      /// Calculates the required amount of memory needed for dealing with RDMs
-      virtual void calculate_memory(arma::mat &D1, arma::mat &D2ab) = 0;
-      
       /// Calls read_opdm() and read_tpdm() fxns
       virtual void read_rdms() = 0;
 
