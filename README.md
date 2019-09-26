@@ -40,7 +40,7 @@
 
 # REDMACS
 
-Reduced-density matrix analysis and computation software
+An ab initio library for strongly-correlated many-body systems based on multiconfiguration pair-density functional theory.
 
 ## OVERVIEW
 
