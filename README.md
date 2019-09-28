@@ -8,18 +8,18 @@
   <tr>
      <th align="left">CI/CD</th>
      <th align="left">
-        <a href="https://travis-ci.com/SinaMostafanejad/REDMACS"><img alt="Travis CI" src="https://travis-ci.com/SinaMostafanejad/REDMACS.svg?token=aVpZaqKz4Vv5czxgJ8WE&branch=master"></a>
-        <a href="https://ci.appveyor.com/project/SinaMostafanejad/redmacs"><img alt="AppVeyor" src="https://ci.appveyor.com/api/projects/status/67t0souy2fhoc7l5?svg=true"></a>
+        <a href="https://travis-ci.com/SinaMostafanejad/OpenRDM"><img alt="Travis CI" src="https://travis-ci.com/SinaMostafanejad/OpenRDM.svg?token=aVpZaqKz4Vv5czxgJ8WE&branch=master"></a>
+        <a href="https://ci.appveyor.com/project/SinaMostafanejad/openrdm"><img alt="AppVeyor" src="https://ci.appveyor.com/api/projects/status/67t0souy2fhoc7l5?svg=true"></a>
      </th>
   </tr>
   <tr>
     <th align="left">Code Coverage and Quality</th>
     <th align="left">
-      <a href="https://codecov.io/gh/SinaMostafanejad/REDMCAS">
-<img alt="CodeCoverage" src="https://codecov.io/gh/SinaMostafanejad/REDMACS/branch/master/graph/badge.svg" />
+      <a href="https://codecov.io/gh/SinaMostafanejad/OpenRDM">
+<img alt="CodeCoverage" src="https://codecov.io/gh/SinaMostafanejad/OpenRDM/branch/master/graph/badge.svg" />
       </a>
-      <a href="https://lgtm.com/projects/g/SinaMostafanejad/REDMACS/context:cpp"><img alt="Language grade: C/C++"       src="https://img.shields.io/lgtm/grade/cpp/g/SinaMostafanejad/REDMACS.svg?logo=lgtm&logoWidth=18"/></a> 
-<a href="https://www.codefactor.io/repository/github/sinamostafanejad/redmacs"><img src="https://www.codefactor.io/repository/github/sinamostafanejad/redmacs/badge" alt="CodeFactor" /></a>
+      <a href="https://lgtm.com/projects/g/SinaMostafanejad/OpenRDM/context:cpp"><img alt="Language grade: C/C++"       src="https://img.shields.io/lgtm/grade/cpp/g/SinaMostafanejad/OpenRDM.svg?logo=lgtm&logoWidth=18"/></a> 
+<a href="https://www.codefactor.io/repository/github/sinamostafanejad/openrdm"><img src="https://www.codefactor.io/repository/github/sinamostafanejad/openrdm/badge" alt="CodeFactor" /></a>
      </th>
   </tr>
   <tr>
@@ -32,21 +32,21 @@
   <tr>
     <th align="left">Miscellaneous</th>
     <th align="left">
-      <a href="http://hits.dwyl.io/SinaMostafanejad/REDMACS"><img alt="Hit counts" src="http://hits.dwyl.io/SinaMostafanejad/REDMACS.svg"></a>
+      <a href="http://hits.dwyl.io/SinaMostafanejad/OpenRDM"><img alt="Hit counts" src="http://hits.dwyl.io/SinaMostafanejad/OpenRDM.svg"></a>
     </th>
   </tr>
 </table>
 
 
-# REDMACS
+# OpenRDM
 
 An ab initio library for strongly-correlated many-body systems based on multiconfiguration pair-density functional theory.
 
 ## OVERVIEW
 
-<b>REDMACS</b> is a source-independent version of the original <a href="https://github.com/edeprince3/RDMinoles">RDM-INOLES</a> plugin to the Psi4 quantum chemistry program package. <b>REDMACS</b> uses multiconfigurational pair-density functional theory (MCPDFT) to provide an accurate and efficient description of static and dynamical correlation effects.
+<b>OpenRDM</b> is a source-independent version of the original <a href="https://github.com/edeprince3/RDMinoles">RDM-INOLES</a> plugin to the Psi4 quantum chemistry program package. <b>OpenRDM</b> uses multiconfigurational pair-density functional theory (MCPDFT) to provide an accurate and efficient description of static and dynamical correlation effects.
 
-Please refer to the <b>REDMACS</b>' <a href="https://sinamostafanejad.github.io/libRDMInoles/index.html">documentation</a> for further details about MCPDFT and its implementation.
+Please refer to the <b>OpenRDM</b>' <a href="https://sinamostafanejad.github.io/libRDMInoles/index.html">documentation</a> for further details about MCPDFT and its implementation.
 <!-- Both translated and fully-translated versions of Slater and Vosko-Wilk-Nusair random-phase approximation expression III (SVWN3), Perdew-Burke-Ernzerhof (PBE), revised PBE (revPBE), Becke88 exchange and one-parameter correlation functional (BOP) and Becke and Lee-Yang-Parr (BLYP) on-top pair-density exchange-correlation functionals are available at the moment. In addition, the global-, double- and range-separated hybrid multi-configurational OTPDs such as wPBE and LRC-wPBE have also been implemented. However, this part of the project also is under the ongoing developement.
 
 In summary, RDM-INOLES:
