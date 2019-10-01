@@ -34,6 +34,9 @@ class MCPDFT {
       /// Translate the one-electron densities 
       void translate();
 
+      /// Fully translate the one-electron densities 
+      void fully_translate();
+
       //=============== accessors ===============//
       size_t get_npts() const;
       int    get_nbfs() const;
