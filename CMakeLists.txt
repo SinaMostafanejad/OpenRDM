@@ -1,7 +1,7 @@
 # The minimum required version for CMake
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 # project name and its corresponding specifications
-project(mcpdft LANGUAGES CXX C)
+project(openrdm LANGUAGES CXX C)
 cmake_policy(SET CMP0079 NEW)
 #===================================================================
 set(CMAKE_CXX_STANDARD 11)
@@ -40,7 +40,7 @@ endif()
 #===================================================================
 # add a new subdirectory to the build tree
 add_subdirectory(src)
-set_property(TARGET mcpdft PROPERTY CXX_STANDARD 11)
+#set_property(TARGET openrdm PROPERTY CXX_STANDARD 11)
 #===================================================================
 #if(CODE_COVERAGE)
 #  target_link_libraries(mcpdft gcov)

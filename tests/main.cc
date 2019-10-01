@@ -28,7 +28,11 @@ int main(int argc, char *argv[]) {
 
     // MCPDFT* mc = new MCPDFT(test_case);
     MCPDFT *mc;
-    mc = new MCPDFT("h2_svwn_sto3g");
+    mc = new MCPDFT(argv[1]);
+
+    // getting the value of the reference energy
+    double eref = mc->get_eref();
+    // printf("eref = %-20.15lf\n",eref);
 
     // fetching the number of basis functions
     int nbfs;
@@ -47,24 +51,8 @@ int main(int argc, char *argv[]) {
     mc->build_tpdm();
     arma::mat D2ab(mc->get_D2ab());
 
-    // building the one electron densities rho_a(r) and rho_b(r)
-    mc->build_rho();
-
-    // building the on-top pair density pi(r,r)
-    mc->build_pi(D2ab);
-
-    // building the R(r) factor for density translation
-    mc->build_R();
-
-    // translate the one-electron densities
-    mc->translate();
-
     // calculating the MCPDFT energy correction
     double e = mcpdft_energy(mc,D1a,D1b,D2ab);
-
-    // getting the value of the reference energy
-    double eref = mc->get_eref();
-    // printf("eref = %-20.15lf\n",eref);
 
     printf("=================================================\n");
     printf("   Reference energy      =  %-20.12lf\n",  eref);

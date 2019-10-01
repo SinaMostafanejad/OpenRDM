@@ -26,9 +26,9 @@ cmake --build . --config Debug -- -j $(nproc)
 # Install
 make install
 # Test
-#ctest -j $(nproc)
-ctest -j $(nproc) -M Experimental -T Start --track "Test Series" \
-      -T Configure \
-      -T Build \
-      -T Test \
-      -T Coverage
+ctest -V -j $(nproc)
+#ctest -j $(nproc) -M Experimental -T Start --track "Test Series" \
+#      -T Configure \
+#      -T Build \
+#      -T Test \
+#      -T Coverage

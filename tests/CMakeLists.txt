@@ -1,8 +1,17 @@
 # list of test examples
-set(TEST_SET h2_svwn_sto3g)
+list(APPEND TEST_SET h2_svwn_sto3g)
+add_executable(mcpdft utility.cc
+	              main.cc
+)		
 
-foreach(TEST_SET test_id)
-    add_test(NAME h2-svwn-sto3g
-             COMMAND mcpdft "${test_id}"
-             WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+target_link_libraries(mcpdft PUBLIC openrdm)
+target_compile_definitions(mcpdft PUBLIC openrdm)
+include_directories(${CMAKE_SOURCE_DIR}/src)
+
+foreach(test_id IN LISTS TEST_SET)
+    add_test(NAME ${test_id}
+	     COMMAND mcpdft "${test_id}"
+	     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/tests
+	    )
+	    
 endforeach()

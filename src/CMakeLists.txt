@@ -1,17 +1,24 @@
-add_executable(mcpdft main.cc
-                      mcpdft.cc
-                      energy.cc
-                      functional.cc
-                      utility.cc
-		      libMem.cc)
+add_library(openrdm INTERFACE)
 
-target_include_directories(mcpdft PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+foreach(idx libmcpdft
+	    libmem
+            libio
+            libfunc)
+       add_subdirectory(${idx})
+endforeach()
 
-target_include_directories(mcpdft PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-target_link_libraries(mcpdft PUBLIC coverage_config)
+target_include_directories(openrdm INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libmcpdft>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libmem>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libio>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libfunc>
+  $<INSTALL_INTERFACE:include/openrdm
+)
 
-install(TARGETS mcpdft
-	RUNTIME DESTINATION ${CMAKE_SOURCE_DIR} 
+target_link_libraries(openrdm INTERFACE coverage_config)
+
+install(TARGETS openrdm
+	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} 
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBRID})
 #install(TARGETS mcpdft
