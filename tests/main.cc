@@ -1,11 +1,7 @@
 #include <stdio.h>
 #include <armadillo>
-#include <iostream>
-#include <fstream>
-#include <sys/sysinfo.h>
 #include "mcpdft.h"
 #include "energy.h"
-#include "libMem.h"
 
 using namespace mcpdft;
 
@@ -17,15 +13,6 @@ int main(int argc, char *argv[]) {
        return 1;
     }
 
-    // Query memory information from linux
-    struct sysinfo info;
-    sysinfo(&info);
- 
-    // Calculating the amount of available memory
-    LibMem *libmem;
-    libmem = new LibMem();
-    libmem->query_system_memory(&info);
-
     // MCPDFT* mc = new MCPDFT(test_case);
     MCPDFT *mc;
     mc = new MCPDFT(argv[1]);
@@ -33,10 +20,6 @@ int main(int argc, char *argv[]) {
     // getting the value of the reference energy
     double eref = mc->get_eref();
     // printf("eref = %-20.15lf\n",eref);
-
-    // fetching the number of basis functions
-    int nbfs;
-    nbfs = mc->get_nbfs();
 
     /* building alpha and beta 1-electron reduced
      * density matrices (1RDMs)
@@ -60,7 +43,6 @@ int main(int argc, char *argv[]) {
     printf("   E(MCPDFT) - E(Ref)    =  %-20.2le\n", e-eref);
     printf("=================================================\n");
 
-    delete libmem;
     delete mc;
 
     return 0;
