@@ -13,9 +13,9 @@ mkdir build && cd build
 
 # Configure
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug \
-      -DCMAKE_INSTALL_PREFIX=./.. \
       -DCODE_COVERAGE=ON \
       -DBUILD_TESTING=ON \
+      -DWITH_ARMADILLO=ON \
       ..
 #      -DLibxc_DIR=/home/sina/MySoftwares/libxc/cmake \
 #      -Dgau2grid_DIR=/home/sina/MySoftwares/gau2grid/share/cmake/gau2grid \

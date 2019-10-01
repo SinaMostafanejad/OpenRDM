@@ -2,7 +2,10 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 # project name and its corresponding specifications
 project(openrdm LANGUAGES CXX C)
-cmake_policy(SET CMP0079 NEW)
+set(mydft_URL "https://github.com/edeprince3/RDMinoles")
+set(mydft_EMAIL "m_mostafanejad@hotmail.com")
+set(mydft_LICENSE "GNU Lesser General Public License, version 3 (LGPL-3.0)")
+set(mydfft_DESCRIPTION "Open-Source Quantum Chemistry")
 #===================================================================
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -12,10 +15,18 @@ set(CMAKE_CXX_EXTENSIONS OFF) # Don't use e.g. GNU extension (like -std=gnu++11)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
 include(custom_color_messages)
-include(CTest)
+include(ExternalProject)
 #===================================================================
+list(APPEND THIRDLIBLIST "armadillo")
+list(APPEND EXTLIBLIST "libxc;pybind;gau2grid")
+#===================================================================
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}" CACHE PATH "Install path" FORCE)
+endif()
+message(STATUS "${Red}OpenRDM install:${ColourReset} ${CMAKE_INSTALL_PREFIX}")
 option(CODE_COVERAGE "${Cyan}Enable coverage reporting${ColourReset}" OFF)
-option (BUILD_TESTING "${Cyan}Build the testing tree.${ColourReset}" ON)
+option(BUILD_TESTING "${Cyan}Build the testing tree${ColourReset}" ON)
+option(WITH_ARMADILLO "${cyan}Build with Armadillo linear algebra library${ColourReset}" ON)
 #===================================================================
 # Code Coverage Configuration
 add_library(coverage_config INTERFACE)
@@ -38,18 +49,17 @@ if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
   endif()
 endif()
 #===================================================================
-# add a new subdirectory to the build tree
 add_subdirectory(src)
-#set_property(TARGET openrdm PROPERTY CXX_STANDARD 11)
+add_subdirectory(external)
+if(WITH_ARMADILLO)
+   add_dependencies(openrdm armadillo)
+endif()
 #===================================================================
-#if(CODE_COVERAGE)
-#  target_link_libraries(mcpdft gcov)
-#endif()
-
 # Only build tests if we are the top-level project
 # Allows this to be used by super projects with `add_subdirectory`
 if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
 # enabling ctest command for running test in the build tree
+  include(CTest)
   enable_testing()
   add_subdirectory(tests)
 endif()
