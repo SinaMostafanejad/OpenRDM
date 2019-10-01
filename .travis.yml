@@ -14,14 +14,13 @@ branches:
   only:
     - master
 
-
 # Install dependencies
 addons:
   apt:
     packages:
       - doxygen
       - lcov
-       
+
 before_install:
   - sudo apt-get install -y libarmadillo-dev
 

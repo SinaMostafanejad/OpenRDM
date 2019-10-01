@@ -155,7 +155,6 @@ namespace mcpdft {
         arma::vec pi_vec(get_pi());
         arma::vec R_vec(get_R());
         arma::vec W(get_w());
-
         arma::vec tr_rhoa(npts);
         arma::vec tr_rhob(npts);
         arma::vec tr_rho(npts);
@@ -170,43 +169,29 @@ namespace mcpdft {
         double temp_a = 0.0;
         double temp_b = 0.0;
         for (int p = 0; p < npts; p++) {
-
             double zeta = 0.0;
             double R = 0.0;
             double rho = rho_vec(p);
             double pi = pi_vec(p);
             double DelR = R_vec(p) - R1;
-
             if ( !(rho < tol) && !(pi < 0.0) ) {
-
                R = R_vec(p);
-
                if ( ((1.0 - R) > tol) && ( R < R0 ) ) {
-
                   zeta = sqrt(1.0 - R);
-
                }else if( !(R < R0) && !(R > R1) ) {
-
                        zeta = A * pow(DelR, 5.0) + B * pow(DelR, 4.0) + C * pow(DelR, 3.0);
-
                }else if( R > R1 ) {
-
                        zeta = 0.0;
                }
-
                tr_rhoa(p) = (1.0 + zeta) * (rho/2.0);
                tr_rhob(p) = (1.0 - zeta) * (rho/2.0);
-
             }else{
-
                  tr_rhoa(p) = 0.0;
                  tr_rhob(p) = 0.0;
             }
-
             temp_a += tr_rhoa(p) * W(p);
             temp_b += tr_rhob(p) * W(p);
             temp_tot += ( tr_rhob(p) + tr_rhoa(p) ) * W(p);
-
         }
         set_tr_rhoa(tr_rhoa);
         set_tr_rhob(tr_rhob);
