@@ -1,21 +1,21 @@
 if(WITH_ARMADILLO)
    include(FindArmadillo)
    if(ARMADILLO_FOUND)
-      message(STATUS "${Cyan}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
-      message(STATUS "${Cyan}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")
-      message(STATUS "${Cyan}The list of Armadillo include directories:${ColourReset} ${ARMADILLO_INCLUDE_DIRS}")
+      message(STATUS "${Yellow}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
+      message(STATUS "${Yellow}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")
+      message(STATUS "${Yellow}The list of Armadillo include directories:${ColourReset} ${ARMADILLO_INCLUDE_DIRS}")
    else()
       include(ExternalProject)
       ExternalProject_Add(armadillo
          GIT_REPOSITORY git@gitlab.com:conradsnicta/armadillo-code.git
          GIT_TAG 64c517324f996df27528ffdc519277c92b6ce0e7
          UPDATE_COMMAND ""
-	 DOWNLOAD_DIR ${OPENRDM_BINARY_DIR}/armadillo_download
-	 SOURCE_DIR   ${OPENRDM_BINARY_DIR}/armadillo_src
-         BINARY_DIR   ${OPENRDM_BINARY_DIR}/armadillo_bin
+	 DOWNLOAD_DIR ${OPENRDM_BINARY_DIR}/external/thirdparty/armadillo_download
+	 SOURCE_DIR   ${OPENRDM_BINARY_DIR}/external/thirdparty/armadillo_src
+         BINARY_DIR   ${OPENRDM_BINARY_DIR}/external/thirdparty/armadillo_bin
 	 INSTALL_DIR  ${OPENRDM_STAGING_PREFIX}/armadillo
-	 TMP_DIR      ${OPENRDM_BINARY_DIR}/armadillo_tmp
-         STAMP_DIR    ${OPENRDM_BINARY_DIR}/armadillo_stamp
+	 TMP_DIR      ${OPENRDM_BINARY_DIR}/external/thirdparty/armadillo_tmp
+         STAMP_DIR    ${OPENRDM_BINARY_DIR}/external/thirdparty/armadillo_stamp
 	 CMAKE_ARGS -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
                     -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
 	            -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
@@ -23,7 +23,7 @@ if(WITH_ARMADILLO)
 		    -DCMAKE_INSTALL_BINDIR=<INSTALL_DIR>/bin
 		    -DCMAKE_INSTALL_INCLUDEDIR=<INSTALL_DIR>/include
 		    -DCMAKE_INSTALL_DATADIR=<INSTALL_DIR>/share
-
+         BUILD_ALWAYS YES
       )
       set(armadillo_DIR ${OPENRDM_STAGING_DIR}/armadillo/share/Armadillo/CMake CACHE PATH "path to internally built ArmadilloConfig.cmake" FORCE)
       set(armadillo_INSTALL_DIR  ${OPENRDM_STAGING_PREFIX}/armadillo CACHE PATH "path to armadillo root directory" FORCE)
@@ -34,7 +34,7 @@ if(WITH_ARMADILLO)
       message(STATUS "${Cyan}The list of Armadillo include directories:${ColourReset} ${ARMADILLO_INCLUDE_DIRS}")
       if(ARMADILLO_FOUND)
          target_include_directories(openrdm INTERFACE 
-                                    $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/armadillo_src/include>
+                                    $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/thirdparty/armadillo_src/include>
                                     $<INSTALL_INTERFACE:${ARMADILLO_INCLUDE_DIRS}>
            			   )
          target_link_libraries(openrdm INTERFACE ${ARMADILLO_LIBRARIES})

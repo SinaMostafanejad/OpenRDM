@@ -1,34 +1,34 @@
 #/bin/cmake
-
-set -euo pipefail
-
+#============================ Pre-configure ========================
 rm -rf cmake_install.cmake \
        CMakeFiles/ \
        CMakeCache.txt \
        mcpdft \
        build/
-#       Testing/ \
 
 mkdir build && cd build
 
-# Configure
+#============================ Configure ============================
+#cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug \
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug \
       -DCODE_COVERAGE=ON \
       -DBUILD_TESTING=ON \
       -DWITH_ARMADILLO=ON \
+      -DWITH_LIBXC=ON \
       ..
-#      -DLibxc_DIR=/home/sina/MySoftwares/libxc/cmake \
-#      -Dgau2grid_DIR=/home/sina/MySoftwares/gau2grid/share/cmake/gau2grid \
-
-# Build
+      #-DLibxc_DIR=<Address of Libxc installation> for
+      #find_package(Libxc) to be able to find it
+#============================ Build ================================
 cmake --build . --target clean
 cmake --build . --config Debug -- -j $(nproc)
-# Install
-make install
-# Test
+#============================ Install ==============================
+#make install #for Unix Makefiles
+ninja install #for Ninja
+#============================ Test =================================
 ctest -V -j $(nproc)
 #ctest -j $(nproc) -M Experimental -T Start --track "Test Series" \
 #      -T Configure \
 #      -T Build \
 #      -T Test \
 #      -T Coverage
+#===================================================================
