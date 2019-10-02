@@ -2,10 +2,10 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 # project name and its corresponding specifications
 project(openrdm LANGUAGES CXX C)
-set(mydft_URL "https://github.com/edeprince3/RDMinoles")
-set(mydft_EMAIL "m_mostafanejad@hotmail.com")
-set(mydft_LICENSE "GNU Lesser General Public License, version 3 (LGPL-3.0)")
-set(mydfft_DESCRIPTION "Open-Source Quantum Chemistry")
+set(mydft_URL "https://github.com/SinaMostafanejad/OpenRDM")
+set(mydft_EMAIL "s_mostafanejad@fsu.edu")
+set(mydft_LICENSE "BSD-3 Clause")
+set(mydfft_DESCRIPTION "An open-source library for reduced-density matrix-based analysis and computation")
 #===================================================================
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -17,6 +17,9 @@ include(GNUInstallDirs)
 include(custom_color_messages)
 include(ExternalProject)
 #===================================================================
+set(OPENRDM_SOURCE_DIR ${PROJECT_SOURCE_DIR})
+set(OPENRDM_BINARY_DIR ${PROJECT_BINARY_DIR})
+set(OPENRDM_STAGING_PREFIX ${OPENRDM_BINARY_DIR}/stage)
 list(APPEND THIRDLIBLIST "armadillo")
 list(APPEND EXTLIBLIST "libxc;pybind;gau2grid")
 #===================================================================
@@ -53,6 +56,10 @@ add_subdirectory(src)
 add_subdirectory(external)
 if(WITH_ARMADILLO)
    add_dependencies(openrdm armadillo)
+   #if (ARMADILLO_FOUND)
+   #   target_include_directories(openrdm INTERFACE ${ARMADILLO_INCLUDE_DIRS})
+   #   target_link_libraries(openrdm INTERFACE ${ARMADILLO_LIBRARIES})
+   #endif()
 endif()
 #===================================================================
 # Only build tests if we are the top-level project
