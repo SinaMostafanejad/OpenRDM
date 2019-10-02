@@ -79,5 +79,8 @@ if (BUILD_TESTING AND (PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR))
   if(WITH_LIBXC)
      add_dependencies(mcpdft libxc)
   endif()
+  if(WITH_HDF5)
+     add_dependencies(mcpdft hdf5)
+  endif()
 endif()
 #===================================================================
