@@ -23,9 +23,8 @@ include(ExternalProject)
 set(OPENRDM_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 set(OPENRDM_BINARY_DIR ${PROJECT_BINARY_DIR})
 set(OPENRDM_STAGING_PREFIX ${OPENRDM_BINARY_DIR}/stage)
-list(APPEND THIRDLIBLIST "armadillo")
-list(APPEND EXTLIBLIST "libxc")
-
+list(APPEND THIRDLIBLIST "")
+list(APPEND EXTLIBLIST "")
 #===================================================================
 if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 	set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}" CACHE PATH "Install path" FORCE)
@@ -34,7 +33,8 @@ message(STATUS "${Red}OpenRDM install:${ColourReset} ${CMAKE_INSTALL_PREFIX}")
 option(CODE_COVERAGE "${Cyan}Enable coverage reporting${ColourReset}" OFF)
 option(BUILD_TESTING "${Cyan}Build the testing tree${ColourReset}" ON)
 option(WITH_ARMADILLO "${cyan}Build with Armadillo linear algebra library${ColourReset}" ON)
-option(WITH_LIBXC "${cyan}Build with Libxc density functional librart${ColourReset}" ON)
+option(WITH_LIBXC "${cyan}Build with Libxc density functional library${ColourReset}" OFF)
+option(WITH_HDF5 "${cyan}Build with HDF5${ColourReset}" ON)
 #===================================================================
 # Code Coverage Configuration
 add_library(coverage_config INTERFACE)
@@ -64,6 +64,9 @@ if(WITH_ARMADILLO)
 endif()
 if(WITH_LIBXC)
    add_dependencies(openrdm libxc)
+endif()
+if(WITH_HDF5)
+   add_dependencies(openrdm hdf5)
 endif()
 #===================================================================
 # Only build tests if we are the top-level project

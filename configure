@@ -13,8 +13,9 @@ mkdir build && cd build
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug \
       -DCODE_COVERAGE=ON \
       -DBUILD_TESTING=ON \
-      -DWITH_ARMADILLO=ON \
-      -DWITH_LIBXC=ON \
+      -DWITH_ARMADILLO=OFF \
+      -DWITH_LIBXC=OFF \
+      -DWITH_HDF5=ON \
       ..
       #-DLibxc_DIR=<Address of Libxc installation> for
       #find_package(Libxc) to be able to find it
@@ -22,8 +23,8 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug \
 cmake --build . --target clean
 cmake --build . --config Debug -- -j $(nproc)
 #============================ Install ==============================
-#make install #for Unix Makefiles
-ninja install #for Ninja
+make install #for Unix Makefiles
+#ninja install #for Ninja
 #============================ Test =================================
 ctest -V -j $(nproc)
 #ctest -j $(nproc) -M Experimental -T Start --track "Test Series" \
