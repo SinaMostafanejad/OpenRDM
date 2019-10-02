@@ -46,7 +46,7 @@ An ab initio library for strongly-correlated many-body systems based on multicon
 
 <b>OpenRDM</b> is a source-independent version of the original <a href="https://github.com/edeprince3/RDMinoles">RDM-INOLES</a> plugin to the Psi4 quantum chemistry program package. <b>OpenRDM</b> uses multiconfigurational pair-density functional theory (MCPDFT) to provide an accurate and efficient description of static and dynamical correlation effects.
 
-Please refer to the <b>OpenRDM</b>' <a href="https://sinamostafanejad.github.io/libRDMInoles/index.html">documentation</a> for further details about MCPDFT and its implementation.
+Please refer to the <b>OpenRDM</b> <a href="https://sinamostafanejad.github.io/libRDMInoles/index.html">documentation</a> for further details about MCPDFT and its implementation.
 <!-- Both translated and fully-translated versions of Slater and Vosko-Wilk-Nusair random-phase approximation expression III (SVWN3), Perdew-Burke-Ernzerhof (PBE), revised PBE (revPBE), Becke88 exchange and one-parameter correlation functional (BOP) and Becke and Lee-Yang-Parr (BLYP) on-top pair-density exchange-correlation functionals are available at the moment. In addition, the global-, double- and range-separated hybrid multi-configurational OTPDs such as wPBE and LRC-wPBE have also been implemented. However, this part of the project also is under the ongoing developement.
 
 In summary, RDM-INOLES:
@@ -67,6 +67,10 @@ We adopt CMake for the installation procedure and package management.
 At the moment, this prototype can be processed by running the configure script to obtain an MCPDFT energy correction on the H2 molecule at its equilibrium bond length adopting minimal basis and SVWN3 exchange-correlation functional.
 
 Please feel free to modify the configure script and/or CMakeLists.txt to address your needs.
+
+## KNOWN ISSUES
+
+Since Libxc and HDF5 are added as external projects and independent builds into the main <b>OpenRDM</b> project, using <i>WITH_LIBXC=ON</i> and <i>WITH_HDF5=ON</i> options at the configure step and within the configure script generates an "unknown build rule" error for Ninja generators. At the moment, the user has to adopt Unix Makefile's <i>make</i> as the build generator.
 
 ## REFERENCES
 
