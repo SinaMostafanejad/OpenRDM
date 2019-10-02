@@ -15,7 +15,7 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Debug \
       -DBUILD_TESTING=ON \
       -DWITH_ARMADILLO=OFF \
       -DWITH_LIBXC=OFF \
-      -DWITH_HDF5=ON \
+      -DWITH_HDF5=OFF \
       ..
       #-DLibxc_DIR=<Address of Libxc installation> for
       #find_package(Libxc) to be able to find it

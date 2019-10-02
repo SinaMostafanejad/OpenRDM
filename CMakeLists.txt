@@ -20,16 +20,21 @@ include(GNUInstallDirs)
 include(custom_color_messages)
 include(ExternalProject)
 #===================================================================
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}" CACHE PATH "Install path" FORCE)
+endif()
+message(STATUS "${Red}OpenRDM install:${ColourReset} ${CMAKE_INSTALL_PREFIX}")
 set(OPENRDM_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 set(OPENRDM_BINARY_DIR ${PROJECT_BINARY_DIR})
 set(OPENRDM_STAGING_PREFIX ${OPENRDM_BINARY_DIR}/stage)
 list(APPEND THIRDLIBLIST "")
 list(APPEND EXTLIBLIST "")
 #===================================================================
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-	set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}" CACHE PATH "Install path" FORCE)
-endif()
-message(STATUS "${Red}OpenRDM install:${ColourReset} ${CMAKE_INSTALL_PREFIX}")
+configure_file(
+   "${OPENRDM_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.h.in"
+   "${OPENRDM_SOURCE_DIR}/src/libmcpdft/${PROJECT_NAME}Config.h"
+)
+#===================================================================
 option(CODE_COVERAGE "${Cyan}Enable coverage reporting${ColourReset}" OFF)
 option(BUILD_TESTING "${Cyan}Build the testing tree${ColourReset}" ON)
 option(WITH_ARMADILLO "${cyan}Build with Armadillo linear algebra library${ColourReset}" ON)
