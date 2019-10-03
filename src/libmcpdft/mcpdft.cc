@@ -1,6 +1,7 @@
 #include <armadillo>
 #include <iostream>
 #include <fstream>
+#include <stdio.h>
 
 #include "mcpdft.h"
 
@@ -16,6 +17,7 @@ namespace mcpdft {
        read_energies_from_file(test_case); 
        read_opdm_from_file(test_case);
        // read_cmat_from_file();
+       print_banner();
    }
 
    void MCPDFT::build_rho() {
@@ -325,55 +327,55 @@ namespace mcpdft {
         // set_tr_rho1_a(temp_tr_rho1_a);
         // set_tr_rho1_b(temp_tr_rho1_b);
    }
-    void MCPDFT::build_opdm() {
-       // fetching the number of basis functions
-       int nbfs;
-       nbfs = get_nbfs();
+   void MCPDFT::build_opdm() {
+      // fetching the number of basis functions
+      int nbfs;
+      nbfs = get_nbfs();
  
-       // getting the AO->MO transformation matrix C
-       arma::mat ca(get_cmat());
-       arma::mat cb(get_cmat());
+      // getting the AO->MO transformation matrix C
+      arma::mat ca(get_cmat());
+      arma::mat cb(get_cmat());
  
-       // building the 1-electron reduced density matrices (1RDMs)
-       arma::mat D1a(nbfs, nbfs, arma::fill::zeros);
-       arma::mat D1b(nbfs, nbfs, arma::fill::zeros);
-       for (int mu = 0; mu < nbfs; mu++) { 
-           for (int nu = 0; nu < nbfs; nu++) { 
-               double duma = 0.0;
-               double dumb = 0.0;
-               for (int i = 0; i < nbfs/2; i++) { 
-                    duma += ca(mu, i) * ca(nu, i);
-                    dumb += cb(mu, i) * cb(nu, i);
-               }
- 	      D1a(mu, nu) = duma;
-               D1b(mu, nu) = dumb;
- 	  }
-       }
-       // D1a(0,0) = 1.0;
-       // D1b(0,0) = 1.0;
-       D1a.print("D1a = ");
-       D1b.print("D1b = ");
-       set_D1a(D1a);
-       set_D1b(D1b);
-    }
+      // building the 1-electron reduced density matrices (1RDMs)
+      arma::mat D1a(nbfs, nbfs, arma::fill::zeros);
+      arma::mat D1b(nbfs, nbfs, arma::fill::zeros);
+      for (int mu = 0; mu < nbfs; mu++) { 
+          for (int nu = 0; nu < nbfs; nu++) { 
+              double duma = 0.0;
+              double dumb = 0.0;
+              for (int i = 0; i < nbfs/2; i++) { 
+                   duma += ca(mu, i) * ca(nu, i);
+                   dumb += cb(mu, i) * cb(nu, i);
+              }
+             D1a(mu, nu) = duma;
+              D1b(mu, nu) = dumb;
+         }
+      }
+      // D1a(0,0) = 1.0;
+      // D1b(0,0) = 1.0;
+      D1a.print("D1a = ");
+      D1b.print("D1b = ");
+      set_D1a(D1a);
+      set_D1b(D1b);
+   }
  
-    void MCPDFT::build_tpdm() {
-       // fetching the number of basis functions
-       int nbfs  = get_nbfs();
-       int nbfs2 = nbfs * nbfs;
+   void MCPDFT::build_tpdm() {
+      // fetching the number of basis functions
+      int nbfs  = get_nbfs();
+      int nbfs2 = nbfs * nbfs;
  
-       arma::mat D1a(get_D1a());
-       arma::mat D1b(get_D1b());
+      arma::mat D1a(get_D1a());
+      arma::mat D1b(get_D1b());
  
-       arma::mat D2ab(nbfs2, nbfs2, arma::fill::zeros);
-       D2ab = arma::kron(D1a,D1b);
-       // D2ab.print("D2ab = ");
-       set_D2ab(D2ab);
-    }
+      arma::mat D2ab(nbfs2, nbfs2, arma::fill::zeros);
+      D2ab = arma::kron(D1a,D1b);
+      // D2ab.print("D2ab = ");
+      set_D2ab(D2ab);
+   }
  
-    size_t MCPDFT::get_npts() const { return npts_; }
-    int    MCPDFT::get_nbfs() const { return nbfs_; }
-    arma::vec MCPDFT::get_w() const { return w_; }
+   size_t MCPDFT::get_npts() const { return npts_; }
+   int    MCPDFT::get_nbfs() const { return nbfs_; }
+   arma::vec MCPDFT::get_w() const { return w_; }
    arma::vec MCPDFT::get_x() const { return x_; }
    arma::vec MCPDFT::get_y() const { return y_; }
    arma::vec MCPDFT::get_z() const { return z_; }
@@ -415,4 +417,23 @@ namespace mcpdft {
    void MCPDFT::set_pi(const arma::vec &pi) { pi_ = pi; }
    void MCPDFT::set_R(const arma::vec &R) { R_ = R; }
 
+   void MCPDFT::print_banner() const {
+      printf("\n******************************************************************\n");
+      printf("*                                                                *\n");
+      printf("*                          OpenRDM:                              *\n");
+      printf("*                                                                *\n");
+      printf("*                 An open-source library for                     *\n");
+      printf("*    reduced-density matrix-based analysis and computation       *\n");
+      printf("*                                                                *\n");
+      printf("*                     Mohammad Mostafanejad                      *\n");
+      printf("*                   Florida State University                     *\n");
+      printf("*                                                                *\n");
+      printf("******************************************************************\n");
+
+
+      printf("\n           Please cite the following article(s):\n\n");
+
+      printf("    # M. Mostafanejad and A. E. DePrince III\n");
+      printf("      J. Chem. Theory Comput. 15, 290-302 (2019).\n");
+   }
 }

@@ -90,6 +90,7 @@ class MCPDFT {
       void read_energies_from_file(std::string test_case);
       void read_opdm_from_file(std::string test_case);
       void read_cmat_from_file(std::string test_case);
+      void print_banner() const;
       //==========================================// end of utility functions
 
    private:
