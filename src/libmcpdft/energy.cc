@@ -2,6 +2,7 @@
 #include <sys/sysinfo.h>
 #include "energy.h"
 #include "mcpdft.h"
+#include "diskRW.h"
 #include "libMem.h"
 #include "openrdmConfig.h"
 #ifdef WITH_LIBXC
@@ -96,6 +97,9 @@ namespace mcpdft {
 
       delete func;
 #endif
+
+      DiskRW dskrw;
+      dskrw.read_opdm(D1a,D1b);
 
       printf("------------------------------------------\n");
       printf("   Classical energy = %-20.12lf\n", eclass);

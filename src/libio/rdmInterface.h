@@ -1,6 +1,8 @@
 #ifndef RDMINTERFACE_H
 #define RDMINTERFACE_H
 
+#include <armadillo>
+
 namespace mcpdft {
 
 class IRDMInterface {
@@ -12,7 +14,8 @@ class IRDMInterface {
       virtual void read_rdms() = 0;
 
       /// Read 1RDM into memory/disk
-      virtual void read_opdm() = 0;
+      virtual void read_opdm(const arma::mat &D1a,
+		             const arma::mat &D1b) = 0;
 
       /// Read 1RDM into memory/disk
       virtual void read_tpdm() = 0;

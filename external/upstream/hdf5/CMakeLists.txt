@@ -29,14 +29,14 @@ if(WITH_HDF5)
       set(HDF5_DIR ${OPENRDM_STAGING_DIR}/hdf5/share/cmake/hdf5 CACHE PATH "path to internally built HDF5Config.cmake" FORCE)
       set(HDF5_INSTALL_DIR  ${OPENRDM_STAGING_PREFIX}/hdf5 CACHE PATH "path to hdf5 root directory" FORCE)
       set(HDF5_INCLUDE_DIRS ${OPENRDM_STAGING_PREFIX}/hdf5/include CACHE PATH "path to hdf5 include directory" FORCE)
-      set(HDF5_LIBRARIES    ${OPENRDM_STAGING_PREFIX}/hdf5/lib/libhdf5_cpp.so CACHE PATH "path to hdf5 library directory" FORCE)
-      set(HDF5_HL_LIBRARIES ${OPENRDM_STAGING_PREFIX}/hdf5/lib/libhdf5_hl_cpp.so CACHE PATH "path to hdf5 library directory" FORCE)
+      set(HDF5_LIBRARIES    ${OPENRDM_STAGING_PREFIX}/hdf5/lib/libhdf5.a CACHE PATH "path to hdf5 library directory" FORCE)
+      set(HDF5_HL_LIBRARIES ${OPENRDM_STAGING_PREFIX}/hdf5/lib/libhdf5_hl.a CACHE PATH "path to hdf5 library directory" FORCE)
       message(STATUS "${Cyan}HDF5 ${HDF5_VERSION} is found!${ColourReset}")
       message(STATUS "${Cyan}The list of HDF5 libraries to be linked:${ColourReset} ${HDF5_LIBRARIES}")
       message(STATUS "${Cyan}The list of HDF5 include directories:${ColourReset} ${HDF5_INCLUDE_DIRS}")
       if(HDF5_FOUND)
          target_include_directories(openrdm INTERFACE 
-                                    $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/upstream/hdf5_src/c++/src>
+                                    $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/upstream/hdf5_src/src>
                                     $<INSTALL_INTERFACE:${HDF5_INCLUDE_DIRS}>
            			   )
          target_link_libraries(openrdm INTERFACE ${HDF5_LIBRARIES})
