@@ -8,3 +8,5 @@ target_sources(openrdm
 )
 
 target_include_directories(openrdm INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+
+target_link_libraries(openrdm INTERFACE ${HDF5_LIBRARIES} dl)
