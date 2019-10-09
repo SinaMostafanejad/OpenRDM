@@ -99,7 +99,7 @@ namespace mcpdft {
 #endif
 
       DiskRW dskrw;
-      dskrw.read_opdm(D1a,D1b);
+      dskrw.write_opdm(D1a,D1b);
 
       printf("------------------------------------------\n");
       printf("   Classical energy = %-20.12lf\n", eclass);

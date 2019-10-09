@@ -22,8 +22,8 @@ namespace mcpdft {
            void read_rdms();
 
            /// Read 1RDM into disk
-           void read_opdm(const arma::mat &D1a,
-		          const arma::mat &D1b);
+           void read_opdm(arma::mat &D1a,
+		          arma::mat &D1b);
 
            /// Read 1RDM into disk
            void read_tpdm();
@@ -32,7 +32,8 @@ namespace mcpdft {
            void write_rdms();
 
            /// Write 1RDM into disk
-           void write_opdm();
+           void write_opdm(const arma::mat &D1a,
+			   const arma::mat &D1b);
 
            /// Write 2RDM into disk
            void write_tpdm();
