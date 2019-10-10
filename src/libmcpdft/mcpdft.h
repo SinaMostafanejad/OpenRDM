@@ -139,26 +139,80 @@ class MCPDFT {
       /// alpha density vector rho_a(r)
       arma::vec rho_a_;
 
+      /// x-derivative of the alpha density vector rho_a(r)
+      arma::vec rho_a_x_;
+
+      /// y-derivative of the alpha density vector rho_a(r)
+      arma::vec rho_a_y_;
+
+      /// z-derivative of the alpha density vector rho_a(r)
+      arma::vec rho_a_z_;
+
       /// beta density vector rho_b(r)
       arma::vec rho_b_;
+
+      /// The x-derivative of the beta density vector rho_b(r)
+      arma::vec rho_b_x_;
+
+      /// The y-derivative of the beta density vector rho_b(r)
+      arma::vec rho_b_y_;
+
+      /// The z-derivative of the beta density vector rho_b(r)
+      arma::vec rho_b_z_;
 
       /// total density vector rho_(r)
       arma::vec rho_;
 
-      /// (fully-)translated alpha density vector tr_rho_a(r)
+      /// The (fully-)translated alpha density vector tr_rho_a(r)
       arma::vec tr_rho_a_;
 
-      /// (fully-)translated beta density vector tr_rho_b(r)
+      /// The x-derivative of the (fully-)translated alpha density vector tr_rho_a(r)
+      arma::vec tr_rho_a_x_;
+
+      /// The y-derivative of the (fully-)translated alpha density vector tr_rho_a(r)
+      arma::vec tr_rho_a_y_;
+
+      /// The z-derivative of the (fully-)translated alpha density vector tr_rho_a(r)
+      arma::vec tr_rho_a_z_;
+
+      /// The (fully-)translated beta density vector tr_rho_b(r)
       arma::vec tr_rho_b_;
 
-      /// (fully-)translated total density vector tr_rho_(r)
+      /// The x-derivative of the (fully-)translated beta density vector tr_rho_b(r)
+      arma::vec tr_rho_b_x_;
+
+      /// The y-derivative of the (fully-)translated beta density vector tr_rho_b(r)
+      arma::vec tr_rho_b_y_;
+
+      /// The z-derivative of the (fully-)translated beta density vector tr_rho_b(r)
+      arma::vec tr_rho_b_z_;
+
+      /// The (fully-)translated total density vector tr_rho_(r)
       arma::vec tr_rho_;
 
       /// The on-top pair-density vector pi_(r)
       arma::vec pi_;
 
+      /// The x-derivative of the on-top pair-density vector pi_(r)
+      arma::vec pi_x_;
+
+      /// The y-derivative of the on-top pair-density vector pi_(r)
+      arma::vec pi_y_;
+
+      /// The z-derivative of the on-top pair-density vector pi_(r)
+      arma::vec pi_z_;
+
       /// The R(r) factor
       arma::vec R_;
+
+      /// The (fully-)translated sigma alpha-alpha vector tr_sigma_aa(r)
+      arma::vec tr_sigma_aa_;
+
+      /// The (fully-)translated sigma alpha-beta vector tr_sigma_ab(r)
+      arma::vec tr_sigma_ab_;
+
+      /// The (fully-)translated sigma beta-beta vector tr_sigma_bb(r)
+      arma::vec tr_sigma_bb_;
 };
 
 }

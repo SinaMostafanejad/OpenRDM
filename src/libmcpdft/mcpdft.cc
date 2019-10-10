@@ -12,12 +12,12 @@ namespace mcpdft {
    MCPDFT::~MCPDFT() {}
 
    void MCPDFT::common_init(std::string test_case) {
+       print_banner();
        read_grids_from_file(test_case);
        read_orbitals_from_file(test_case);
        read_energies_from_file(test_case); 
        read_opdm_from_file(test_case);
        // read_cmat_from_file();
-       print_banner();
    }
 
    void MCPDFT::build_rho() {
@@ -420,7 +420,7 @@ namespace mcpdft {
    void MCPDFT::print_banner() const {
       printf("\n******************************************************************\n");
       printf("*                                                                *\n");
-      printf("*                          OpenRDM:                              *\n");
+      printf("*                           OpenRDM:                             *\n");
       printf("*                                                                *\n");
       printf("*                 An open-source library for                     *\n");
       printf("*    reduced-density matrix-based analysis and computation       *\n");
