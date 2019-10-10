@@ -32,4 +32,6 @@ ctest -V -j $(nproc)
 #      -T Build \
 #      -T Test \
 #      -T Coverage
-#===================================================================
+#======================= Generate Diagram ==========================
+#cmake --graphvis=diagram.dot ..
+#dot -T png diagram.dot -o diagram.png
