@@ -43,7 +43,6 @@ namespace mcpdft {
 
        double exc = 0.0;
        for (int p = 0; p < npts; p++) {
-      
            double rhoa = rho_a(p);
            double rhob = rho_b(p);
            double rhoa_43 = pow( rhoa, 4.0/3.0); 
@@ -58,11 +57,10 @@ namespace mcpdft {
            double Fsb = 1.0 + KAPPA - KAPPA * pow( (1.0 + (MU * pow(Sb,2.0)) / KAPPA ), -1.0 );
           
            auto E = [](double rhos, double Fss) -> double{
-   
                     double temp = -0.75 * pow(3.0, 1.0/3.0) * pow(M_PI, 2.0/3.0) * pow(rhos,4.0/3.0) * Fss / M_PI;
                     return temp;
            };
-    
+
            double EX_GGAa = 0.5 * E(2.0*rhoa,Fsa);
            double EX_GGAb = 0.5 * E(2.0*rhob,Fsb);
           
@@ -162,7 +160,6 @@ namespace mcpdft {
 
        double exc = 0.0;
        for (int p = 0; p < npts; p++) {
-   
            double rhoa = rho_a(p);
            double rhob = rho_b(p);
    
@@ -175,7 +172,6 @@ namespace mcpdft {
    
            if ( rho > tol ) {
               if ( rhoa < tol ){
-   
                  rho = rhob;
                  sigmabb = std::max(0.0,sigmabb);
                  sigma = sigmabb;
@@ -201,9 +197,7 @@ namespace mcpdft {
                  double zk = rhob * (-0.310907e-1 * t18 + 0.1554534543482745e-1 * t49);
    
                  exc += rho * zk * W(p);
-   
               }else if ( rhob < tol ){
-   
                        rho = rhoa;
                        sigmaaa = std::max(0.0,sigmaaa);
                        sigma = sigmaaa;
@@ -229,9 +223,7 @@ namespace mcpdft {
                        double zk = rhoa * (-0.310907e-1 * t18 + 0.1554534543482745e-1 * t49);
    
                        exc += rho * zk * W(p);
-   
               }else{
-   
                    double t4 = 1/rho;
                    double t5 = pow( t4, 1.0/3.0);
                    double t7 = 1.0 + 0.1325688999052018 * t5;
