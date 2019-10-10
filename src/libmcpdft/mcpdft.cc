@@ -16,9 +16,10 @@ namespace mcpdft {
        read_grids_from_file(test_case);
        read_orbitals_from_file(test_case);
        read_energies_from_file(test_case);
-       if(testcase == "h2_tpbe_sto3g")
-	  is_gga_ = TRUE;
-	  read_gradients_from_file(test_case)
+       if(test_case == "h2_tpbe_sto3g") {
+	  is_gga_ = true;
+	  read_gradients_from_file(test_case);
+       }
        read_opdm_from_file(test_case);
        // read_cmat_from_file();
    }
@@ -26,16 +27,13 @@ namespace mcpdft {
    void MCPDFT::build_rho() {
       int nbfs = get_nbfs();
       size_t npts = get_npts();
-
       arma::mat phi(get_phi());
       arma::mat D1a(get_D1a());
       arma::mat D1b(get_D1b());
       arma::vec W(get_w());
-      
       arma::vec rhoa(npts, arma::fill::zeros);
       arma::vec rhob(npts, arma::fill::zeros);
       arma::vec rho(npts, arma::fill::zeros);
-
       double dum_a = 0.0;
       double dum_b = 0.0;
       double dum_tot = 0.0;
@@ -70,12 +68,12 @@ namespace mcpdft {
           arma::mat phi_x(get_phi_x());
           arma::mat phi_y(get_phi_y());
           arma::mat phi_z(get_phi_z());
-          rho_a_x(npts, arma::fill::zeros);
-          rho_b_x(npts, arma::fill::zeros);
-          rho_a_y(npts, arma::fill::zeros);
-          rho_b_y(npts, arma::fill::zeros);
-          rho_a_z(npts, arma::fill::zeros);
-          rho_b_z(npts, arma::fill::zeros);
+	  arma::vec rho_a_x(npts, arma::fill::zeros);
+          arma::vec rho_b_x(npts, arma::fill::zeros);
+          arma::vec rho_a_y(npts, arma::fill::zeros);
+          arma::vec rho_b_y(npts, arma::fill::zeros);
+          arma::vec rho_a_z(npts, arma::fill::zeros);
+          arma::vec rho_b_z(npts, arma::fill::zeros);
           arma::vec sigma_aa(npts, arma::fill::zeros);
           arma::vec sigma_ab(npts, arma::fill::zeros);
           arma::vec sigma_bb(npts, arma::fill::zeros);
@@ -88,12 +86,12 @@ namespace mcpdft {
               double dumb_z = 0.0;
               for (int sigma = 0; sigma < nbfs; sigma++) {
                   for (int nu = 0; nu < nbfs; nu++) {
-                      duma_x += ( phi_x(p)(sigma) * phi(p)(nu) + phi(p)(sigma) * phi_x(p)(nu) ) * D1a(sigma)(nu);
-                      dumb_x += ( phi_x(p)(sigma) * phi(p)(nu) + phi(p)(sigma) * phi_x(p)(nu) ) * D1b(sigma)(nu);
-                      duma_y += ( phi_y(p)(sigma) * phi(p)(nu) + phi(p)(sigma) * phi_y(p)(nu) ) * D1a(sigma)(nu);
-                      dumb_y += ( phi_y(p)(sigma) * phi(p)(nu) + phi(p)(sigma) * phi_y(p)(nu) ) * D1b(sigma)(nu);
-                      duma_z += ( phi_z(p)(sigma) * phi(p)(nu) + phi(p)(sigma) * phi_z(p)(nu) ) * D1a(sigma)(nu);
-                      dumb_z += ( phi_z(p)(sigma) * phi(p)(nu) + phi(p)(sigma) * phi_z(p)(nu) ) * D1b(sigma)(nu);
+                      duma_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1a(sigma, nu);
+                      dumb_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1b(sigma, nu);
+                      duma_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1a(sigma, nu);
+                      dumb_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1b(sigma, nu);
+                      duma_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1a(sigma, nu);
+                      dumb_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1b(sigma, nu);
                   }
               }
               rho_a_x(p) = duma_x;
@@ -115,6 +113,7 @@ namespace mcpdft {
 	  set_sigma_aa(sigma_aa);
 	  set_sigma_ab(sigma_ab);
 	  set_sigma_bb(sigma_bb);
+      }
    }
 
    void MCPDFT::build_pi(const arma::mat &D2ab) {
@@ -154,20 +153,20 @@ namespace mcpdft {
                  for (int nu = 0; nu < nbfs; nu++) {
                      for (int lambda = 0; lambda < nbfs; lambda++) {
                          for (int sigma = 0; sigma < nbfs; sigma++) {
-                             dum_x += ( phi_x(p)(mu) * phi(p)(lambda) * phi(p)(sigma) * phi(p)(nu) +
-                                        phi(p)(mu) * phi_x(p)(lambda) * phi(p)(sigma) * phi(p)(nu) +
-                                        phi(p)(mu) * phi(p)(lambda) * phi_x(p)(sigma) * phi(p)(nu) +
-                                        phi(p)(mu) * phi(p)(lambda) * phi(p)(sigma) * phi_x(p)(nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                             dum_x += ( phi_x(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                        phi(p, mu) * phi_x(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                        phi(p, mu) * phi(p, lambda) * phi_x(p, sigma) * phi(p, nu) +
+                                        phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_x(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
 
-                             dum_y += ( phi_y(p)(mu) * phi(p)(lambda) * phi(p)(sigma) * phi(p)(nu) +
-                                        phi(p)(mu) * phi_y(p)(lambda) * phi(p)(sigma) * phi(p)(nu) +
-                                        phi(p)(mu) * phi(p)(lambda) * phi_y(p)(sigma) * phi(p)(nu) +
-                                        phi(p)(mu) * phi(p)(lambda) * phi(p)(sigma) * phi_y(p)(nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                             dum_y += ( phi_y(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                        phi(p, mu) * phi_y(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                        phi(p, mu) * phi(p, lambda) * phi_y(p, sigma) * phi(p, nu) +
+                                        phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_y(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
 
-                             dum_z += ( phi_z(p)(mu) * phi(p)(lambda) * phi(p)(sigma) * phi(p)(nu) +
-                                        phi(p)(mu) * phi_z(p)(lambda) * phi(p)(sigma) * phi(p)(nu) +
-                                        phi(p)(mu) * phi(p)(lambda) * phi_z(p)(sigma) * phi(p)(nu) +
-                                        phi(p)(mu) * phi(p)(lambda) * phi(p)(sigma) * phi_z(p)(nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                             dum_z += ( phi_z(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                        phi(p, mu) * phi_z(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                        phi(p, mu) * phi(p, lambda) * phi_z(p, sigma) * phi(p, nu) +
+                                        phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_z(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
                          }
                      }
                  }
@@ -185,11 +184,9 @@ namespace mcpdft {
    void MCPDFT::build_R() {
         double tol = 1.0e-20;
         size_t npts = get_npts();
-
         arma::vec temp(npts);
         arma::vec pi(get_pi());
         arma::vec rho(get_rho());
-
         for (int p = 0; p < npts; p++) {
             temp(p) = 4.0 * pi(p) / ( rho(p) * rho(p) );
         }
@@ -199,19 +196,16 @@ namespace mcpdft {
    void MCPDFT::translate() {
      double tol = 1.0e-20;
      size_t npts = get_npts();
-
      arma::vec rho_vec(get_rho());
      arma::vec pi_vec(get_pi());
      arma::vec R_vec(get_R());
      arma::vec W(get_w());
      arma::vec tr_rhoa(npts);
      arma::vec tr_rhob(npts);
-
      double dum_a = 0.0;
      double dum_b = 0.0;
      double dum_tot = 0.0;
      for (int p = 0; p < npts; p++) {
-
          double rho = rho_vec(p);
          double pi = pi_vec(p);
          double zeta = 0.0;
@@ -243,78 +237,59 @@ namespace mcpdft {
      printf("\n");
 
      if ( is_gga_ ) {
-         arma::vec rho_p(get_rho());
-
-         tr_rho_a_x(npts, arma::fill::zeros);
-         tr_rho_b_x(npts, arma::fill::zeros);
-
-         tr_rho_a_y(npts, arma::fill::zeros);
-         tr_rho_b_y(npts, arma::fill::zeros);
-
-         tr_rho_a_z(npts, arma::fill::zeros);
-         tr_rho_b_z(npts, arma::fill::zeros);
-
+         arma::vec rho_a_x(get_rhoa_x());
+         arma::vec rho_a_y(get_rhoa_y());
+         arma::vec rho_a_z(get_rhoa_z());
+         arma::vec rho_b_x(get_rhob_x());
+         arma::vec rho_b_y(get_rhob_y());
+         arma::vec rho_b_z(get_rhob_z());
+	 arma::vec tr_rho_a_x(npts,  arma::fill::zeros);
+         arma::vec tr_rho_b_x(npts,  arma::fill::zeros);
+         arma::vec tr_rho_a_y(npts,  arma::fill::zeros);
+         arma::vec tr_rho_b_y(npts,  arma::fill::zeros);
+         arma::vec tr_rho_a_z(npts,  arma::fill::zeros);
+         arma::vec tr_rho_b_z(npts,  arma::fill::zeros);
          arma::vec tr_sigma_aa(npts, arma::fill::zeros);
          arma::vec tr_sigma_ab(npts, arma::fill::zeros);
          arma::vec tr_sigma_bb(npts, arma::fill::zeros);
-
          for (int p = 0; p < npts; p++) {
-             double rho = rho_p(p);
-             double pi = pi_p(p);
-             double rho_x = rho_a_xp(p) + rho_b_xp(p);
-             double rho_y = rho_a_yp(p) + rho_b_yp(p);
-             double rho_z = rho_a_zp(p) + rho_b_zp(p);
-
+             double rho = rho_vec(p);
+             double pi = pi_vec(p);
+             double rho_x = rho_a_x(p) + rho_b_x(p);
+             double rho_y = rho_a_y(p) + rho_b_y(p);
+             double rho_z = rho_a_z(p) + rho_b_z(p);
              double zeta = 0.0;
              double R = 0.0;
-
              if ( !(rho < tol) && !(pi < 0.0) ) {
-
-                R = R_p(p);
-
+                R = R_vec(p);
                 if ( (1.0 - R) > tol )  {
-
                    zeta = sqrt(1.0 - R);
-
-                   // tr_rho_a_xp(p) =  zeta_x * (rho/2.0) + (1.0 + zeta) * (rho_x/2.0);
-                   // tr_rho_b_xp(p) = -zeta_x * (rho/2.0) + (1.0 - zeta) * (rho_x/2.0);
-
-                   // tr_rho_a_yp(p) =  zeta_y * (rho/2.0) + (1.0 + zeta) * (rho_y/2.0);
-                   // tr_rho_b_yp(p) = -zeta_y * (rho/2.0) + (1.0 - zeta) * (rho_y/2.0);
-
-                   // tr_rho_a_zp(p) =  zeta_z * (rho/2.0) + (1.0 + zeta) * (rho_z/2.0);
-                   // tr_rho_b_zp(p) = -zeta_z * (rho/2.0) + (1.0 - zeta) * (rho_z/2.0);
-
                 }else{
-
                      zeta = 0.0;
                 }
+                tr_rho_a_x(p) = (1.0 + zeta) * (rho_x/2.0);
+                tr_rho_b_x(p) = (1.0 - zeta) * (rho_x/2.0);
 
-                tr_rho_a_xp(p) = (1.0 + zeta) * (rho_x/2.0);
-                tr_rho_b_xp(p) = (1.0 - zeta) * (rho_x/2.0);
+                tr_rho_a_y(p) = (1.0 + zeta) * (rho_y/2.0);
+                tr_rho_b_y(p) = (1.0 - zeta) * (rho_y/2.0);
 
-                tr_rho_a_yp(p) = (1.0 + zeta) * (rho_y/2.0);
-                tr_rho_b_yp(p) = (1.0 - zeta) * (rho_y/2.0);
-
-                tr_rho_a_zp(p) = (1.0 + zeta) * (rho_z/2.0);
-                tr_rho_b_zp(p) = (1.0 - zeta) * (rho_z/2.0);
-
+                tr_rho_a_z(p) = (1.0 + zeta) * (rho_z/2.0);
+                tr_rho_b_z(p) = (1.0 - zeta) * (rho_z/2.0);
              }else {
-
-                   tr_rho_a_xp(p) = 0.0;
-                   tr_rho_b_xp(p) = 0.0;
-
-                   tr_rho_a_yp(p) = 0.0;
-                   tr_rho_b_yp(p) = 0.0;
-
-                   tr_rho_a_zp(p) = 0.0;
-                   tr_rho_b_zp(p) = 0.0;
+                   tr_rho_a_x(p) = 0.0;
+                   tr_rho_b_x(p) = 0.0;
+                   tr_rho_a_y(p) = 0.0;
+                   tr_rho_b_y(p) = 0.0;
+                   tr_rho_a_z(p) = 0.0;
+                   tr_rho_b_z(p) = 0.0;
              }
-
-             tr_sigma_aap(p) = (tr_rho_a_xp(p) * tr_rho_a_xp(p)) + (tr_rho_a_yp(p) * tr_rho_a_yp(p)) + (tr_rho_a_zp(p) * tr_rho_a_zp(p));
-             tr_sigma_abp(p) = (tr_rho_a_xp(p) * tr_rho_b_xp(p)) + (tr_rho_a_yp(p) * tr_rho_b_yp(p)) + (tr_rho_a_zp(p) * tr_rho_b_zp(p));
-             tr_sigma_bbp(p) = (tr_rho_b_xp(p) * tr_rho_b_xp(p)) + (tr_rho_b_yp(p) * tr_rho_b_yp(p)) + (tr_rho_b_zp(p) * tr_rho_b_zp(p));
+             tr_sigma_aa(p) = (tr_rho_a_x(p) * tr_rho_a_x(p)) + (tr_rho_a_y(p) * tr_rho_a_y(p)) + (tr_rho_a_z(p) * tr_rho_a_z(p));
+             tr_sigma_ab(p) = (tr_rho_a_x(p) * tr_rho_b_x(p)) + (tr_rho_a_y(p) * tr_rho_b_y(p)) + (tr_rho_a_z(p) * tr_rho_b_z(p));
+             tr_sigma_bb(p) = (tr_rho_b_x(p) * tr_rho_b_x(p)) + (tr_rho_b_y(p) * tr_rho_b_y(p)) + (tr_rho_b_z(p) * tr_rho_b_z(p));
          }
+	 set_tr_sigma_aa(tr_sigma_aa);
+	 set_tr_sigma_ab(tr_sigma_ab);
+	 set_tr_sigma_bb(tr_sigma_bb);
      }
    }
  
@@ -542,6 +517,7 @@ namespace mcpdft {
       set_D2ab(D2ab);
    }
  
+   bool MCPDFT::is_gga() const { return is_gga_; }
    size_t MCPDFT::get_npts() const { return npts_; }
    int    MCPDFT::get_nbfs() const { return nbfs_; }
    arma::vec MCPDFT::get_w() const { return w_; }
@@ -559,7 +535,13 @@ namespace mcpdft {
    arma::mat MCPDFT::get_D1b()  const { return D1b_ ; }
    arma::mat MCPDFT::get_D2ab()  const { return D2ab_ ; }
    arma::vec MCPDFT::get_rhoa() const { return rho_a_; }
+   arma::vec MCPDFT::get_rhoa_x() const { return rho_a_x_; }
+   arma::vec MCPDFT::get_rhoa_y() const { return rho_a_y_; }
+   arma::vec MCPDFT::get_rhoa_z() const { return rho_a_z_; }
    arma::vec MCPDFT::get_rhob() const { return rho_b_; }
+   arma::vec MCPDFT::get_rhob_x() const { return rho_b_x_; }
+   arma::vec MCPDFT::get_rhob_y() const { return rho_b_y_; }
+   arma::vec MCPDFT::get_rhob_z() const { return rho_b_z_; }
    arma::vec MCPDFT::get_rho() const { return rho_; }
    arma::vec MCPDFT::get_tr_rhoa() const { return tr_rho_a_; }
    arma::vec MCPDFT::get_tr_rhob() const { return tr_rho_b_; }

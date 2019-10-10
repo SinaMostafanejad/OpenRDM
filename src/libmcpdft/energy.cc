@@ -4,6 +4,7 @@
 #include "mcpdft.h"
 #include "libMem.h"
 #include "openrdmConfig.h"
+#include <string>
 #ifdef WITH_LIBXC
    #include <xc.h>
 #else
@@ -14,6 +15,7 @@ namespace mcpdft {
 
    // calculates the MCPDFT energy
    double mcpdft_energy(MCPDFT *mc,
+		        std::string &functional,
                         const arma::mat &D1a,
                         const arma::mat &D1b,
                         const arma::mat &D2ab) {
@@ -48,6 +50,14 @@ namespace mcpdft {
       size_t npts = mc->get_npts();
       arma::vec tr_rhoa(mc->get_tr_rhoa());
       arma::vec tr_rhob(mc->get_tr_rhob());
+      arma::vec tr_sigma_aa(npts, arma::fill::zeros);
+      arma::vec tr_sigma_ab(npts, arma::fill::zeros);
+      arma::vec tr_sigma_bb(npts, arma::fill::zeros);
+      if(mc->is_gga()) {
+         tr_sigma_aa = mc->get_tr_sigma_aa();
+         tr_sigma_ab = mc->get_tr_sigma_ab();
+         tr_sigma_bb = mc->get_tr_sigma_bb();
+      }
 #ifdef WITH_LIBXC
       arma::vec tr_rho(tr_rhoa);
       arma::vec ex(npts);
@@ -91,8 +101,13 @@ namespace mcpdft {
 
       double Ex = 0.0;
       double Ec = 0.0;
-      Ex = func->EX_LSDA(mc, tr_rhoa, tr_rhob);
-      Ec = func->EC_VWN3(mc, tr_rhoa, tr_rhob);
+      if (functional == "SVWN") {
+          Ex = func->EX_LSDA(mc, tr_rhoa, tr_rhob);
+          Ec = func->EC_VWN3(mc, tr_rhoa, tr_rhob);
+      }else{
+          Ex = func->EX_PBE(mc, tr_rhoa, tr_rhob, tr_sigma_aa, tr_sigma_bb);
+          Ec = func->EC_PBE(mc, tr_rhoa, tr_rhob, tr_sigma_aa, tr_sigma_ab, tr_sigma_bb);
+      }
 
       delete func;
 #endif

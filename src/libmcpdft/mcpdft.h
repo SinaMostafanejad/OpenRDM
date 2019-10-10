@@ -38,6 +38,7 @@ class MCPDFT {
       void fully_translate();
 
       //=============== accessors ===============//
+      bool is_gga() const;
       size_t get_npts() const;
       int    get_nbfs() const;
       arma::vec get_w() const;
