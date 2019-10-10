@@ -61,6 +61,39 @@ namespace mcpdft {
        file.close();
    }
 
+   void MCPDFT::read_gradients_from_file(std::string test_case) {
+       std::string grads_fname  = std::string("./")
+	                        + test_case
+			        + std::string("/gradients.txt");
+       std::ifstream file;
+
+       file.open(grads_fname);
+
+       if (!file)
+          std::cout << "Error opening file.\n";
+       else {
+            size_t npts = 0;
+            int    nbfs = 0;
+            file >> npts >> nbfs;
+            set_npts(npts);
+            set_nbfs(nbfs);
+
+            arma::mat phi_x(npts, nbfs, arma::fill::zeros);
+            arma::mat phi_y(npts, nbfs, arma::fill::zeros);
+            arma::mat phi_z(npts, nbfs, arma::fill::zeros);
+
+            for (int p = 0; p < npts; p++)
+                for (int mu = 0; mu < nbfs; mu++)
+                    file >> phi_x(p, mu) >> phi_y(p, mu) >> phi_z(p, mu);
+
+            set_phi_x(phi_x);
+            set_phi_y(phi_y);
+            set_phi_z(phi_z);
+       }
+       file.close();
+   }
+
+
    void MCPDFT::read_energies_from_file(std::string test_case) {
        std::string eref_fname  = std::string("./")
 	                       + test_case

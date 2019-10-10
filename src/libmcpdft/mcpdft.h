@@ -45,6 +45,9 @@ class MCPDFT {
       arma::vec get_y() const;
       arma::vec get_z() const;
       arma::mat get_phi() const;
+      arma::mat get_phi_x() const;
+      arma::mat get_phi_y() const;
+      arma::mat get_phi_z() const;
       double get_eref() const;
       double get_eclass() const;
       arma::mat get_cmat() const;
@@ -52,13 +55,31 @@ class MCPDFT {
       arma::mat get_D1b() const;
       arma::mat get_D2ab() const;
       arma::vec get_rhoa() const;
+      arma::vec get_rhoa_x() const;
+      arma::vec get_rhoa_y() const;
+      arma::vec get_rhoa_z() const;
       arma::vec get_rhob() const;
+      arma::vec get_rhob_x() const;
+      arma::vec get_rhob_y() const;
+      arma::vec get_rhob_z() const;
       arma::vec get_rho() const;
       arma::vec get_tr_rhoa() const;
+      arma::vec get_tr_rhoa_x() const;
+      arma::vec get_tr_rhoa_y() const;
+      arma::vec get_tr_rhoa_z() const;
       arma::vec get_tr_rhob() const;
+      arma::vec get_tr_rhob_x() const;
+      arma::vec get_tr_rhob_y() const;
+      arma::vec get_tr_rhob_z() const;
       arma::vec get_tr_rho() const;
       arma::vec get_pi() const;
       arma::vec get_R() const;
+      arma::vec get_sigma_aa() const;
+      arma::vec get_sigma_ab() const;
+      arma::vec get_sigma_bb() const;
+      arma::vec get_tr_sigma_aa() const;
+      arma::vec get_tr_sigma_ab() const;
+      arma::vec get_tr_sigma_bb() const;
 
       void set_npts(const size_t npts);
       void set_nbfs(const int nbfs);
@@ -67,6 +88,9 @@ class MCPDFT {
       void set_y(const arma::vec &y);
       void set_z(const arma::vec &z);
       void set_phi(const arma::mat &phi);
+      void set_phi_x(const arma::mat &phi_x);
+      void set_phi_y(const arma::mat &phi_y);
+      void set_phi_z(const arma::mat &phi_z);
       void set_eref(const double eref);
       void set_eclass(const double eclass);
       void set_cmat(const arma::mat &cmat);
@@ -74,19 +98,41 @@ class MCPDFT {
       void set_D1b(const arma::mat &D1b);
       void set_D2ab(const arma::mat &D2ab);
       void set_rhoa(const arma::vec &rhoa);
+      void set_rhoa_x(const arma::vec &rhoa_x);
+      void set_rhoa_y(const arma::vec &rhoa_y);
+      void set_rhoa_z(const arma::vec &rhoa_z);
       void set_rhob(const arma::vec &rhob);
+      void set_rhob_x(const arma::vec &rhob_x);
+      void set_rhob_y(const arma::vec &rhob_y);
+      void set_rhob_z(const arma::vec &rhob_z);
       void set_rho(const arma::vec &rho);
       void set_tr_rhoa(const arma::vec &tr_rhoa);
+      void set_tr_rhoa_x(const arma::vec &tr_rhoa_x);
+      void set_tr_rhoa_y(const arma::vec &tr_rhoa_y);
+      void set_tr_rhoa_z(const arma::vec &tr_rhoa_z);
       void set_tr_rhob(const arma::vec &tr_rhob);
+      void set_tr_rhob_x(const arma::vec &tr_rhob_x);
+      void set_tr_rhob_y(const arma::vec &tr_rhob_y);
+      void set_tr_rhob_z(const arma::vec &tr_rhob_z);
       void set_tr_rho(const arma::vec &tr_rho);
       void set_pi(const arma::vec &pi);
+      void set_pi_x(const arma::vec &pi_x);
+      void set_pi_y(const arma::vec &pi_y);
+      void set_pi_z(const arma::vec &pi_z);
       void set_R(const arma::vec &R);
+      void set_sigma_aa(const arma::vec &sigma_aa);
+      void set_sigma_ab(const arma::vec &sigma_ab);
+      void set_sigma_bb(const arma::vec &sigma_bb);
+      void set_tr_sigma_aa(const arma::vec &tr_sigma_aa);
+      void set_tr_sigma_ab(const arma::vec &tr_sigma_ab);
+      void set_tr_sigma_bb(const arma::vec &tr_sigma_bb);
       //==========================================// end of accessors
 
    protected:
       //=========== utility functions ============//
       void read_grids_from_file(std::string test_case);
       void read_orbitals_from_file(std::string test_case);
+      void read_gradients_from_file(std::string test_case);
       void read_energies_from_file(std::string test_case);
       void read_opdm_from_file(std::string test_case);
       void read_cmat_from_file(std::string test_case);
@@ -94,6 +140,9 @@ class MCPDFT {
       //==========================================// end of utility functions
 
    private:
+       /// A boolean variable to show if a chose functional is GGA or not
+       bool is_gga_;
+
        /// 1-electron reduced-density matrix of alpha spin
        arma::mat D1a_;
  
@@ -126,6 +175,15 @@ class MCPDFT {
 
       /// matrix of orbital values calculated on the grid points phi(npts, nbfs)
       arma::mat phi_;
+
+      /// matrix of orbital x-derivative values calculated on the grid points phi(npts, nbfs)
+      arma::mat phi_x_;
+
+      /// matrix of orbital y-derivative values calculated on the grid points phi(npts, nbfs)
+      arma::mat phi_y_;
+
+      /// matrix of orbital z-derivative values calculated on the grid points phi(npts, nbfs)
+      arma::mat phi_z_;
 
       /// the reference electronic energy (read from file)
       double eref_;
@@ -204,6 +262,15 @@ class MCPDFT {
 
       /// The R(r) factor
       arma::vec R_;
+
+      /// The sigma alpha-alpha vector sigma_aa(r)
+      arma::vec sigma_aa_;
+
+      /// The sigma alpha-beta vector sigma_ab(r)
+      arma::vec sigma_ab_;
+
+      /// The sigma beta-beta vector sigma_bb(r)
+      arma::vec sigma_bb_;
 
       /// The (fully-)translated sigma alpha-alpha vector tr_sigma_aa(r)
       arma::vec tr_sigma_aa_;

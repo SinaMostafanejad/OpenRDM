@@ -1,5 +1,6 @@
 # list of test examples
-list(APPEND TEST_SET h2_svwn_sto3g)
+list(APPEND TEST_SET h2_tsvwn_sto3g
+	             h2_tpbe_sto3g)
 add_executable(mcpdft utility.cc
 	              main.cc
 )
