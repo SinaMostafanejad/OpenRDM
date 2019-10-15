@@ -2,9 +2,6 @@
 
    ## MCPDFT:
 
-      ### Add member variables and functions for the density 
-         derivatives needed for GGA functionals.
-
       ### Finish the implementation of the fully-translated
          density function.
 
