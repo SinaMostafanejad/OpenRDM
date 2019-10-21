@@ -1,5 +1,5 @@
-OpenRDM          {#mainpage}
+OpenRDM        {#mainpage}
 =======
 
-[TOC]
 + [Introduction](@ref introduction)
++ [Theory](@ref theory)

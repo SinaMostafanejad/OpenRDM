@@ -3,7 +3,8 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="" href="introduction.md">
-      <tab type="introduction" visible="no" title="" href="introduction.md"/>
+      <!-- tab type="introduction" visible="no" title="" href="introduction.md"/>
+      <tab type="theory" visible="no" title="" href="theory.md"/-->
     </tab>
     <tab type="pages" visible="yes" title="" intro=""/>
     <tab type="modules" visible="yes" title="C modules" intro=""/>
