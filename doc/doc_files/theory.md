@@ -9,7 +9,7 @@ when labeling the molecular orbitals (MOs), \f$\lbrace \psi\rbrace\f$:
 the indices \f$i\f$, \f$j\f$, \f$k\f$, and \f$l\f$ denote
 inactive (doubly occupied) orbitals; \f$t\f$, \f$u\f$, \f$v\f$, and \f$w\f$ represent
 active orbitals; and \f$p\f$, \f$q\f$, \f$r\f$, and \f$s\f$ indicate general orbitals.
-Einstein's summation convention over repeated indices is implied in all expressions.
+[Einstein's summation rule](http://mathworld.wolfram.com/EinsteinSummation.html) is implied in all expressions.
 
 We begin by defining the non-relativistic Born-Oppenheimer (BO) electronic Hamiltonian
 
@@ -59,9 +59,44 @@ in Eqs. \f$\eqref{EQ:1RDM}\f$ and \f$\eqref{EQ:2RDM}\f$ is implied.
 
 The MCDPFT energy expression can be written as
 
-
-\begin{equation}\tag{3}\label{EQ:EMCPDFT}
+\begin{equation}\tag{5}\label{EQ:EMCPDFT}
 E_{\text{MCPDFT}} = 2h^i_i + h^t_u {}^1D^t_u + E_\text{H} + E_\text{xc}\left[\rho,\Pi,|\nabla\rho|,|\nabla\Pi|\right],
 \end{equation}
 
-where Eq. \f$\eqref{EQ:EMCPDFT}\f$
+where the Hartree energy, \f$E_\text{H}\f$, is
+
+\begin{equation}\tag{6}\label{EQ:EHARTREE}
+E_\text{H} = 2 \nu^{ij}_{ij} + 2\nu^{ti}_{ui} {}^1D^t_u + \frac{1}{2} \nu^{tv}_{uw} {}^1D^{t}_{u} {}^1D^{v}_{w}
+\end{equation}
+
+The total electronic density and its gradient are defined by the 1-RDM as
+
+\begin{equation}\label{EQ:RHO}\tag{7}
+\rho(\mathbf{r}) = {}^1D^p_q\ \psi^*_p(\mathbf{r}) \psi_q(\mathbf{r}),
+\end{equation}
+
+and
+
+\begin{equation}\label{EQ:DRHO}\tag{8}
+\nabla\rho(\mathbf{r}) = {}^1D^p_q \left[ \nabla\psi^*_p(\mathbf{r}) \psi_q(\mathbf{r}) + \psi^*_p(\mathbf{r}) \nabla\psi_q(\mathbf{r}) \right],
+\end{equation}
+
+respectively. The on-top pair density (OTPD) and its gradient can similarly be defined in
+terms of the 2-RDM as
+
+\begin{equation}
+\label{EQ:PI}\tag{9}
+\Pi(\mathbf{r})  = {}^2D^{pq}_{rs}\ \psi^*_p(\mathbf{r}) \psi^*_q(\mathbf{r}) \psi_r(\mathbf{r}) \psi_s(\mathbf{r}),
+\end{equation}
+
+and
+
+\begin{eqnarray}
+\label{EQ:DPI}\tag{10}
+\nabla\Pi(\mathbf{r}) = {}^2D^{pq}_{rs} &[& \nabla\psi^*_p(\mathbf{r}) \psi^*_q(\mathbf{r}) \psi_r(\mathbf{r}) \psi_s(\mathbf{r}) \nonumber \\\
+                                 &+& \psi^*_p(\mathbf{r}) \nabla\psi^*_q(\mathbf{r}) \psi_r(\mathbf{r}) \psi_s(\mathbf{r}) \nonumber \\\
+                                 &+& \psi^*_p(\mathbf{r}) \psi^*_q(\mathbf{r}) \nabla\psi_r(\mathbf{r}) \psi_s(\mathbf{r}) \nonumber \\\
+                                 &+& \psi^*_p(\mathbf{r}) \psi^*_q(\mathbf{r}) \psi_r(\mathbf{r}) \nabla\psi_s(\mathbf{r}) ~],
+\end{eqnarray}
+
+respectively. Here, the 1- and 2-RDMs are obtained from an MR computation.
