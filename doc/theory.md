@@ -1,11 +1,15 @@
-#### Theory          {#theory}
+### Theory          {#theory}
+
+[TOC]
+
+#### Background          {#background}
 
 Here, we use the conventional notation of multireference (MR) methods
 when labeling the molecular orbitals (MOs), \f$\lbrace \psi\rbrace\f$:
 the indices \f$i\f$, \f$j\f$, \f$k\f$, and \f$l\f$ denote
 inactive (doubly occupied) orbitals; \f$t\f$, \f$u\f$, \f$v\f$, and \f$w\f$ represent
-active orbitals; and \f$p\f$, \f$q\f$, \f$r\f$, and \f$s\f$ indicate general orbitals. A
-summation over repeated indices is implied in all expressions.
+active orbitals; and \f$p\f$, \f$q\f$, \f$r\f$, and \f$s\f$ indicate general orbitals.
+Einstein's summation convention over repeated indices is implied in all expressions.
 
 We begin by defining the non-relativistic Born-Oppenheimer (BO) electronic Hamiltonian
 
@@ -13,17 +17,45 @@ We begin by defining the non-relativistic Born-Oppenheimer (BO) electronic Hamil
      \hat{H} = h^p_q \hat{E}^p_q + \frac{1}{2} \nu^{pq}_{rs} \hat{e}^{pq}_{rs},
 \end{equation}
 
-in which, the one- and two-particle excitation operators can be expressed as
+in terms of one- and two-particle excitation operators which are defined as
 
 \f{gather}{
      \hat{E}^{p}_{q} = \hat{a}^\dagger_{p_\sigma} \hat{a}_{q_\sigma}   \tag{2a}\label{EQ:Epq}  	\\
      \hat{e}^{p r}_{q s} = \hat{E}^p_q \hat{E}^r_s - \delta^q_r \hat{E}^p_s = \hat{a}^\dagger_{p_\sigma} \hat{a}^\dagger_{r_\tau} \hat{a}_{s_\tau} \hat{a}_{q_\sigma} \tag{2b}\label{EQ:epqrs}
 \f}
 
-In Eqs. \f$\eqref{EQ:Epq}\f$ and \f$\eqref{EQ:epqrs}\f$, the \f$\hat{a}^\dagger\f$ and \f$\hat{a}\f$ represent second-quantized creation and
-annihilation operators, respectively, and the Greek labels run over \f$\alpha\f$
-and \f$\beta\f$ spins (the sum over which is implied). The symbol 
+In Eqs. \f$\eqref{EQ:Epq}\f$ and \f$\eqref{EQ:epqrs}\f$, the \f$\hat{a}^\dagger\f$ and \f$\hat{a}\f$ 
+represent second-quantized creation and annihilation operators, respectively,
+and the Greek labels run over \f$\alpha\f$ and \f$\beta\f$ spins (the sum over which is implied).
+The symbol \f$h^p_q = \left<\psi_p|\hat{h}|\psi_q\right>\f$ represents the sum of the electron
+kinetic energy and electron-nucleus potential energy integrals, and
+\f$\nu^{pq}_{rs} = \left<\psi_p \psi_q|\psi_r\psi_s\right>\f$ is an element of the
+two-electron repulsion integral tensor. Because the electronic Hamiltonian
+includes up to only pair-wise interactions, the ground-state energy of a
+many-electron system can be expressed as an exact linear functional of the
+the one-electron reduced-density matrix (1-RDM) and two-electron reduced-density matrix (2-RDM)
 
+\begin{equation}\tag{3}\label{EQ:Eel}
+E = {}^1D^p_q h^p_q + \frac{1}{2} {}^2D^{pq}_{rs} \nu^{pq}_{rs}.
+\end{equation}
+
+Here, the 1-RDM and the 2-RDM are represented in their spin-free forms, 
+with elements defined as
+
+\begin{equation}\tag{4a}
+{}^1D^p_q = {}^1D^{p_\sigma}_{q_\sigma} = \left<\Psi|\hat{a}^\dagger_{p_\sigma} \hat{a}_{q_\sigma}|\Psi\right>	\label{EQ:1RDM}
+\end{equation}
+
+and
+
+\begin{equation}\tag{4b}
+{}^2D^{pq}_{rs} = {}^2D^{p_\sigma q_\tau}_{r_\sigma s_\tau} = \left<\Psi|\hat{a}^\dagger_{p_\sigma} \hat{a}^\dagger_{q_\tau} \hat{a}_{s_\tau} \hat{a}_{r_\sigma}|\Psi\right> \label{EQ:2RDM},
+\end{equation}
+
+respectively. Again, the summation over the spin labels 
+in Eqs. \f$\eqref{EQ:1RDM}\f$ and \f$\eqref{EQ:2RDM}\f$ is implied.
+
+#### Multiconfiguration Pair-Density Functional Theory          {#mcpdft}
 
 The MCDPFT energy expression can be written as
 
