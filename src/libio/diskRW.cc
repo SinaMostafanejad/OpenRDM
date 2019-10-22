@@ -1,4 +1,5 @@
 #include <armadillo>
+#include <fstream>
 #include "mcpdft.h"
 #include "diskRW.h"
 #include "hdf5.h"
@@ -20,6 +21,44 @@ namespace mcpdft {
 
    void DiskRW::read_opdm(arma::mat &D1a,
 		          arma::mat &D1b) {
+
+      std::ifstream file(OPDM_H5FILE);
+      if( !file.good() )
+	throw "\n  Warning: No accessible HDF5 file by the name \"opdm.h5\" exists!\n";
+        file.close();
+
+      assert( D1a.n_cols == D1a.n_rows );
+      assert( D1b.n_cols == D1b.n_rows );
+      size_t dim = D1a.n_cols;
+
+      /* file indentifiers and handles */
+      hid_t file_id;
+      hid_t D1a_dst_id, D1b_dst_id;
+      herr_t       status;
+
+      /* Open the existing HDF5 file in the read-only mode */
+      file_id = H5Fopen(OPDM_H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
+
+      /* Open the existing HDF5 dataset in the read-only mode */
+      D1a_dst_id = H5Dopen2(file_id,"/D1a/D1a_DataSet", H5P_DEFAULT);
+
+      /* Open the existing HDF5 dataset in the read-only mode */
+      D1b_dst_id = H5Dopen2(file_id,"/D1b/D1b_DataSet", H5P_DEFAULT);
+
+      /* Read the D1a_DataSet */
+      status = H5Dread(D1a_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, D1a.memptr());
+
+      /* Read the D1a_DataSet */
+      status = H5Dread(D1b_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, D1b.memptr());
+
+      /* Close datasets. */
+      status = H5Dclose(D1a_dst_id);
+      status = H5Dclose(D1b_dst_id);
+
+      /* Close the file. */
+      status = H5Fclose(file_id); 
    }
 
    void DiskRW::read_tpdm() {}

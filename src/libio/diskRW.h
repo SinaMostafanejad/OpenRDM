@@ -21,11 +21,11 @@ namespace mcpdft {
            /// Calls read_opdm() and read_tpdm() fxns
            void read_rdms();
 
-           /// Read 1RDM into disk
+           /// Read 1RDM from disk
            void read_opdm(arma::mat &D1a,
 		          arma::mat &D1b);
 
-           /// Read 1RDM into disk
+           /// Read 1RDM from disk
            void read_tpdm();
 
            /// Calls write_opdm() and write_tpdm() fxns
