@@ -1,6 +1,10 @@
 #ifndef DISKRW_H
 #define DISKRW_H
 
+#include <armadillo>
+#include "rdmInterface.h"
+#include "mcpdft.h"
+
 namespace mcpdft {
 
     class DiskRW: public IRDMInterface {
@@ -11,26 +15,28 @@ namespace mcpdft {
            /// Destructor
 	   ~DiskRW();
 
-           /// Calculates the required amount of memory needed for dealing with RDMs
-           virtual void calculate_memory(arma::mat &D1, arma::mat &D2ab);
+//           /// Calculates the required amount of memory needed for dealing with RDMs
+//           virtual void calculate_memory(arma::mat &D1, arma::mat &D2ab);
 
            /// Calls read_opdm() and read_tpdm() fxns
-           virtual void read_rdms();
+           void read_rdms();
 
-           /// Read 1RDM into disk
-           virtual void read_opdm();
+           /// Read 1RDM from disk
+           void read_opdm(arma::mat &D1a,
+		          arma::mat &D1b);
 
-           /// Read 1RDM into disk
-           virtual void read_tpdm();
+           /// Read 1RDM from disk
+           void read_tpdm();
 
            /// Calls write_opdm() and write_tpdm() fxns
-           virtual void write_rdms();
+           void write_rdms();
 
            /// Write 1RDM into disk
-           virtual void write_opdm();
+           void write_opdm(const arma::mat &D1a,
+			   const arma::mat &D1b);
 
            /// Write 2RDM into disk
-           virtual void write_tpdm();
+           void write_tpdm();
 	private:
 	   /// A memory buffer
            long int memory_;

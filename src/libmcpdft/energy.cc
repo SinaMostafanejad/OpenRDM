@@ -1,7 +1,9 @@
 #include <armadillo>
 #include <sys/sysinfo.h>
+#include <iostream>
 #include "energy.h"
 #include "mcpdft.h"
+#include "diskRW.h"
 #include "libMem.h"
 #include "openrdmConfig.h"
 #include <string>
@@ -111,6 +113,19 @@ namespace mcpdft {
 
       delete func;
 #endif
+
+      DiskRW dskrw;
+      dskrw.write_opdm(D1a,D1b);
+      size_t nbfs = mc->get_nbfs();
+      try{
+         arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
+         arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
+         dskrw.read_opdm(d1a,d1b);
+         // d1a.print("D1a =");
+         // d1b.print("D1b =");
+      } catch(const char* err_msg) {
+         printf("%s\n",err_msg);
+      }
 
       printf("------------------------------------------\n");
       printf("   Classical energy = %-20.12lf\n", eclass);

@@ -18,7 +18,7 @@ if(WITH_HDF5)
 #  add_library(libxc_ext STATIC IMPORTED)
 #  set_target_properties(libxc_ext PROPERTIES IMPORTED_LOCATION ${Libxc_LIBRARIES})
 #  target_link_libraries(mcpdft PUBLIC libxc_ext)
-   target_include_directories(mcpdft PRIVATE ${HDF5_INCLUDE_DIRS})
+#target_include_directories(mcpdft PRIVATE ${HDF5_INCLUDE_DIRS} dl)
 endif()
 
 foreach(test_id IN LISTS TEST_SET)
