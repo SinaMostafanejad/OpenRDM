@@ -1,5 +1,4 @@
-Introduction         {#introduction}
-========
+## Introduction         {#introduction}
 
 The <b>OpenRDM</b> library is an open-source platform for reduced-density matrix-based analysis and computation.
 It adopts the multiconfiguration pair-density functional theory (MCPDFT) to provide an accurate and efficient
