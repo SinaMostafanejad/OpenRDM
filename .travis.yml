@@ -22,7 +22,7 @@ addons:
       - lcov
 
 before_install:
-  - sudo apt-get install -y libarmadillo-dev texlive
+  - sudo apt-get install -y libarmadillo-dev texlive-full
 
 # Build your code e.g. by calling make
 script:
