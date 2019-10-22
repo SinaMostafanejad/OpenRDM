@@ -1,4 +1,5 @@
-## Theory          {#theory}
+Theory          {#theory}
+------
 
 [TOC]
 
