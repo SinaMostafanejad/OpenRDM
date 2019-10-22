@@ -13,9 +13,9 @@ active orbitals; and \f$p\f$, \f$q\f$, \f$r\f$, and \f$s\f$ indicate general orb
 
 We begin by defining the non-relativistic Born-Oppenheimer (BO) electronic Hamiltonian
 
-\begin{equation}\tag{1}\label{EQ:HAMILTONIAN}
+\f{equation}{\tag{1}\label{EQ:HAMILTONIAN}
      \hat{H} = h^p_q \hat{E}^p_q + \frac{1}{2} \nu^{pq}_{rs} \hat{e}^{pq}_{rs},
-\end{equation}
+\f}
 
 in terms of one- and two-particle excitation operators which are defined as
 
@@ -35,22 +35,22 @@ includes up to only pair-wise interactions, the ground-state energy of a
 many-electron system can be expressed as an exact linear functional of the
 the one-electron reduced-density matrix (1-RDM) and two-electron reduced-density matrix (2-RDM)
 
-\begin{equation}\tag{3}\label{EQ:Eel}
+\f{equation}{\tag{3}\label{EQ:Eel}
 E = {}^1D^p_q h^p_q + \frac{1}{2} {}^2D^{pq}_{rs} \nu^{pq}_{rs}.
-\end{equation}
+\f}
 
 Here, the 1-RDM and the 2-RDM are represented in their spin-free forms, 
 with elements defined as
 
-\begin{equation}\tag{4a}
+\f{equation}{\tag{4a}
 {}^1D^p_q = {}^1D^{p_\sigma}_{q_\sigma} = \left<\Psi|\hat{a}^\dagger_{p_\sigma} \hat{a}_{q_\sigma}|\Psi\right>	\label{EQ:1RDM}
-\end{equation}
+\f}
 
 and
 
-\begin{equation}\tag{4b}
+\f{equation}{\tag{4b}
 {}^2D^{pq}_{rs} = {}^2D^{p_\sigma q_\tau}_{r_\sigma s_\tau} = \left<\Psi|\hat{a}^\dagger_{p_\sigma} \hat{a}^\dagger_{q_\tau} \hat{a}_{s_\tau} \hat{a}_{r_\sigma}|\Psi\right> \label{EQ:2RDM},
-\end{equation}
+\f}
 
 respectively. Again, the summation over the spin labels 
 in Eqs. \f$\eqref{EQ:1RDM}\f$ and \f$\eqref{EQ:2RDM}\f$ is implied.
@@ -59,44 +59,44 @@ in Eqs. \f$\eqref{EQ:1RDM}\f$ and \f$\eqref{EQ:2RDM}\f$ is implied.
 
 The MCDPFT energy expression can be written as
 
-\begin{equation}\tag{5}\label{EQ:EMCPDFT}
+\f{equation}{\tag{5}\label{EQ:EMCPDFT}
 E_{\text{MCPDFT}} = 2h^i_i + h^t_u {}^1D^t_u + E_\text{H} + E_\text{xc}\left[\rho,\Pi,|\nabla\rho|,|\nabla\Pi|\right],
-\end{equation}
+\f}
 
 where the Hartree energy, \f$E_\text{H}\f$, is
 
-\begin{equation}\tag{6}\label{EQ:EHARTREE}
+\f{equation}{\tag{6}\label{EQ:EHARTREE}
 E_\text{H} = 2 \nu^{ij}_{ij} + 2\nu^{ti}_{ui} {}^1D^t_u + \frac{1}{2} \nu^{tv}_{uw} {}^1D^{t}_{u} {}^1D^{v}_{w}
-\end{equation}
+\f}
 
 The total electronic density and its gradient are defined by the 1-RDM as
 
-\begin{equation}\label{EQ:RHO}\tag{7}
+\f{equation}{\label{EQ:RHO}\tag{7}
 \rho(\mathbf{r}) = {}^1D^p_q\ \psi^*_p(\mathbf{r}) \psi_q(\mathbf{r}),
-\end{equation}
+\f}
 
 and
 
-\begin{equation}\label{EQ:DRHO}\tag{8}
+\f{equation}{\label{EQ:DRHO}\tag{8}
 \nabla\rho(\mathbf{r}) = {}^1D^p_q \left[ \nabla\psi^*_p(\mathbf{r}) \psi_q(\mathbf{r}) + \psi^*_p(\mathbf{r}) \nabla\psi_q(\mathbf{r}) \right],
-\end{equation}
+\f}
 
 respectively. The on-top pair density (OTPD) and its gradient can similarly be defined in
 terms of the 2-RDM as
 
-\begin{equation}
+\f{equation}{
 \label{EQ:PI}\tag{9}
 \Pi(\mathbf{r})  = {}^2D^{pq}_{rs}\ \psi^*_p(\mathbf{r}) \psi^*_q(\mathbf{r}) \psi_r(\mathbf{r}) \psi_s(\mathbf{r}),
-\end{equation}
+\f}
 
 and
 
-\begin{eqnarray}
+\f{eqnarray}{
 \label{EQ:DPI}\tag{10}
 \nabla\Pi(\mathbf{r}) = {}^2D^{pq}_{rs} &[& \nabla\psi^*_p(\mathbf{r}) \psi^*_q(\mathbf{r}) \psi_r(\mathbf{r}) \psi_s(\mathbf{r}) \nonumber \\\
                                  &+& \psi^*_p(\mathbf{r}) \nabla\psi^*_q(\mathbf{r}) \psi_r(\mathbf{r}) \psi_s(\mathbf{r}) \nonumber \\\
                                  &+& \psi^*_p(\mathbf{r}) \psi^*_q(\mathbf{r}) \nabla\psi_r(\mathbf{r}) \psi_s(\mathbf{r}) \nonumber \\\
                                  &+& \psi^*_p(\mathbf{r}) \psi^*_q(\mathbf{r}) \psi_r(\mathbf{r}) \nabla\psi_s(\mathbf{r}) ~],
-\end{eqnarray}
+\f}
 
 respectively. Here, the 1- and 2-RDMs are obtained from an MR computation.
