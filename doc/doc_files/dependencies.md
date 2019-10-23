@@ -1,7 +1,8 @@
-# Dependencies          {#dependencies}
+Dependencies          {#dependencies}
+==========
 
 The present implementation of the <b>OpenRDM</b> library is dependent upon
-a few exteranl libraries to achieve its goal:
+a few external libraries to deliver its task:
 
 + [HDF5:](https://www.hdfgroup.org/solutions/hdf5) High-performance data management and storage suite
    - [Documentation](https://portal.hdfgroup.org/display/HDF5/HDF5)
