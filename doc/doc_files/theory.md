@@ -1,5 +1,7 @@
 # Theory          {#theory}
 
+# Theory          {#theory}
+
 [TOC]
 
 ## Background          {#background}
