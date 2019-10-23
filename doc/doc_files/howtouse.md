@@ -1,6 +1,5 @@
 How to Use          {#howtouse}
 ==========
 
-This is the page describing the necessary procedure for how to use the OpenRDM package.
-
-
+The present implementation of the <b>OpenRDM</b> package is a header-only library. It can be easily
+incorporated into a project using CMake.
