@@ -1,6 +1,5 @@
 # OpenRDM        {#mainpage}
 
-
 + [Introduction](@ref introduction)
 + [Theory](@ref theory)
   - [Background](@ref background)

@@ -1,3 +1,3 @@
-## Known Issues          {#issues}
+# Known Issues          {#issues}
 
 This is the issues page.
