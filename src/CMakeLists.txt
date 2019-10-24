@@ -15,6 +15,11 @@ target_include_directories(openrdm INTERFACE
   $<INSTALL_INTERFACE:${CMAKE_STAGING_PREFIX}/openrdm/include
 )
 
+if(${WITH_OPENMP})
+  find_package(OpenMP REQUIRED)
+  target_link_libraries(openrdm INTERFACE OpenMP::OpenMP_CXX)
+endif()
+
 target_link_libraries(openrdm INTERFACE coverage_config)
 
 install(TARGETS openrdm

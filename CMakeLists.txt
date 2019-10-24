@@ -40,6 +40,7 @@ option(BUILD_TESTING "${Cyan}Build the testing tree${ColourReset}" ON)
 option(WITH_ARMADILLO "${cyan}Build with Armadillo linear algebra library${ColourReset}" ON)
 option(WITH_LIBXC "${cyan}Build with Libxc density functional library${ColourReset}" OFF)
 option(WITH_HDF5 "${cyan}Build with HDF5${ColourReset}" ON)
+option(WITH_OPENMP "${cyan}Build with HDF5${ColourReset}" OFF)
 #===================================================================
 # Code Coverage Configuration
 add_library(coverage_config INTERFACE)
