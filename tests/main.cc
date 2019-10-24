@@ -2,7 +2,6 @@
 #include <armadillo>
 #include "mcpdft.h"
 #include "energy.h"
-#include <string>
 
 using namespace mcpdft;
 
@@ -37,7 +36,7 @@ int main(int argc, char *argv[]) {
 
     // calculating the MCPDFT energy correction
     std::string functional(argv[2]);
-    double e = mcpdft_energy(mc,functional,D1a,D1b,D2ab);
+    double e =  mcpdft_energy(mc,functional,D1a,D1b,D2ab);
 
     printf("=================================================\n");
     printf("   Reference energy      =  %-20.12lf\n",  eref);

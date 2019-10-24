@@ -2,12 +2,13 @@
 list(APPEND TEST_SET h2_tsvwn_sto3g
 	             h2_tpbe_sto3g)
 
-add_executable(mcpdft utility.cc
-	              main.cc
+add_executable(mcpdft main.cc
+	              utility.cc
 )
 target_link_libraries(mcpdft PUBLIC openrdm)
 target_compile_definitions(mcpdft PUBLIC openrdm)
-include_directories(${OPENRDM_SOURCE_DIR}/src)
+#target_include_directories(mcpdft PUBLIC ${OPENRDM_SOURCE_DIR}/src/libmcpdft)
+
 if(WITH_LIBXC)
 #  add_library(libxc_ext STATIC IMPORTED)
 #  set_target_properties(libxc_ext PROPERTIES IMPORTED_LOCATION ${Libxc_LIBRARIES})
