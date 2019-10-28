@@ -19,3 +19,6 @@ There are also optional packages that user can choose to use at the compile time
 + [Gau2Grid:](https://github.com/dgasmith/gau2grid) Fast computation of a gaussian and its derivative on a grid
    - [Documentation](https://gau2grid.readthedocs.io/en/latest)
    - [Download](https://github.com/dgasmith/gau2grid)
++ [OpenMP:](https://www.openmp.org) The OpenMP API specification for parallel programming
+   - [Documentation](https://www.openmp.org/specifications)
+   - [Download](https://www.openmp.org/resources/openmp-compilers-tools)
