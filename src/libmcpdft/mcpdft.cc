@@ -6,7 +6,7 @@
 #include "mcpdft.h"
 #include "openrdmConfig.h"
 
-#ifdef WITH_OPENMP
+#ifdef WITH_OPENMP // _OPENMP
    #include <omp.h>
 #endif
 
@@ -45,64 +45,47 @@ namespace mcpdft {
       double dum_a = 0.0;
       double dum_b = 0.0;
       double dum_tot = 0.0;
+      size_t chunk_size = 0;
+      int p{0}, mu{0}, nu{0};
+      #ifdef WITH_OPENMP
+         int nthrds{0};
+         printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+         printf("                   *** Warning ***\n");
+         printf("   Calculating the density (gradients) using OpenMP");
+         printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+         nthrds = omp_get_max_threads();
+         nthrds /= 2;
+         omp_set_num_threads(nthrds);
+      #endif
 
-#ifdef WITH_OPENMP
-      printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-      printf("                   *** Warning ***\n");
-      printf("   Calculating the density (gradients) using OpenMP");
-      printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-      size_t chunk_size = npts/omp_get_num_threads();
-      #pragma omp parallel default(shared)
-         {
-         #pragma omp for schedule(dynamic,chunk_size) \
-		         reduction(+:dum_a,\
-			             dum_b,\
-			             dum_tot)
-            for(int p = 0; p < npts; p++) {
-               double tempa = 0.0;
-               double tempb = 0.0;
-               #pragma omp parallel shared(p,npts)
-                  {
-	          #pragma opm for schedule(dynamic,chunk_size) \
-			          reduction(+:tempa,\
-				              tempb) \
-	                          collapse(2)
-                     for(int mu = 0; mu < nbfs; mu++) {
-                        for(int nu = 0; nu < nbfs; nu++) {
-                           tempa += D1a(mu, nu) * phi(p, mu) * phi(p, nu);
-                           tempb += D1b(mu, nu) * phi(p, mu) * phi(p, nu);
-                        }
+      #pragma omp parallel default(shared) \
+                           private(p, mu, nu)
+      {  
+         #pragma omp for schedule(static) \
+                         reduction(+:dum_a, dum_b, dum_tot)
+         for(p = 0; p < npts; p++) {
+            double tempa = 0.0;
+            double tempb = 0.0;
+            #pragma omp parallel for schedule(static) \
+             	                     reduction(+:tempa,tempb) \
+	                             shared(p, nbfs) \
+	                             num_threads(2) \
+                                     collapse(2)
+                  for(mu = 0; mu < nbfs; mu++) {
+                     for(int nu = 0; nu < nbfs; nu++) {
+                        tempa += D1a(mu, nu) * phi(p, mu) * phi(p, nu);
+                        tempb += D1b(mu, nu) * phi(p, mu) * phi(p, nu);
                      }
-                     rhoa(p) = tempa;
-                     rhob(p) = tempb;
-                     rho(p) = rhoa(p) + rhob(p);
                   }
+                  rhoa(p) = tempa;
+                  rhob(p) = tempb;
+                  rho(p) = rhoa(p) + rhob(p);
+
                   dum_a += rhoa(p) * W(p);
                   dum_b += rhob(p) * W(p);
                   dum_tot += ( rhoa(p) + rhob(p) ) * W(p) ;
-            }
-            //printf("\nI am using OpenMP!\n");fflush(stdout);
          }
-#else
-      for(int p = 0; p < npts; p++) {
-         double tempa = 0.0;
-         double tempb = 0.0;
-         for(int mu = 0; mu < nbfs; mu++) {
-            for(int nu = 0; nu < nbfs; nu++) {
-               tempa += D1a(mu, nu) * phi(p, mu) * phi(p, nu);
-               tempb += D1b(mu, nu) * phi(p, mu) * phi(p, nu);
-            }
-         }
-         rhoa(p) = tempa;
-         rhob(p) = tempb;
-         rho(p) = rhoa(p) + rhob(p);
-
-         dum_a += rhoa(p) * W(p);
-         dum_b += rhob(p) * W(p);
-         dum_tot += ( rhoa(p) + rhob(p) ) * W(p) ;
       }
-      // printf("\nI am NOT using OpenMP!\n");fflush(stdout);
-#endif
       set_rhoa(rhoa);
       set_rhob(rhob);
       set_rho(rho);
@@ -114,6 +97,7 @@ namespace mcpdft {
       printf("\n");
 
       if ( is_gga_ ) {
+	  int sigma{0};
           arma::mat phi_x(get_phi_x());
           arma::mat phi_y(get_phi_y());
           arma::mat phi_z(get_phi_z());
@@ -126,93 +110,56 @@ namespace mcpdft {
           arma::vec sigma_aa(npts, arma::fill::zeros);
           arma::vec sigma_ab(npts, arma::fill::zeros);
           arma::vec sigma_bb(npts, arma::fill::zeros);
-#ifdef WITH_OPENMP
-   size_t chunk_size = npts/omp_get_num_threads();
-   #pragma omp parallel default(shared)
-      {
-      #pragma omp for schedule(dynamic,chunk_size)
-          for (int p = 0; p < npts; p++) {
-              double duma_x = 0.0;
-              double dumb_x = 0.0;
-              double duma_y = 0.0;
-              double dumb_y = 0.0;
-              double duma_z = 0.0;
-              double dumb_z = 0.0;
-              #pragma omp parallel shared(p,npts)
-                 {
-                 #pragma omp for schedule(dynamic,chunk_size) \
-                	         reduction(+:duma_x, duma_y, duma_z,\
-                		             dumb_x, dumb_y, dumb_z)\
-	                         collapse(2)
-                    for (int sigma = 0; sigma < nbfs; sigma++) {
-                        for (int nu = 0; nu < nbfs; nu++) {
-                            duma_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1a(sigma, nu);
-                            dumb_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1b(sigma, nu);
-                            duma_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1a(sigma, nu);
-                            dumb_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1b(sigma, nu);
-                            duma_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1a(sigma, nu);
-                            dumb_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1b(sigma, nu);
-                        }
-                    }
-                    rho_a_x(p) = duma_x;
-                    rho_b_x(p) = dumb_x;
-                    rho_a_y(p) = duma_y;
-                    rho_b_y(p) = dumb_y;
-                    rho_a_z(p) = duma_z;
-                    rho_b_z(p) = dumb_z;
-                    sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
-                    sigma_bb(p) = ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
-                    sigma_ab(p) = ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
-		 }
+          #pragma omp parallel default(shared) \
+	                       private(p, nu, sigma)
+          {
+             #pragma omp for schedule(static)
+                 for (int p = 0; p < npts; p++) {
+                     double duma_x = 0.0;
+                     double dumb_x = 0.0;
+                     double duma_y = 0.0;
+                     double dumb_y = 0.0;
+                     double duma_z = 0.0;
+                     double dumb_z = 0.0;
+                     #pragma omp parallel for schedule(static) \
+                       	                      reduction(+:duma_x, duma_y, duma_z,\
+                       		                          dumb_x, dumb_y, dumb_z)\
+	                                      shared(p, nbfs, \
+					             sigma_aa, sigma_bb, sigma_ab, \
+					             rho_a_x, rho_a_y, rho_a_z, \
+					             rho_b_x, rho_b_y, rho_b_z) \
+				              num_threads(2) \
+                                              collapse(2)
+                           for (int sigma = 0; sigma < nbfs; sigma++) {
+                               for (int nu = 0; nu < nbfs; nu++) {
+                                   duma_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1a(sigma, nu);
+                                   dumb_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1b(sigma, nu);
+                                   duma_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1a(sigma, nu);
+                                   dumb_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1b(sigma, nu);
+                                   duma_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1a(sigma, nu);
+                                   dumb_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1b(sigma, nu);
+                               }
+                           }
+                     rho_a_x(p) = duma_x;
+                     rho_b_x(p) = dumb_x;
+                     rho_a_y(p) = duma_y;
+                     rho_b_y(p) = dumb_y;
+                     rho_a_z(p) = duma_z;
+                     rho_b_z(p) = dumb_z;
+                     sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
+                     sigma_bb(p) = ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
+                     sigma_ab(p) = ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
+               	 }
           }
-	  set_rhoa_x(rho_a_x);
-	  set_rhob_x(rho_b_x);
-	  set_rhoa_y(rho_a_y);
-	  set_rhob_y(rho_b_y);
-	  set_rhoa_z(rho_a_z);
-	  set_rhob_z(rho_b_z);
-	  set_sigma_aa(sigma_aa);
-	  set_sigma_ab(sigma_ab);
-	  set_sigma_bb(sigma_bb);
-      }
-#else
-      for (int p = 0; p < npts; p++) {
-          double duma_x = 0.0;
-          double dumb_x = 0.0;
-          double duma_y = 0.0;
-          double dumb_y = 0.0;
-          double duma_z = 0.0;
-          double dumb_z = 0.0;
-          for (int sigma = 0; sigma < nbfs; sigma++) {
-              for (int nu = 0; nu < nbfs; nu++) {
-                  duma_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1a(sigma, nu);
-                  dumb_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1b(sigma, nu);
-                  duma_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1a(sigma, nu);
-                  dumb_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1b(sigma, nu);
-                  duma_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1a(sigma, nu);
-                  dumb_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1b(sigma, nu);
-              }
-          }
-          rho_a_x(p) = duma_x;
-          rho_b_x(p) = dumb_x;
-          rho_a_y(p) = duma_y;
-          rho_b_y(p) = dumb_y;
-          rho_a_z(p) = duma_z;
-          rho_b_z(p) = dumb_z;
-          sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
-          sigma_bb(p) = ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
-          sigma_ab(p) = ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
-      }
-      set_rhoa_x(rho_a_x);
-      set_rhob_x(rho_b_x);
-      set_rhoa_y(rho_a_y);
-      set_rhob_y(rho_b_y);
-      set_rhoa_z(rho_a_z);
-      set_rhob_z(rho_b_z);
-      set_sigma_aa(sigma_aa);
-      set_sigma_ab(sigma_ab);
-      set_sigma_bb(sigma_bb);
-#endif
+          set_rhoa_x(rho_a_x);
+          set_rhob_x(rho_b_x);
+          set_rhoa_y(rho_a_y);
+          set_rhob_y(rho_b_y);
+          set_rhoa_z(rho_a_z);
+          set_rhob_z(rho_b_z);
+          set_sigma_aa(sigma_aa);
+          set_sigma_ab(sigma_ab);
+          set_sigma_bb(sigma_bb);
       }
    }
 
