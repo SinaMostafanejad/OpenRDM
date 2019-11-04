@@ -124,7 +124,6 @@ namespace mcpdft {
       arma::vec sigma_aa(npts, arma::fill::zeros);
       arma::vec sigma_ab(npts, arma::fill::zeros);
       arma::vec sigma_bb(npts, arma::fill::zeros);
-
       #pragma omp parallel default(shared) \
                            private(p, nu, sigma)
       {
@@ -178,6 +177,14 @@ namespace mcpdft {
    }
 
    void MCPDFT::build_pi(const arma::mat &D2ab) {
+      build_ontop_pair_density(D2ab);
+
+      if ( is_gga_ ) {
+         build_ontop_pair_density_gradients(D2ab);
+      }
+   }
+
+   void MCPDFT::build_ontop_pair_density(const arma::mat &D2ab) {
       int nbfs = get_nbfs();
       size_t npts = get_npts();
       arma::vec temp(npts);
@@ -185,7 +192,6 @@ namespace mcpdft {
       int p{0},
 	  mu{0}, nu{0},
 	  lambda{0}, sigma{0};
-
       for (int p = 0; p < npts; p++) {
           double dum = 0.0;
           // pi(r,r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
@@ -205,49 +211,55 @@ namespace mcpdft {
              temp(p) = dum;
       }
       set_pi(temp);
+   }
 
-      if ( is_gga_ ) {
-         arma::mat phi_x(get_phi_x());
-         arma::mat phi_y(get_phi_y());
-         arma::mat phi_z(get_phi_z());
-         arma::vec pi_x(npts, arma::fill::zeros);
-         arma::vec pi_y(npts, arma::fill::zeros);
-         arma::vec pi_z(npts, arma::fill::zeros);
-         for (int p = 0; p < npts; p++) {
-             double dum_x = 0.0;
-             double dum_y = 0.0;
-             double dum_z = 0.0;
-             // pi(r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
-             for (int mu = 0; mu < nbfs; mu++) {
-                 for (int nu = 0; nu < nbfs; nu++) {
-                     for (int lambda = 0; lambda < nbfs; lambda++) {
-                         for (int sigma = 0; sigma < nbfs; sigma++) {
-                             dum_x += ( phi_x(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                        phi(p, mu) * phi_x(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                        phi(p, mu) * phi(p, lambda) * phi_x(p, sigma) * phi(p, nu) +
-                                        phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_x(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+   void MCPDFT::build_ontop_pair_density_gradients(const arma::mat &D2ab) {
+      int nbfs = get_nbfs();
+      size_t npts = get_npts();
+      int p{0},
+	  mu{0}, nu{0},
+	  lambda{0}, sigma{0};
+      arma::mat phi(get_phi());
+      arma::mat phi_x(get_phi_x());
+      arma::mat phi_y(get_phi_y());
+      arma::mat phi_z(get_phi_z());
+      arma::vec pi_x(npts, arma::fill::zeros);
+      arma::vec pi_y(npts, arma::fill::zeros);
+      arma::vec pi_z(npts, arma::fill::zeros);
+      for (int p = 0; p < npts; p++) {
+          double dum_x = 0.0;
+          double dum_y = 0.0;
+          double dum_z = 0.0;
+          // pi(r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
+          for (int mu = 0; mu < nbfs; mu++) {
+              for (int nu = 0; nu < nbfs; nu++) {
+                  for (int lambda = 0; lambda < nbfs; lambda++) {
+                      for (int sigma = 0; sigma < nbfs; sigma++) {
+                          dum_x += ( phi_x(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                     phi(p, mu) * phi_x(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                     phi(p, mu) * phi(p, lambda) * phi_x(p, sigma) * phi(p, nu) +
+                                     phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_x(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
 
-                             dum_y += ( phi_y(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                        phi(p, mu) * phi_y(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                        phi(p, mu) * phi(p, lambda) * phi_y(p, sigma) * phi(p, nu) +
-                                        phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_y(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                          dum_y += ( phi_y(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                     phi(p, mu) * phi_y(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                     phi(p, mu) * phi(p, lambda) * phi_y(p, sigma) * phi(p, nu) +
+                                     phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_y(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
 
-                             dum_z += ( phi_z(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                        phi(p, mu) * phi_z(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                        phi(p, mu) * phi(p, lambda) * phi_z(p, sigma) * phi(p, nu) +
-                                        phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_z(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
-                         }
-                     }
-                 }
-             }
-             pi_x(p) = dum_x;
-             pi_y(p) = dum_y;
-             pi_z(p) = dum_z;
-         }
-	 set_pi_x(pi_x);
-	 set_pi_z(pi_y);
-	 set_pi_z(pi_z);
+                          dum_z += ( phi_z(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                     phi(p, mu) * phi_z(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                     phi(p, mu) * phi(p, lambda) * phi_z(p, sigma) * phi(p, nu) +
+                                     phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_z(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                      }
+                  }
+              }
+          }
+          pi_x(p) = dum_x;
+          pi_y(p) = dum_y;
+          pi_z(p) = dum_z;
       }
+      set_pi_x(pi_x);
+      set_pi_z(pi_y);
+      set_pi_z(pi_z);
    }
 
    void MCPDFT::build_R() {

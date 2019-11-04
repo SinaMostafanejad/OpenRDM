@@ -31,8 +31,14 @@ class MCPDFT {
       /// Build density gradients rhoa_x(r), rhoa_y(r) ... on the grid points
       void build_density_gradients();
 
-      /// Build on-top pair-density pi(r,r)
+      /// Build on-top pair-density pi(r,r) and its gradinets pi_x(r,r) ... on the grids
       void build_pi(const arma::mat &D2ab);
+
+      /// Build on-top pair-density pi(r,r) on the grids
+      void build_ontop_pair_density(const arma::mat &D2ab);
+
+      /// Build on-top pair-density gradinets pi_x(r,r), pi_y(r,r) ... on the grids
+      void build_ontop_pair_density_gradients(const arma::mat &D2ab);
 
       /// Build R(r) factor
       void build_R();
