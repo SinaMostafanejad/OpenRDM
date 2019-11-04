@@ -22,8 +22,14 @@ class MCPDFT {
       /// Build the alpha-beta block of 2-particle density matrix (TPDM)
       void build_tpdm();
 
-      /// Build spin and total density functions rhoa(r), rhob(r) and rho(r)
+      /// Build density functions and their gradients on the grid points
       void build_rho();
+
+      /// Build spin and total density functions rhoa(r), rhob(r) and rho(r)
+      void build_density_functions();
+
+      /// Build density gradients rhoa_x(r), rhoa_y(r) ... on the grid points
+      void build_density_gradients();
 
       /// Build on-top pair-density pi(r,r)
       void build_pi(const arma::mat &D2ab);
