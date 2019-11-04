@@ -92,8 +92,8 @@ namespace mcpdft {
                   dum_a += rhoa(p) * W(p);
                   dum_b += rhob(p) * W(p);
                   dum_tot += ( rhoa(p) + rhob(p) ) * W(p) ;
-            }
-      }
+            } /* end of omp parallel for loop */
+      } /* end of omp parallel region */
       set_rhoa(rhoa);
       set_rhob(rhob);
       set_rho(rho);
@@ -182,19 +182,27 @@ namespace mcpdft {
       size_t npts = get_npts();
       arma::vec temp(npts);
       arma::mat phi(get_phi());
+      int p{0},
+	  mu{0}, nu{0},
+	  lambda{0}, sigma{0};
+
       for (int p = 0; p < npts; p++) {
-              double dum = 0.0;
-              // pi(r,r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
-              for (int mu = 0; mu < nbfs; mu++) {
-                  for (int nu = 0; nu < nbfs; nu++) {
-                      for (int lambda = 0; lambda < nbfs; lambda++) {
-                          for (int sigma = 0; sigma < nbfs; sigma++) {
-                              dum += phi(p, mu) * phi(p, nu) * phi(p, lambda) * phi(p, sigma) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
-                          }
-                      }
-                  }
-              }
-              temp(p) = dum;
+          double dum = 0.0;
+          // pi(r,r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
+          #pragma omp parallel for default(shared) \
+          	                       private(mu,nu,lambda,sigma) \
+          	                       reduction(+:dum) \
+          	                       collapse(4)
+             for (int mu = 0; mu < nbfs; mu++) {
+                 for (int nu = 0; nu < nbfs; nu++) {
+                     for (int lambda = 0; lambda < nbfs; lambda++) {
+                         for (int sigma = 0; sigma < nbfs; sigma++) {
+                             dum += phi(p, mu) * phi(p, nu) * phi(p, lambda) * phi(p, sigma) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                         }
+                     }
+                 }
+             } /* end of omp parallel for loop */
+             temp(p) = dum;
       }
       set_pi(temp);
 
