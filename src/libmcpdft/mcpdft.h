@@ -43,11 +43,23 @@ class MCPDFT {
       /// Build R(r) factor
       void build_R();
 
-      /// Translate the one-electron densities 
+      /// Translate the one-electron densities and their gradients
       void translate();
+
+      /// Translate the one-electron density functions
+      void translate_density();
+
+      /// Translate the density gradients
+      void translate_density_gradients();
 
       /// Fully translate the one-electron densities 
       void fully_translate();
+
+      /// Fully translate the one-electron density functions
+      void fully_translate_density();
+
+      /// Fully translate the density gradients
+      void fully_translate_density_gradients();
 
       //=============== accessors ===============//
       bool is_gga() const;

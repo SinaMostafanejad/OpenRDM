@@ -34,7 +34,6 @@ namespace mcpdft {
 
    void MCPDFT::build_rho() {
       build_density_functions();
-
       if ( is_gga_ ) {
          build_density_gradients();
       }
@@ -144,26 +143,26 @@ namespace mcpdft {
     				                 rho_b_x, rho_b_y, rho_b_z) \
     			                  num_threads(2) \
                                           collapse(2)
-                       for (int sigma = 0; sigma < nbfs; sigma++) {
-                           for (int nu = 0; nu < nbfs; nu++) {
-                               duma_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1a(sigma, nu);
-                               dumb_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1b(sigma, nu);
-                               duma_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1a(sigma, nu);
-                               dumb_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1b(sigma, nu);
-                               duma_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1a(sigma, nu);
-                               dumb_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1b(sigma, nu);
-                           }
-                       }
-                 rho_a_x(p) = duma_x;
-                 rho_b_x(p) = dumb_x;
-                 rho_a_y(p) = duma_y;
-                 rho_b_y(p) = dumb_y;
-                 rho_a_z(p) = duma_z;
-                 rho_b_z(p) = dumb_z;
-                 sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
-                 sigma_bb(p) = ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
-                 sigma_ab(p) = ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
-           	 }
+                    for (int sigma = 0; sigma < nbfs; sigma++) {
+                        for (int nu = 0; nu < nbfs; nu++) {
+                            duma_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1a(sigma, nu);
+                            dumb_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1b(sigma, nu);
+                            duma_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1a(sigma, nu);
+                            dumb_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1b(sigma, nu);
+                            duma_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1a(sigma, nu);
+                            dumb_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1b(sigma, nu);
+                        }
+                    }
+                    rho_a_x(p) = duma_x;
+                    rho_b_x(p) = dumb_x;
+                    rho_a_y(p) = duma_y;
+                    rho_b_y(p) = dumb_y;
+                    rho_a_z(p) = duma_z;
+                    rho_b_z(p) = dumb_z;
+                    sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
+                    sigma_bb(p) = ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
+                    sigma_ab(p) = ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
+             }
       }
       set_rhoa_x(rho_a_x);
       set_rhob_x(rho_b_x);
@@ -178,7 +177,6 @@ namespace mcpdft {
 
    void MCPDFT::build_pi(const arma::mat &D2ab) {
       build_ontop_pair_density(D2ab);
-
       if ( is_gga_ ) {
          build_ontop_pair_density_gradients(D2ab);
       }
@@ -226,36 +224,45 @@ namespace mcpdft {
       arma::vec pi_x(npts, arma::fill::zeros);
       arma::vec pi_y(npts, arma::fill::zeros);
       arma::vec pi_z(npts, arma::fill::zeros);
-      for (int p = 0; p < npts; p++) {
-          double dum_x = 0.0;
-          double dum_y = 0.0;
-          double dum_z = 0.0;
-          // pi(r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
-          for (int mu = 0; mu < nbfs; mu++) {
-              for (int nu = 0; nu < nbfs; nu++) {
-                  for (int lambda = 0; lambda < nbfs; lambda++) {
-                      for (int sigma = 0; sigma < nbfs; sigma++) {
-                          dum_x += ( phi_x(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                     phi(p, mu) * phi_x(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                     phi(p, mu) * phi(p, lambda) * phi_x(p, sigma) * phi(p, nu) +
-                                     phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_x(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+      #pragma omp parallel default(shared) \
+                           private(p, mu, nu, lambda, sigma)
+      {
+         #pragma omp for schedule(static)
+            for (int p = 0; p < npts; p++) {
+                double dum_x = 0.0;
+                double dum_y = 0.0;
+                double dum_z = 0.0;
+                // pi(r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
+                #pragma omp parallel for schedule(static) \
+                  	                 reduction(+:dum_x, dum_y, dum_z) \
+    		                         num_threads(2) \
+                                         collapse(4)
+                for (int mu = 0; mu < nbfs; mu++) {
+                    for (int nu = 0; nu < nbfs; nu++) {
+                        for (int lambda = 0; lambda < nbfs; lambda++) {
+                            for (int sigma = 0; sigma < nbfs; sigma++) {
+                                dum_x += ( phi_x(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                           phi(p, mu) * phi_x(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                           phi(p, mu) * phi(p, lambda) * phi_x(p, sigma) * phi(p, nu) +
+                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_x(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
 
-                          dum_y += ( phi_y(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                     phi(p, mu) * phi_y(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                     phi(p, mu) * phi(p, lambda) * phi_y(p, sigma) * phi(p, nu) +
-                                     phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_y(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                                dum_y += ( phi_y(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                           phi(p, mu) * phi_y(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                           phi(p, mu) * phi(p, lambda) * phi_y(p, sigma) * phi(p, nu) +
+                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_y(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
 
-                          dum_z += ( phi_z(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                     phi(p, mu) * phi_z(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                     phi(p, mu) * phi(p, lambda) * phi_z(p, sigma) * phi(p, nu) +
-                                     phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_z(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
-                      }
-                  }
-              }
-          }
-          pi_x(p) = dum_x;
-          pi_y(p) = dum_y;
-          pi_z(p) = dum_z;
+                                dum_z += ( phi_z(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                           phi(p, mu) * phi_z(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                                           phi(p, mu) * phi(p, lambda) * phi_z(p, sigma) * phi(p, nu) +
+                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_z(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                            }
+                        }
+                    }
+                }
+                pi_x(p) = dum_x;
+                pi_y(p) = dum_y;
+                pi_z(p) = dum_z;
+            }
       }
       set_pi_x(pi_x);
       set_pi_z(pi_y);
@@ -268,112 +275,142 @@ namespace mcpdft {
         arma::vec temp(npts);
         arma::vec pi(get_pi());
         arma::vec rho(get_rho());
-        for (int p = 0; p < npts; p++) {
-            temp(p) = 4.0 * pi(p) / ( rho(p) * rho(p) );
-        }
+        #pragma parallel for schedule(static) \
+	                     private(p) \
+                             shared(npts, pi, rho, temp)
+           for (int p = 0; p < npts; p++) {
+               temp(p) = 4.0 * pi(p) / ( rho(p) * rho(p) );
+           }
         set_R(temp);
    }
 
    void MCPDFT::translate() {
+     translate_density();
+     if ( is_gga_ ) {
+        translate_density_gradients();
+     }
+   }
+
+   void MCPDFT::translate_density() {
+      double tol = 1.0e-20;
+      size_t npts = get_npts();
+      arma::vec rho_vec(get_rho());
+      arma::vec pi_vec(get_pi());
+      arma::vec R_vec(get_R());
+      arma::vec W(get_w());
+      arma::vec tr_rhoa(npts);
+      arma::vec tr_rhob(npts);
+      double dum_a = 0.0;
+      double dum_b = 0.0;
+      double dum_tot = 0.0;
+      double rho = 0.0;
+      double pi = 0.0;
+      double zeta = 0.0;
+      double R = 0.0;
+      #pragma parallel for schedule(static) \
+                           default(shared) \
+                           private(p, zeta, pi, rho) \
+                           reduction(+:dum_a, dum_b, dum_tot)
+         for (int p = 0; p < npts; p++) {
+             rho = rho_vec(p);
+             pi = pi_vec(p);
+             zeta = 0.0;
+             R = 0.0;
+             if ( !(rho < tol) && !(pi < 0.0) ) {
+                R = R_vec(p);
+                if ( (1.0 - R) > tol ) {
+                   zeta = sqrt(1.0 - R);
+                }else{
+                     zeta = 0.0;
+                }
+                tr_rhoa(p) = (1.0 + zeta) * (rho/2.0);
+                tr_rhob(p) = (1.0 - zeta) * (rho/2.0);
+             }else {
+                    tr_rhoa(p) = 0.0;
+                    tr_rhob(p) = 0.0;
+             }
+             dum_a += tr_rhoa(p) * W(p);
+             dum_b += tr_rhob(p) * W(p);
+             dum_tot += ( tr_rhoa(p) + tr_rhob(p) ) * W(p) ;
+         }
+      set_tr_rhoa(tr_rhoa);
+      set_tr_rhob(tr_rhob);
+
+      printf("\n");
+      printf("  Integrated translated total density = %20.12lf\n",dum_tot);
+      printf("  Integrated translated alpha density = %20.12lf\n",dum_a);
+      printf("  Integrated translated beta density  = %20.12lf\n",dum_b);
+      printf("\n");
+   }
+ 
+   void MCPDFT::translate_density_gradients() {
      double tol = 1.0e-20;
      size_t npts = get_npts();
      arma::vec rho_vec(get_rho());
      arma::vec pi_vec(get_pi());
      arma::vec R_vec(get_R());
-     arma::vec W(get_w());
-     arma::vec tr_rhoa(npts);
-     arma::vec tr_rhob(npts);
-     double dum_a = 0.0;
-     double dum_b = 0.0;
-     double dum_tot = 0.0;
+     double rho = 0.0;
+     double pi = 0.0;
+     double zeta = 0.0;
+     double R = 0.0;
+     double rho_x = 0.0;
+     double rho_y = 0.0;
+     double rho_z = 0.0;
+     arma::vec rho_a_x(get_rhoa_x());
+     arma::vec rho_a_y(get_rhoa_y());
+     arma::vec rho_a_z(get_rhoa_z());
+     arma::vec rho_b_x(get_rhob_x());
+     arma::vec rho_b_y(get_rhob_y());
+     arma::vec rho_b_z(get_rhob_z());
+     arma::vec tr_rho_a_x(npts,  arma::fill::zeros);
+     arma::vec tr_rho_b_x(npts,  arma::fill::zeros);
+     arma::vec tr_rho_a_y(npts,  arma::fill::zeros);
+     arma::vec tr_rho_b_y(npts,  arma::fill::zeros);
+     arma::vec tr_rho_a_z(npts,  arma::fill::zeros);
+     arma::vec tr_rho_b_z(npts,  arma::fill::zeros);
+     arma::vec tr_sigma_aa(npts, arma::fill::zeros);
+     arma::vec tr_sigma_ab(npts, arma::fill::zeros);
+     arma::vec tr_sigma_bb(npts, arma::fill::zeros);
      for (int p = 0; p < npts; p++) {
-         double rho = rho_vec(p);
-         double pi = pi_vec(p);
-         double zeta = 0.0;
-         double R = 0.0;
+         rho = rho_vec(p);
+         pi = pi_vec(p);
+         rho_x = rho_a_x(p) + rho_b_x(p);
+         rho_y = rho_a_y(p) + rho_b_y(p);
+         rho_z = rho_a_z(p) + rho_b_z(p);
+         zeta = 0.0;
+         R = 0.0;
          if ( !(rho < tol) && !(pi < 0.0) ) {
             R = R_vec(p);
-            if ( (1.0 - R) > tol ) {
+            if ( (1.0 - R) > tol )  {
                zeta = sqrt(1.0 - R);
             }else{
                  zeta = 0.0;
             }
-            tr_rhoa(p) = (1.0 + zeta) * (rho/2.0);
-            tr_rhob(p) = (1.0 - zeta) * (rho/2.0);
+            tr_rho_a_x(p) = (1.0 + zeta) * (rho_x/2.0);
+            tr_rho_b_x(p) = (1.0 - zeta) * (rho_x/2.0);
+
+            tr_rho_a_y(p) = (1.0 + zeta) * (rho_y/2.0);
+            tr_rho_b_y(p) = (1.0 - zeta) * (rho_y/2.0);
+
+            tr_rho_a_z(p) = (1.0 + zeta) * (rho_z/2.0);
+            tr_rho_b_z(p) = (1.0 - zeta) * (rho_z/2.0);
          }else {
-                tr_rhoa(p) = 0.0;
-                tr_rhob(p) = 0.0;
+               tr_rho_a_x(p) = 0.0;
+               tr_rho_b_x(p) = 0.0;
+               tr_rho_a_y(p) = 0.0;
+               tr_rho_b_y(p) = 0.0;
+               tr_rho_a_z(p) = 0.0;
+               tr_rho_b_z(p) = 0.0;
          }
-         dum_a += tr_rhoa(p) * W(p);
-         dum_b += tr_rhob(p) * W(p);
-         dum_tot += ( tr_rhoa(p) + tr_rhob(p) ) * W(p) ;
+         tr_sigma_aa(p) = (tr_rho_a_x(p) * tr_rho_a_x(p)) + (tr_rho_a_y(p) * tr_rho_a_y(p)) + (tr_rho_a_z(p) * tr_rho_a_z(p));
+         tr_sigma_ab(p) = (tr_rho_a_x(p) * tr_rho_b_x(p)) + (tr_rho_a_y(p) * tr_rho_b_y(p)) + (tr_rho_a_z(p) * tr_rho_b_z(p));
+         tr_sigma_bb(p) = (tr_rho_b_x(p) * tr_rho_b_x(p)) + (tr_rho_b_y(p) * tr_rho_b_y(p)) + (tr_rho_b_z(p) * tr_rho_b_z(p));
      }
-     set_tr_rhoa(tr_rhoa);
-     set_tr_rhob(tr_rhob);
-
-     printf("\n");
-     printf("  Integrated translated total density = %20.12lf\n",dum_tot);
-     printf("  Integrated translated alpha density = %20.12lf\n",dum_a);
-     printf("  Integrated translated beta density  = %20.12lf\n",dum_b);
-     printf("\n");
-
-     if ( is_gga_ ) {
-         arma::vec rho_a_x(get_rhoa_x());
-         arma::vec rho_a_y(get_rhoa_y());
-         arma::vec rho_a_z(get_rhoa_z());
-         arma::vec rho_b_x(get_rhob_x());
-         arma::vec rho_b_y(get_rhob_y());
-         arma::vec rho_b_z(get_rhob_z());
-	 arma::vec tr_rho_a_x(npts,  arma::fill::zeros);
-         arma::vec tr_rho_b_x(npts,  arma::fill::zeros);
-         arma::vec tr_rho_a_y(npts,  arma::fill::zeros);
-         arma::vec tr_rho_b_y(npts,  arma::fill::zeros);
-         arma::vec tr_rho_a_z(npts,  arma::fill::zeros);
-         arma::vec tr_rho_b_z(npts,  arma::fill::zeros);
-         arma::vec tr_sigma_aa(npts, arma::fill::zeros);
-         arma::vec tr_sigma_ab(npts, arma::fill::zeros);
-         arma::vec tr_sigma_bb(npts, arma::fill::zeros);
-         for (int p = 0; p < npts; p++) {
-             double rho = rho_vec(p);
-             double pi = pi_vec(p);
-             double rho_x = rho_a_x(p) + rho_b_x(p);
-             double rho_y = rho_a_y(p) + rho_b_y(p);
-             double rho_z = rho_a_z(p) + rho_b_z(p);
-             double zeta = 0.0;
-             double R = 0.0;
-             if ( !(rho < tol) && !(pi < 0.0) ) {
-                R = R_vec(p);
-                if ( (1.0 - R) > tol )  {
-                   zeta = sqrt(1.0 - R);
-                }else{
-                     zeta = 0.0;
-                }
-                tr_rho_a_x(p) = (1.0 + zeta) * (rho_x/2.0);
-                tr_rho_b_x(p) = (1.0 - zeta) * (rho_x/2.0);
-
-                tr_rho_a_y(p) = (1.0 + zeta) * (rho_y/2.0);
-                tr_rho_b_y(p) = (1.0 - zeta) * (rho_y/2.0);
-
-                tr_rho_a_z(p) = (1.0 + zeta) * (rho_z/2.0);
-                tr_rho_b_z(p) = (1.0 - zeta) * (rho_z/2.0);
-             }else {
-                   tr_rho_a_x(p) = 0.0;
-                   tr_rho_b_x(p) = 0.0;
-                   tr_rho_a_y(p) = 0.0;
-                   tr_rho_b_y(p) = 0.0;
-                   tr_rho_a_z(p) = 0.0;
-                   tr_rho_b_z(p) = 0.0;
-             }
-             tr_sigma_aa(p) = (tr_rho_a_x(p) * tr_rho_a_x(p)) + (tr_rho_a_y(p) * tr_rho_a_y(p)) + (tr_rho_a_z(p) * tr_rho_a_z(p));
-             tr_sigma_ab(p) = (tr_rho_a_x(p) * tr_rho_b_x(p)) + (tr_rho_a_y(p) * tr_rho_b_y(p)) + (tr_rho_a_z(p) * tr_rho_b_z(p));
-             tr_sigma_bb(p) = (tr_rho_b_x(p) * tr_rho_b_x(p)) + (tr_rho_b_y(p) * tr_rho_b_y(p)) + (tr_rho_b_z(p) * tr_rho_b_z(p));
-         }
-	 set_tr_sigma_aa(tr_sigma_aa);
-	 set_tr_sigma_ab(tr_sigma_ab);
-	 set_tr_sigma_bb(tr_sigma_bb);
-     }
+     set_tr_sigma_aa(tr_sigma_aa);
+     set_tr_sigma_ab(tr_sigma_ab);
+     set_tr_sigma_bb(tr_sigma_bb);
    }
- 
+
    void MCPDFT::fully_translate(){
         double tol = 1.0e-20;
         size_t npts = get_npts();
