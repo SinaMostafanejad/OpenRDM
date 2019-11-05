@@ -371,41 +371,45 @@ namespace mcpdft {
      arma::vec tr_sigma_aa(npts, arma::fill::zeros);
      arma::vec tr_sigma_ab(npts, arma::fill::zeros);
      arma::vec tr_sigma_bb(npts, arma::fill::zeros);
-     for (int p = 0; p < npts; p++) {
-         rho = rho_vec(p);
-         pi = pi_vec(p);
-         rho_x = rho_a_x(p) + rho_b_x(p);
-         rho_y = rho_a_y(p) + rho_b_y(p);
-         rho_z = rho_a_z(p) + rho_b_z(p);
-         zeta = 0.0;
-         R = 0.0;
-         if ( !(rho < tol) && !(pi < 0.0) ) {
-            R = R_vec(p);
-            if ( (1.0 - R) > tol )  {
-               zeta = sqrt(1.0 - R);
-            }else{
-                 zeta = 0.0;
+     #pragma parallel for schedule(static) \
+                          default(shared) \
+                          private(p, zeta, pi, rho,\
+		                  rho_x, rho_y, rho_z)
+        for (int p = 0; p < npts; p++) {
+            rho = rho_vec(p);
+            pi = pi_vec(p);
+            rho_x = rho_a_x(p) + rho_b_x(p);
+            rho_y = rho_a_y(p) + rho_b_y(p);
+            rho_z = rho_a_z(p) + rho_b_z(p);
+            zeta = 0.0;
+            R = 0.0;
+            if ( !(rho < tol) && !(pi < 0.0) ) {
+               R = R_vec(p);
+               if ( (1.0 - R) > tol )  {
+                  zeta = sqrt(1.0 - R);
+               }else{
+                    zeta = 0.0;
+               }
+               tr_rho_a_x(p) = (1.0 + zeta) * (rho_x/2.0);
+               tr_rho_b_x(p) = (1.0 - zeta) * (rho_x/2.0);
+
+               tr_rho_a_y(p) = (1.0 + zeta) * (rho_y/2.0);
+               tr_rho_b_y(p) = (1.0 - zeta) * (rho_y/2.0);
+
+               tr_rho_a_z(p) = (1.0 + zeta) * (rho_z/2.0);
+               tr_rho_b_z(p) = (1.0 - zeta) * (rho_z/2.0);
+            }else {
+                  tr_rho_a_x(p) = 0.0;
+                  tr_rho_b_x(p) = 0.0;
+                  tr_rho_a_y(p) = 0.0;
+                  tr_rho_b_y(p) = 0.0;
+                  tr_rho_a_z(p) = 0.0;
+                  tr_rho_b_z(p) = 0.0;
             }
-            tr_rho_a_x(p) = (1.0 + zeta) * (rho_x/2.0);
-            tr_rho_b_x(p) = (1.0 - zeta) * (rho_x/2.0);
-
-            tr_rho_a_y(p) = (1.0 + zeta) * (rho_y/2.0);
-            tr_rho_b_y(p) = (1.0 - zeta) * (rho_y/2.0);
-
-            tr_rho_a_z(p) = (1.0 + zeta) * (rho_z/2.0);
-            tr_rho_b_z(p) = (1.0 - zeta) * (rho_z/2.0);
-         }else {
-               tr_rho_a_x(p) = 0.0;
-               tr_rho_b_x(p) = 0.0;
-               tr_rho_a_y(p) = 0.0;
-               tr_rho_b_y(p) = 0.0;
-               tr_rho_a_z(p) = 0.0;
-               tr_rho_b_z(p) = 0.0;
-         }
-         tr_sigma_aa(p) = (tr_rho_a_x(p) * tr_rho_a_x(p)) + (tr_rho_a_y(p) * tr_rho_a_y(p)) + (tr_rho_a_z(p) * tr_rho_a_z(p));
-         tr_sigma_ab(p) = (tr_rho_a_x(p) * tr_rho_b_x(p)) + (tr_rho_a_y(p) * tr_rho_b_y(p)) + (tr_rho_a_z(p) * tr_rho_b_z(p));
-         tr_sigma_bb(p) = (tr_rho_b_x(p) * tr_rho_b_x(p)) + (tr_rho_b_y(p) * tr_rho_b_y(p)) + (tr_rho_b_z(p) * tr_rho_b_z(p));
-     }
+            tr_sigma_aa(p) = (tr_rho_a_x(p) * tr_rho_a_x(p)) + (tr_rho_a_y(p) * tr_rho_a_y(p)) + (tr_rho_a_z(p) * tr_rho_a_z(p));
+            tr_sigma_ab(p) = (tr_rho_a_x(p) * tr_rho_b_x(p)) + (tr_rho_a_y(p) * tr_rho_b_y(p)) + (tr_rho_a_z(p) * tr_rho_b_z(p));
+            tr_sigma_bb(p) = (tr_rho_b_x(p) * tr_rho_b_x(p)) + (tr_rho_b_y(p) * tr_rho_b_y(p)) + (tr_rho_b_z(p) * tr_rho_b_z(p));
+        }
      set_tr_sigma_aa(tr_sigma_aa);
      set_tr_sigma_ab(tr_sigma_ab);
      set_tr_sigma_bb(tr_sigma_bb);
