@@ -115,13 +115,18 @@ namespace mcpdft {
 
       DiskRW dskrw;
       dskrw.write_opdm(D1a,D1b);
+      dskrw.write_tpdm(D2ab);
       size_t nbfs = mc->get_nbfs();
+      size_t nbfs2 = nbfs * nbfs;
       try{
          arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
          arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
+         arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
          dskrw.read_opdm(d1a,d1b);
          // d1a.print("D1a =");
          // d1b.print("D1b =");
+         dskrw.read_tpdm(d2ab);
+         // d2ab.print("D2ab =");
       } catch(const char* err_msg) {
          printf("%s\n",err_msg);
       }

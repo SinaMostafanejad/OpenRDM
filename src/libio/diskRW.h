@@ -19,24 +19,28 @@ namespace mcpdft {
 //           virtual void calculate_memory(arma::mat &D1, arma::mat &D2ab);
 
            /// Calls read_opdm() and read_tpdm() fxns
-           void read_rdms();
+           void read_rdms(arma::mat &D1a,
+                          arma::mat &D1b,
+                          arma::mat &D2ab);
 
            /// Read 1RDM from disk
            void read_opdm(arma::mat &D1a,
 		          arma::mat &D1b);
 
-           /// Read 1RDM from disk
-           void read_tpdm();
+           /// Read 2RDM from disk
+           void read_tpdm(arma::mat &D2ab);
 
            /// Calls write_opdm() and write_tpdm() fxns
-           void write_rdms();
+           void write_rdms(const arma::mat &D1a,
+                           const arma::mat &D1b,
+			   const arma::mat &D2ab);
 
            /// Write 1RDM into disk
            void write_opdm(const arma::mat &D1a,
 			   const arma::mat &D1b);
 
            /// Write 2RDM into disk
-           void write_tpdm();
+           void write_tpdm(const arma::mat &D2ab);
 	private:
 	   /// A memory buffer
            long int memory_;

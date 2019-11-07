@@ -16,12 +16,15 @@ namespace mcpdft {
    DiskRW::DiskRW()  {}
    DiskRW::~DiskRW() {}
 
-   void DiskRW::read_rdms() {
+   void DiskRW::read_rdms(arma::mat &D1a,
+                          arma::mat &D1b,
+			  arma::mat &D2ab) {
+      read_opdm(D1a, D1b);
+      read_tpdm(D2ab);
    }
 
    void DiskRW::read_opdm(arma::mat &D1a,
 		          arma::mat &D1b) {
-
       std::ifstream file(OPDM_H5FILE);
       if( !file.good() )
 	throw "\n  Warning: No accessible HDF5 file by the name \"opdm.h5\" exists!\n";
@@ -34,7 +37,7 @@ namespace mcpdft {
       /* file indentifiers and handles */
       hid_t file_id;
       hid_t D1a_dst_id, D1b_dst_id;
-      herr_t       status;
+      herr_t status;
 
       /* Open the existing HDF5 file in the read-only mode */
       file_id = H5Fopen(OPDM_H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
@@ -61,9 +64,43 @@ namespace mcpdft {
       status = H5Fclose(file_id); 
    }
 
-   void DiskRW::read_tpdm() {}
+   void DiskRW::read_tpdm(arma::mat &D2ab) {
+      std::ifstream file(TPDM_H5FILE);
+      if( !file.good() )
+	throw "\n  Warning: No accessible HDF5 file by the name \"tpdm.h5\" exists!\n";
+        file.close();
 
-   void DiskRW::write_rdms() {}
+      assert( D2ab.n_cols == D2ab.n_rows );
+      size_t dim = D2ab.n_cols;
+
+      /* file indentifiers and handles */
+      hid_t file_id;
+      hid_t D2ab_dst_id;
+      herr_t status;
+
+      /* Open the existing HDF5 file in the read-only mode */
+      file_id = H5Fopen(TPDM_H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
+
+      /* Open the existing HDF5 dataset in the read-only mode */
+      D2ab_dst_id = H5Dopen2(file_id,"/D2ab/D2ab_DataSet", H5P_DEFAULT);
+
+      /* Read the D2ab_DataSet */
+      status = H5Dread(D2ab_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, D2ab.memptr());
+
+      /* Close datasets. */
+      status = H5Dclose(D2ab_dst_id);
+
+      /* Close the file. */
+      status = H5Fclose(file_id); 
+   }
+
+   void DiskRW::write_rdms(const arma::mat &D1a, 
+                           const arma::mat &D1b,
+			   const arma::mat &D2ab) {
+      write_opdm(D1a, D1b);
+      write_tpdm(D2ab);
+   }
 
    void DiskRW::write_opdm(const arma::mat &D1a,
 		           const arma::mat &D1b) {
@@ -145,5 +182,63 @@ namespace mcpdft {
       status = H5Fclose(file_id); 
    }
 
-   void DiskRW::write_tpdm() {}
+   void DiskRW::write_tpdm(const arma::mat &D2ab) {
+      assert( D2ab.n_cols == D2ab.n_rows );
+      size_t dim = D2ab.n_cols;
+
+      /* file indentifiers and handles */
+      hid_t file_id;
+      hid_t D2ab_grp_id;
+      hid_t D2ab_dst_id;
+      hid_t dataspace_id;
+      hid_t filespace_id;//, memspace_id;
+      hid_t prop_id;
+      /* dataset dimensions at creation time */
+      double D2_buff[dim][dim];
+      hsize_t dims[2] = {dim, dim};
+      // hsize_t      maxdims[2] = {H5S_UNLIMITED, H5S_UNLIMITED};
+      herr_t       status;
+      // hsize_t      chunk_dims[2] = {2, 5};
+
+      /* Create a new file. If the file exists, its contents
+       * will be overwritten */
+      file_id = H5Fcreate(TPDM_H5FILE, H5F_ACC_TRUNC,
+	                  H5P_DEFAULT, H5P_DEFAULT);
+
+      /* Create "D2ab" group within the root group */
+      D2ab_grp_id = H5Gcreate2(file_id, "/D2ab",
+                               H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+      /* Create the data space for the dataset */
+      dataspace_id = H5Screate_simple(RANK, dims, NULL);
+
+      /* Create a dataset in group "/D2ab" */
+      D2ab_dst_id = H5Dcreate2(file_id, "/D2ab/D2ab_DataSet",
+        	              H5T_IEEE_F64LE, dataspace_id,
+                              H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
+
+      for(int ij=0; ij < dim; ij++)
+         for(int kl=0; kl < dim; kl++)
+             D2_buff[ij][kl] = D2ab(ij,kl);
+
+      /* Write the D1a_DataSet */
+      status = H5Dwrite(D2ab_dst_id, H5T_NATIVE_DOUBLE,
+        	        H5S_ALL, H5S_ALL, H5P_DEFAULT, D2_buff);
+
+      // /* Modify dataset creation properties, i.e. enable chunking  */
+      // prop_id = H5Pcreate (H5P_DATASET_CREATE);
+      // status = H5Pset_chunk (prop_id, RANK, chunk_dims);
+
+      /* Close dataspace. */
+      status = H5Sclose(dataspace_id);
+
+      /* Close dataset. */
+      status = H5Dclose(D2ab_dst_id);
+
+      /* Close group. */
+      status = H5Gclose(D2ab_grp_id);
+
+      /* Close the file. */
+      status = H5Fclose(file_id); 
+   }
 }
