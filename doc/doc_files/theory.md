@@ -1,10 +1,8 @@
-Theory         {#theory}
-==========
+@page theory Theory
 
 [TOC]
 
-Background          {#background}
-----------
+@section background Background
 
 Here, we use the conventional notation of multireference (MR) methods
 when labeling the molecular orbitals (MOs), \f$\lbrace \psi\rbrace\f$:
@@ -57,8 +55,7 @@ and
 respectively. Again, the summation over the spin labels 
 in Eqs. \f$\eqref{EQ:1RDM}\f$ and \f$\eqref{EQ:2RDM}\f$ is implied.
 
-Multiconfiguration Pair-Density Functional Theory          {#mcpdft}
-----------
+@section mcpdft Multiconfiguration Pair-Density Functional Theory
 
 The MCDPFT energy expression can be written as
 
