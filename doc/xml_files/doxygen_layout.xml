@@ -6,7 +6,7 @@
       <!-- tab type="introduction" visible="no" title="" href="introduction.md"/>
       <tab type="theory" visible="no" title="" href="theory.md"/-->
     </tab>
-    <tab type="pages" visible="yes" title="" intro=""/>
+    <tab type="pages" visible="no" title="" intro=""/>
     <tab type="modules" visible="yes" title="C modules" intro=""/>
     <tab type="namespaces" visible="yes" title="">
       <tab type="namespacelist" visible="yes" title="" intro=""/>
