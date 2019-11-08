@@ -1,5 +1,4 @@
-Known Issues          {#issues}
-==========
+@page issues Known Issues
 
 Since Libxc and HDF5 are added as external projects and independent builds into the main OpenRDM project,
 using WITH_LIBXC=ON and WITH_HDF5=ON options at the configure step and within the configure script generates
