@@ -1,5 +1,5 @@
-Dependencies          {#dependencies}
-==========
+@page dependencies Dependencies
+
 
 The present implementation of the <b>OpenRDM</b> library is dependent upon
 a few external libraries to deliver its task:

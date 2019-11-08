@@ -1,5 +1,4 @@
-OpenRDM        {#mainpage}
-==========
+@mainpage OpenRDM
 
 The github repository for <b>OpenRDM</b> library 
 is located at [here](https://github.com/SinaMostafanejad/OpenRDM).
