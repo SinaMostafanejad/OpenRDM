@@ -1,4 +1,5 @@
-@page theory Theory
+Theory     {#theory}
+========
 
 [TOC]
 

@@ -1,4 +1,5 @@
-@page todo To Do 
+To Do   {#todo}
+=======
 
 The following is a list of important tasks that need to be done:
 

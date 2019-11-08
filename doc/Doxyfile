@@ -794,7 +794,7 @@ WARN_LOGFILE           =
 # Note: If this tag is empty the current directory is searched.
 
 INPUT                  = $(TRAVIS_BUILD_DIR)/src \
-                         $(TRAVIS_BUILD_DIR)/doc/doc_files/openrdm.md \
+                         $(TRAVIS_BUILD_DIR)/doc/doc_files/mainpage.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/introduction.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/theory.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/dependencies.md \
