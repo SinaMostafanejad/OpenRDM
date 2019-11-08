@@ -51,14 +51,14 @@ PROJECT_BRIEF          = "An open-source library for reduced-density matrix-base
 # pixels and the maximum width should not exceed 200 pixels. Doxygen will copy
 # the logo to the output directory.
 
-PROJECT_LOGO           = $(TRAVIS_BUILD_DIR)/doc/images/logo.png
+PROJECT_LOGO           = images/logo.png
 
 # The OUTPUT_DIRECTORY tag is used to specify the (relative or absolute) path
 # into which the generated documentation will be written. If a relative path is
 # entered, it will be relative to the location where doxygen was started. If
 # left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = $(TRAVIS_BUILD_DIR)/doc 
+OUTPUT_DIRECTORY       = doc 
 
 # If the CREATE_SUBDIRS tag is set to YES then doxygen will create 4096 sub-
 # directories (in 2 levels) under the output directory of each output format and
@@ -706,7 +706,7 @@ FILE_VERSION_FILTER    =
 # DoxygenLayout.xml, doxygen will parse it automatically even if the LAYOUT_FILE
 # tag is left empty.
 
-LAYOUT_FILE            = $(TRAVIS_BUILD_DIR)/doc/xml_files/doxygen_layout.xml
+LAYOUT_FILE            = xml_files/doxygen_layout.xml
 
 # The CITE_BIB_FILES tag can be used to specify one or more bib files containing
 # the reference definitions. This must be a list of .bib files. The .bib
@@ -793,14 +793,15 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = $(TRAVIS_BUILD_DIR)/src \
-                         $(TRAVIS_BUILD_DIR)/doc/doc_files/mainpage.md \
-                         $(TRAVIS_BUILD_DIR)/doc/doc_files/introduction.md \
-                         $(TRAVIS_BUILD_DIR)/doc/doc_files/theory.md \
-                         $(TRAVIS_BUILD_DIR)/doc/doc_files/dependencies.md \
-                         $(TRAVIS_BUILD_DIR)/doc/doc_files/issues.md \
-                         $(TRAVIS_BUILD_DIR)/doc/doc_files/howtouse.md \
-                         $(TRAVIS_BUILD_DIR)/doc/doc_files/todo.md
+INPUT                  = ../src \
+                         doc_files/mainpage.md \
+                         doc_files/introduction.md \
+                         doc_files/theory.md \
+                         doc_files/dependencies.md \
+                         doc_files/issues.md \
+                         doc_files/howtouse.md \
+                         doc_files/todo.md \
+                         test.md
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -1151,7 +1152,7 @@ GENERATE_HTML          = YES
 # The default directory is: html.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_OUTPUT            = $(TRAVIS_BUILD_DIR)/doc
+HTML_OUTPUT            = doc
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for each
 # generated HTML page (for example: .htm, .php, .asp).
@@ -1178,7 +1179,7 @@ HTML_FILE_EXTENSION    = .html
 # of the possible markers and block names see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_HEADER            = $(TRAVIS_BUILD_DIR)/doc/header_files/doxygen_header.html
+HTML_HEADER            = header_files/doxygen_header.html
 
 # The HTML_FOOTER tag can be used to specify a user-defined HTML footer for each
 # generated HTML page. If the tag is left blank doxygen will generate a standard
@@ -1188,7 +1189,7 @@ HTML_HEADER            = $(TRAVIS_BUILD_DIR)/doc/header_files/doxygen_header.htm
 # that doxygen normally uses.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_FOOTER            = $(TRAVIS_BUILD_DIR)/doc/footer_files/doxygen_footer.html
+HTML_FOOTER            = footer_files/doxygen_footer.html
 
 # The HTML_STYLESHEET tag can be used to specify a user-defined cascading style
 # sheet that is used by each HTML page. It can be used to fine-tune the look of
@@ -1213,7 +1214,7 @@ HTML_STYLESHEET        =
 # list). For an example see the documentation.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_EXTRA_STYLESHEET  = $(TRAVIS_BUILD_DIR)/doc/css_files/doxygen_extra.css
+HTML_EXTRA_STYLESHEET  = css_files/doxygen_extra.css
 
 # The HTML_EXTRA_FILES tag can be used to specify one or more extra images or
 # other source files which should be copied to the HTML output directory. Note
