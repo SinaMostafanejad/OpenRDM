@@ -3,8 +3,8 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title="">
-      <!--tab type="introduction" visible="yes" title="" url="@ref introduction"/>
-      <tab type="theory" visible="yes" title="" url="@ref theory"/-->
+      <tab type="user" visible="yes" title="Introduction" url="@ref introduction"/>
+      <tab type="user" visible="yes" title="To do" url="@ref todo"/>
     </tab>
     <tab type="pages" visible="yes" title="" intro=""/>
     <tab type="modules" visible="yes" title="C modules" intro=""/>
