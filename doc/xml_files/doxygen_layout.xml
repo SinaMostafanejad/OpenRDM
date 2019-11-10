@@ -4,7 +4,13 @@
   <navindex>
     <tab type="mainpage" visible="yes" title="">
       <tab type="user" visible="yes" title="Introduction" url="@ref introduction"/>
-      <tab type="user" visible="yes" title="Theory" url="@ref theory"/>
+      <tab type="user" visible="yes" title="Theory" url="@ref theory">
+      		 <tab type="user" visible="yes" title="Background" url="@ref background"/>
+		 <tab type="user"
+		      visible="yes"
+	              title="Multiconfiguration Pair-Density Functional Theory"
+		      url="@ref mcpdft"/>
+      </tab>
       <tab type="user" visible="yes" title="Dependencies" url="@ref dependencies"/>
       <tab type="user" visible="yes" title="Known Issues" url="@ref issues"/>
       <tab type="user" visible="yes" title="How to Use" url="@ref howtouse"/>
