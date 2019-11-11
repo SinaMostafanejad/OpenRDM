@@ -1,5 +1,5 @@
 Releases     {#releases}
-=================
+=========
 
 List of <b>OpenRDM</b> releases:
 

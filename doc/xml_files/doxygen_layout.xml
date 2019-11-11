@@ -12,8 +12,8 @@
     <tab type="user" visible="yes" title="Known Issues" url="@ref issues"/>
     <tab type="user" visible="yes" title="How to Use" url="@ref howtouse"/>
     <tab type="usergroup" visible="yes" title="Releases" url="@ref releases">
-       <tab type="user" visible="yes" title="" url="@ref v000"/>
-       <tab type="user" visible="yes" title="" url="@ref v010"/>
+       <tab type="user" visible="yes" title="Version 0.0.0" url="@ref v000"/>
+       <tab type="user" visible="yes" title="Version 0.1.0" url="@ref v010"/>
     </tab>
     <tab type="user" visible="yes" title="To do" url="@ref todo"/>
     <tab type="pages" visible="no" title="" intro=""/>
