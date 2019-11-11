@@ -11,7 +11,7 @@
     <tab type="user" visible="yes" title="Dependencies" url="@ref dependencies"/>
     <tab type="user" visible="yes" title="Known Issues" url="@ref issues"/>
     <tab type="user" visible="yes" title="How to Use" url="@ref howtouse"/>
-    <tab type="user" visible="yes" title="OpenRDM Releases" url="@ref releases"/>
+    <tab type="user" visible="yes" title="Releases" url="@ref releases"/>
     <tab type="user" visible="yes" title="To do" url="@ref todo"/>
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="modules" visible="yes" title="C modules" intro=""/>
