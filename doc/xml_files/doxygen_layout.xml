@@ -3,19 +3,20 @@
   <!-- Navigation index tabs for HTML output -->
   <navindex>
     <tab type="mainpage" visible="yes" title=""/>
-    <tab type="user" visible="yes" title="Introduction" url="@ref introduction"/>
+    <tab type="usergroup" visible="yes" title="Introduction" url="@ref introduction"/>
     <tab type="usergroup" visible="yes" title="Theory" url="@ref theory">
        <tab type="user" visible="yes" title="Background" url="@ref background"/>
        <tab type="user" visible="yes" title="Multiconfiguration Pair-Density Functional Theory" url="@ref mcpdft"/>
     </tab>
-    <tab type="user" visible="yes" title="Dependencies" url="@ref dependencies"/>
-    <tab type="user" visible="yes" title="Known Issues" url="@ref issues"/>
-    <tab type="user" visible="yes" title="How to Use" url="@ref howtouse"/>
+    <tab type="usergroup" visible="yes" title="Dependencies" url="@ref dependencies"/>
+    <tab type="usergroup" visible="yes" title="Known Issues" url="@ref issues"/>
+    <tab type="usergroup" visible="yes" title="How to Use" url="@ref howtouse"/>
     <tab type="usergroup" visible="yes" title="Releases" url="@ref releases">
        <tab type="user" visible="yes" title="Version 0.0.0" url="@ref v000"/>
        <tab type="user" visible="yes" title="Version 0.1.0" url="@ref v010"/>
+       <tab type="user" visible="yes" title="Version 0.2.0" url="@ref v020"/>
     </tab>
-    <tab type="user" visible="yes" title="To do" url="@ref todo"/>
+    <tab type="usergroup" visible="yes" title="To do" url="@ref todo"/>
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="modules" visible="yes" title="C modules" intro=""/>
     <tab type="namespaces" visible="yes" title="">
