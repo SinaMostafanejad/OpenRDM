@@ -16,6 +16,9 @@
        <tab type="user" visible="yes" title="Version 0.1.0" url="@ref v010"/>
        <tab type="user" visible="yes" title="Version 0.2.0" url="@ref v020"/>
     </tab>
+    <tab type="usergroup" visible="yes" title="Important Notes" url="@ref notes">
+       <tab type="user" visible="yes" title="OpenMP" url="@ref openmp"/>
+    </tab>
     <tab type="usergroup" visible="yes" title="To do" url="@ref todo"/>
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="modules" visible="yes" title="C modules" intro=""/>
