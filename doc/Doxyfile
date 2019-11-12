@@ -803,7 +803,8 @@ INPUT                  = $(TRAVIS_BUILD_DIR)/src \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/todo.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/releases.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/releases/v0.0.0.md \
-                         $(TRAVIS_BUILD_DIR)/doc/doc_files/releases/v0.1.0.md
+                         $(TRAVIS_BUILD_DIR)/doc/doc_files/releases/v0.1.0.md \
+                         $(TRAVIS_BUILD_DIR)/doc/doc_files/releases/v0.2.0.md
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
