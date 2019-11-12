@@ -12,4 +12,5 @@ is located at [here](https://github.com/SinaMostafanejad/OpenRDM).
 + [Dependencies](@ref dependencies)
 + [Known Issues](@ref issues)
 + [Releases](@ref releases)
++ [Important Notes](@ref notes)
 + [To Do](@ref todo)
