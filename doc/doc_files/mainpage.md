@@ -1,7 +1,7 @@
 OpenRDM     {#mainpage}
 =========
 
-![OpenRDM: An open-source library for reduced-density matrix-based analysis and computation]($(TRAVIS_BUILD_DIR)/doc/images/OpenRDMmain.png)
+![](@ref OpenRDMmain.png)
 
 The github repository for <b>OpenRDM</b> library 
 is located at [here](https://github.com/SinaMostafanejad/OpenRDM).
