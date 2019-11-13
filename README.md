@@ -1,6 +1,6 @@
 
 <p align="center">
-<img src="OpenRDM.png" style='height: 5%; width: 10%; object-fit: contain'/> 
+<img src="OpenRDM.png" style='height: 1%; width: 5%; object-fit: contain'/> 
 <br>
 </p>
 
