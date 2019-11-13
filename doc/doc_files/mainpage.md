@@ -2,7 +2,7 @@ OpenRDM     {#mainpage}
 =========
 
 <p align="center">
-<img src="OpenRDMmain.png" style='height: 25%; width: 40%; object-fit: contain'/> 
+<img src="OpenRDMmain.png" style='height: 30%; width: 40%; object-fit: contain'/> 
 <br>
 </p>
 
