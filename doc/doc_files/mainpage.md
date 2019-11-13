@@ -1,6 +1,11 @@
 OpenRDM     {#mainpage}
 =========
 
+<p align="center">
+<img src="OpenRDM.png" style='height: 1%; width: 5%; object-fit: contain'/> 
+<br>
+</p>
+
 The github repository for <b>OpenRDM</b> library 
 is located at [here](https://github.com/SinaMostafanejad/OpenRDM).
 
