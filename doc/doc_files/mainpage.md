@@ -11,6 +11,7 @@ is located at [here](https://github.com/SinaMostafanejad/OpenRDM).
   - [Background](@ref background)
   - [Multiconfiguration Pair-Density Functional Theory](@ref mcpdft)
 + [How to Use](@ref howtouse)
++ [Running the Tests](@ref runningtests)
 + [Dependencies](@ref dependencies)
 + [Known Issues](@ref issues)
 + [Releases](@ref releases)
