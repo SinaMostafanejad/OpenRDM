@@ -6,7 +6,7 @@ It can be easily incorporated into a project using CMake. To do so, add the foll
 commands to the CMakeLists.txt file in the root directory of your software:
 
 \code{.cmake}
-\# A short block of the CMake code needed to link the OpenRDM library \#
+# A short block of the CMake code needed to link the OpenRDM library
 add_executable(myTarget myCode.cc)
 target_link_libraries(myTarget PUBLIC openrdm)
 target_compile_definitions(myTarget PUBLIC openrdm)
