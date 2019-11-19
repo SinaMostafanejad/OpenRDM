@@ -11,6 +11,7 @@
     <tab type="usergroup" visible="yes" title="Dependencies" url="@ref dependencies"/>
     <tab type="usergroup" visible="yes" title="Known Issues" url="@ref issues"/>
     <tab type="usergroup" visible="yes" title="How to Use" url="@ref howtouse"/>
+    <tab type="usergroup" visible="yes" title="Running the Tests" url="@ref runningtests"/>
     <tab type="usergroup" visible="yes" title="Releases" url="@ref releases">
        <tab type="user" visible="yes" title="Version 0.0.0" url="@ref v000"/>
        <tab type="user" visible="yes" title="Version 0.1.0" url="@ref v010"/>
