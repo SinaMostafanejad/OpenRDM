@@ -7,9 +7,9 @@
 
 #define OPDM_H5FILE  "opdm.h5"
 #define TPDM_H5FILE  "tpdm.h5"
-#define OPDM_DATASET "opdm_dst"
-#define TPDM_DATASET "tpdm_dst"
-
+#define D1A_DATASET  "/D1a/D1a_DataSet"
+#define D1B_DATASET  "/D1b/D1b_DataSet"
+#define D2AB_DATASET "/D2ab/D2ab_DataSet"
 #define RANK 2
 
 namespace mcpdft {
@@ -36,6 +36,7 @@ namespace mcpdft {
 
       /* file indentifiers and handles */
       hid_t file_id;
+      hid_t dcpl_D1a, dcpl_D1b;
       hid_t D1a_dst_id, D1b_dst_id;
       herr_t status;
 
@@ -43,10 +44,43 @@ namespace mcpdft {
       file_id = H5Fopen(OPDM_H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
 
       /* Open the existing HDF5 dataset in the read-only mode */
-      D1a_dst_id = H5Dopen2(file_id,"/D1a/D1a_DataSet", H5P_DEFAULT);
+      D1a_dst_id = H5Dopen2(file_id, D1A_DATASET, H5P_DEFAULT);
 
       /* Open the existing HDF5 dataset in the read-only mode */
-      D1b_dst_id = H5Dopen2(file_id,"/D1b/D1b_DataSet", H5P_DEFAULT);
+      D1b_dst_id = H5Dopen2(file_id, D1B_DATASET, H5P_DEFAULT);
+
+      /*
+       * Retrieve the dataset creation property list for opdms
+       * and print their storage layout.
+       */
+      dcpl_D1a = H5Dget_create_plist (D1a_dst_id);
+      dcpl_D1b = H5Dget_create_plist (D1b_dst_id);
+      H5D_layout_t layout[] = { H5Pget_layout (dcpl_D1a), H5Pget_layout (dcpl_D1b) };
+      std::string  dataset_names[] = { D1A_DATASET, D1B_DATASET };
+
+      printf ("-------------------------------------------------------------\n");
+      printf ("          HDF5 OPDM & TPDM FILES LAYOUT SUMMARY              \n");
+      printf ("-------------------------------------------------------------\n");
+      for (int i = 0; i < 2; i++) {
+         printf ("  Storage layout for %s is   : ", dataset_names[i].c_str());
+         switch (layout[i]) {
+             case H5D_COMPACT:
+                 printf ("H5D_COMPACT\n");
+                 break;
+             case H5D_CONTIGUOUS:
+                 printf ("H5D_CONTIGUOUS\n");
+                 break;
+             case H5D_CHUNKED:
+                 printf ("H5D_CHUNKED\n");
+                 break;
+             case H5D_VIRTUAL:
+                 printf ("H5D_VIRTUAL\n");
+                 break;
+             case H5D_LAYOUT_ERROR:
+             case H5D_NLAYOUTS:
+                 printf ("H5D_LAYOUT_ERROR\n");
+         }
+      }
 
       /* Read the D1a_DataSet */
       status = H5Dread(D1a_dst_id, H5T_NATIVE_DOUBLE,
@@ -55,6 +89,10 @@ namespace mcpdft {
       /* Read the D1a_DataSet */
       status = H5Dread(D1b_dst_id, H5T_NATIVE_DOUBLE,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT, D1b.memptr());
+
+      /* Close property lists. */
+      status = H5Pclose (dcpl_D1a);
+      status = H5Pclose (dcpl_D1b);
 
       /* Close datasets. */
       status = H5Dclose(D1a_dst_id);
@@ -75,6 +113,7 @@ namespace mcpdft {
 
       /* file indentifiers and handles */
       hid_t file_id;
+      hid_t dcpl_D2ab;
       hid_t D2ab_dst_id;
       herr_t status;
 
@@ -82,7 +121,34 @@ namespace mcpdft {
       file_id = H5Fopen(TPDM_H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
 
       /* Open the existing HDF5 dataset in the read-only mode */
-      D2ab_dst_id = H5Dopen2(file_id,"/D2ab/D2ab_DataSet", H5P_DEFAULT);
+      D2ab_dst_id = H5Dopen2(file_id, D2AB_DATASET, H5P_DEFAULT);
+
+      /*
+       * Retrieve the dataset creation property list for opdms
+       * and print their storage layout.
+       */
+      dcpl_D2ab = H5Dget_create_plist (D2ab_dst_id);
+      H5D_layout_t layout = H5Pget_layout (dcpl_D2ab);
+
+      printf ("  Storage layout for %s is : ", D2AB_DATASET);
+      switch (layout) {
+          case H5D_COMPACT:
+              printf ("H5D_COMPACT\n");
+              break;
+          case H5D_CONTIGUOUS:
+              printf ("H5D_CONTIGUOUS\n");
+              break;
+          case H5D_CHUNKED:
+              printf ("H5D_CHUNKED\n");
+              break;
+          case H5D_VIRTUAL:
+              printf ("H5D_VIRTUAL\n");
+              break;
+          case H5D_LAYOUT_ERROR:
+          case H5D_NLAYOUTS:
+              printf ("H5D_LAYOUT_ERROR\n");
+      }
+      printf ("-------------------------------------------------------------\n\n" );
 
       /* Read the D2ab_DataSet */
       status = H5Dread(D2ab_dst_id, H5T_NATIVE_DOUBLE,
@@ -138,12 +204,12 @@ namespace mcpdft {
       dataspace_id = H5Screate_simple(RANK, dims, NULL);
 
       /* Create a dataset in group "/D1a" */
-      D1a_dst_id = H5Dcreate2(file_id, "/D1a/D1a_DataSet",
+      D1a_dst_id = H5Dcreate2(file_id, D1A_DATASET,
         	              H5T_IEEE_F64LE, dataspace_id,
                               H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
       /* Create a dataset in group "/D1b" */
-      D1b_dst_id = H5Dcreate2(file_id, "/D1b/D1b_DataSet",
+      D1b_dst_id = H5Dcreate2(file_id, D1B_DATASET,
         	              H5T_IEEE_F64LE, dataspace_id,
                               H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
@@ -213,7 +279,7 @@ namespace mcpdft {
       dataspace_id = H5Screate_simple(RANK, dims, NULL);
 
       /* Create a dataset in group "/D2ab" */
-      D2ab_dst_id = H5Dcreate2(file_id, "/D2ab/D2ab_DataSet",
+      D2ab_dst_id = H5Dcreate2(file_id, D2AB_DATASET,
         	              H5T_IEEE_F64LE, dataspace_id,
                               H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
