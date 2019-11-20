@@ -90,15 +90,15 @@ namespace mcpdft {
       status = H5Dread(D1b_dst_id, H5T_NATIVE_DOUBLE,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT, D1b.memptr());
 
-      /* Close property lists. */
-      status = H5Pclose (dcpl_D1a);
-      status = H5Pclose (dcpl_D1b);
+      /* Close property lists */
+      status = H5Pclose(dcpl_D1a);
+      status = H5Pclose(dcpl_D1b);
 
-      /* Close datasets. */
+      /* Close datasets */
       status = H5Dclose(D1a_dst_id);
       status = H5Dclose(D1b_dst_id);
 
-      /* Close the file. */
+      /* Close the file */
       status = H5Fclose(file_id); 
    }
 
@@ -125,7 +125,7 @@ namespace mcpdft {
 
       /*
        * Retrieve the dataset creation property list for opdms
-       * and print their storage layout.
+       * and print their storage layout
        */
       dcpl_D2ab = H5Dget_create_plist (D2ab_dst_id);
       H5D_layout_t layout = H5Pget_layout (dcpl_D2ab);
@@ -154,10 +154,13 @@ namespace mcpdft {
       status = H5Dread(D2ab_dst_id, H5T_NATIVE_DOUBLE,
                        H5S_ALL, H5S_ALL, H5P_DEFAULT, D2ab.memptr());
 
-      /* Close datasets. */
+      /* Close property list */
+      status = H5Pclose(dcpl_D2ab);
+      
+      /* Close dataset */
       status = H5Dclose(D2ab_dst_id);
 
-      /* Close the file. */
+      /* Close the file */
       status = H5Fclose(file_id); 
    }
 
