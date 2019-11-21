@@ -14,11 +14,11 @@ those from Dr. Matthew Welborn and Dr. Samuel Ellis are also acknowldeged.
 
 <div class="row">
    <div class="column">
-   <img src="../images/fsuseal.png" style='height: 1%; width: 5%; object-fit: contain'/>
+   <img src="@ref fsuseal.png" style='height: 1%; width: 5%; object-fit: contain'/>
    </div>
 
    <div class="column">
-   <img src="../images/molssilogo.png" style='height: 1%; width: 5%; object-fit: contain'/>
+   <img src="@ref molssilogo.png" style='height: 1%; width: 5%; object-fit: contain'/>
    </div>
 </div>
 
