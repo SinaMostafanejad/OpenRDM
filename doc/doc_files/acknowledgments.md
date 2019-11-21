@@ -12,18 +12,11 @@ those from Dr. Matthew Welborn and Dr. Samuel Ellis are also acknowldeged.
 ![](@ref fsuseal.png) -->
 <center>
 
-<div class="row">
-   <div class="column">
+<div>
    <p>
    <img src="fsuseal.png" style='height: 1%; width: 5%; object-fit: contain'/>
-   </p>
-   </div>
-
-   <div class="column">
-   <p>
    <img src="molssilogo.png" style='height: 1%; width: 5%; object-fit: contain'/>
    </p>
-   </div>
 </div>
 
 </center>
