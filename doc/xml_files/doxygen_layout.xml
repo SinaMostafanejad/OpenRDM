@@ -20,8 +20,8 @@
     <tab type="usergroup" visible="yes" title="Important Notes" url="@ref notes">
        <tab type="user" visible="yes" title="OpenMP" url="@ref openmp"/>
     </tab>
-    <tab type="usergroup" visible="yes" title="To do" url="@ref todo"/>
     <tab type="usergroup" visible="yes" title="Acknowledgments" url="@ref acknowledgments"/>
+    <tab type="usergroup" visible="yes" title="To do" url="@ref todo"/>
     <tab type="pages" visible="no" title="" intro=""/>
     <tab type="modules" visible="yes" title="C modules" intro=""/>
     <tab type="namespaces" visible="yes" title="">
