@@ -8,4 +8,18 @@ provided through the Seed Software Fellowship from Molecular Science Software In
 fruitful discussions with talented software scientists at MolSSI, specifically,
 those from Dr. Matthew Welborn and Dr. Samuel Ellis are also acknowldeged.
 
-![](@ref molssilogo.png) | ![](@ref fsuseal.png)
+<!-- ![](@ref molssilogo.png) 
+![](@ref fsuseal.png) -->
+<center>
+
+<div class="row">
+   <div class="column">
+   <img src="../images/fsuseal.png" style='height: 1%; width: 5%; object-fit: contain'/>
+   </div>
+
+   <div class="column">
+   <img src="../images/molssilogo.png" style='height: 1%; width: 5%; object-fit: contain'/>
+   </div>
+</div>
+
+</center>
