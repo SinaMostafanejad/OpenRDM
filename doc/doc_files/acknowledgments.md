@@ -1,4 +1,4 @@
-Acknowledgements       {#acknowledgments}
+Acknowledgments       {#acknowledgments}
 ================
 
 I am grateful to Prof. Albert Eugene DePrince III for his expertise and insight
