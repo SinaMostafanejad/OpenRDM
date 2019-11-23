@@ -14,8 +14,9 @@
     <tab type="usergroup" visible="yes" title="Known Issues" url="@ref issues"/>
     <tab type="usergroup" visible="yes" title="Releases" url="@ref releases">
        <tab type="user" visible="yes" title="Version 0.0.0" url="@ref v000"/>
-       <tab type="user" visible="yes" title="Version 0.1.0" url="@ref v010"/>
-       <tab type="user" visible="yes" title="Version 0.2.0" url="@ref v020"/>
+       <tab type="usergroup" visible="yes" title="Version 0.1.0" url="@ref v010">
+          <tab type="user" visible="yes" title="Version 0.1.0-0.1.0" url="@ref v010010"/>
+       </tab>
     </tab>
     <tab type="usergroup" visible="yes" title="Important Notes" url="@ref notes">
        <tab type="user" visible="yes" title="OpenMP" url="@ref openmp"/>
