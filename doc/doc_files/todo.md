@@ -18,6 +18,17 @@ The following is a list of important tasks that need to be done:
      that helps find_package() find the openrdm package. When provided,
      the expedient solution provided in "How to Use" section should be
      updated.
++ Interface:
+   - OpenRDM needs have a (series) of class(es) for interfacing with QC softwares.
+     For example, Psi4 provides intermediate files and PSIO class for dealing with this issue;
+     Possibly, having a simple class would address the problem in Psi4. Other programs need to
+     have a similar functionalities to handle this problem. The next candidate in this direction 
+     would be PySCF.
++ CMake:
+   - Migrate to superbuild structure.
+   - Manage the tests in a more elaborate way.
+   - Provide installation and packaging procedure. The code is in need of a configure file for
+     CMake find_package() to be able to be found by other projects.
 
 There are also long-term goals:
 
