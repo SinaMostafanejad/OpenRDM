@@ -2,10 +2,13 @@
 #include <sys/sysinfo.h>
 #include "energy.h"
 #include "mcpdft.h"
-#include "diskRW.h"
+// #include "diskRW.h"
 #include "libMem.h"
 #include "openrdmConfig.h"
 #include <string>
+#include "HDF5_Read.h"
+#include "HDF5_Write.h"
+#include "HDF5Factory.h"
 #ifdef WITH_LIBXC
    #include <xc.h>
 #else
@@ -113,23 +116,41 @@ namespace mcpdft {
       delete func;
 #endif
 
-      DiskRW dskrw;
-      dskrw.write_opdm(D1a,D1b);
-      dskrw.write_tpdm(D2ab);
       size_t nbfs = mc->get_nbfs();
       size_t nbfs2 = nbfs * nbfs;
-      try{
-         arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
-         arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
-         arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
-         dskrw.read_opdm(d1a,d1b);
-         // d1a.print("D1a =");
-         // d1b.print("D1b =");
-         dskrw.read_tpdm(d2ab);
-         // d2ab.print("D2ab =");
-      } catch(const char* err_msg) {
-         printf("%s\n",err_msg);
-      }
+      arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
+      arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
+      arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
+      IOFactory* iof;
+      IRead* ird;
+      IWrite* iwt;
+
+      iof = new HDF5Factory;
+      iwt = iof->create_IWrite();
+      iwt->write_rdms(D1a,D1b,D2ab);
+      ird = iof->create_IRead();
+      ird->read_rdms(d1a,d1b,d2ab);
+      delete iof;
+      // IWrite* h5w = iof->create_IWrite();
+      // h5w->write_opdm(D1a,D1b);
+      // DiskRW dskrw;
+      // dskrw.write_opdm(D1a,D1b);
+      // dskrw.write_tpdm(D2ab);
+      // size_t nbfs = mc->get_nbfs();
+      // size_t nbfs2 = nbfs * nbfs;
+      // try{
+      //    arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
+      //    arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
+      //    arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
+      //    dskrw.read_opdm(d1a,d1b);
+      //    // d1a.print("D1a =");
+      //    // d1b.print("D1b =");
+      //    dskrw.read_tpdm(d2ab);
+      //    // d2ab.print("D2ab =");
+      // } catch(const char* err_msg) {
+      //    printf("%s\n",err_msg);
+      // }
+
 
       printf("------------------------------------------\n");
       printf("   Classical energy = %-20.12lf\n", eclass);
