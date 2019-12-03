@@ -15,7 +15,7 @@ class HDF5_Read: public IRead {
 
        /// Read 1RDM from disk
        void read_opdm(arma::mat &D1a,
-    	          arma::mat &D1b);
+    	              arma::mat &D1b);
 
        /// Read 2RDM from disk
        void read_tpdm(arma::mat &D2ab);

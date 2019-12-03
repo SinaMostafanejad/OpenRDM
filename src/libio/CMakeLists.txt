@@ -1,7 +1,5 @@
 target_sources(openrdm
                INTERFACE
-	       ${CMAKE_CURRENT_LIST_DIR}/memRW.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/memRW.h
 	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read.cc
 	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read.h
 	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write.cc
