@@ -70,7 +70,7 @@ Please feel free to modify the configure script and/or CMakeLists.txt to address
 
 ## KNOWN ISSUES
 
-Since Libxc and HDF5 are added as external projects and independent builds into the main <b>OpenRDM</b> project, using <i>WITH_LIBXC=ON</i> and <i>WITH_HDF5=ON</i> options at the configure step and within the configure script generates an "unknown build rule" error for Ninja generators. At the moment, the user has to adopt Unix Makefile's <i>make</i> as the build generator.
+If you have any problems working with <b>OpenRDM</b> software, please take a glance at the [Known Issues](https://sinamostafanejad.github.io/OpenRDM/issues.html) page of the [documentation](https://sinamostafanejad.github.io/OpenRDM/index.html).
 
 ## REFERENCES
 
