@@ -17,6 +17,7 @@
        <tab type="usergroup" visible="yes" title="Version 0.1.0" url="@ref v010">
           <tab type="user" visible="yes" title="Version 0.1.0-0.1.0" url="@ref v010010"/>
           <tab type="user" visible="yes" title="Version 0.1.0-0.2.0" url="@ref v010020"/>
+          <tab type="user" visible="yes" title="Version 0.1.0-0.3.0" url="@ref v010030"/>
        </tab>
     </tab>
     <tab type="usergroup" visible="yes" title="Important Notes" url="@ref notes">
