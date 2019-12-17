@@ -1,12 +1,12 @@
-#ifndef HDF5_READ_H
-#define HDF5_READ_H
+#ifndef HDF5_READ_CONTIGUOUS_H
+#define HDF5_READ_CONTIGUOUS_H
 
 #include <armadillo>
 #include "IRead.h"
 
 namespace mcpdft {
 
-class HDF5_Read: public IRead {
+class HDF5_Read_Compact: public IRead {
     public:
        /// Calls read_opdm() and read_tpdm() fxns
        void read_rdms(arma::mat &D1a,
@@ -23,4 +23,4 @@ class HDF5_Read: public IRead {
 
 }
 
-#endif // HDF5_READ_H
+#endif // HDF5_READ_CONTIGUOUS_H

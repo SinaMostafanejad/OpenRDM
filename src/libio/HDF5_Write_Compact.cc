@@ -1,7 +1,7 @@
 #include <armadillo>
 #include <fstream>
 #include "mcpdft.h"
-#include "HDF5_Write.h"
+#include "HDF5_Write_Contiguous.h"
 #include "hdf5.h"
 #include <assert.h>
 
@@ -13,14 +13,14 @@
 #define RANK 2
 
 namespace mcpdft {
-   void HDF5_Write::write_rdms(const arma::mat &D1a, 
+   void HDF5_Write_Contiguous::write_rdms(const arma::mat &D1a, 
                                const arma::mat &D1b,
 			       const arma::mat &D2ab) {
       write_opdm(D1a, D1b);
       write_tpdm(D2ab);
    }
 
-   void HDF5_Write::write_opdm(const arma::mat &D1a,
+   void HDF5_Write_Contiguous::write_opdm(const arma::mat &D1a,
 		               const arma::mat &D1b) {
       assert( D1a.n_cols == D1a.n_rows );
       assert( D1b.n_cols == D1b.n_rows );
@@ -100,7 +100,7 @@ namespace mcpdft {
       status = H5Fclose(file_id); 
    }
 
-   void HDF5_Write::write_tpdm(const arma::mat &D2ab) {
+   void HDF5_Write_Contiguous::write_tpdm(const arma::mat &D2ab) {
       assert( D2ab.n_cols == D2ab.n_rows );
       size_t dim = D2ab.n_cols;
 

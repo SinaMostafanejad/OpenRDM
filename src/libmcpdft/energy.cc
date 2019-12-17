@@ -2,12 +2,11 @@
 #include <sys/sysinfo.h>
 #include "energy.h"
 #include "mcpdft.h"
-// #include "diskRW.h"
 #include "libMem.h"
 #include "openrdmConfig.h"
 #include <string>
-#include "HDF5_Read.h"
-#include "HDF5_Write.h"
+#include "HDF5_Read_Contiguous.h"
+#include "HDF5_Write_Contiguous.h"
 #include "HDF5Factory.h"
 #ifdef WITH_LIBXC
    #include <xc.h>

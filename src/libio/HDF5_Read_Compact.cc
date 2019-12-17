@@ -1,7 +1,7 @@
 #include <armadillo>
 #include <fstream>
 #include "mcpdft.h"
-#include "HDF5_Read.h"
+#include "HDF5_Read_Contiguous.h"
 #include "hdf5.h"
 #include <assert.h>
 
@@ -14,14 +14,14 @@
 
 namespace mcpdft {
 
-   void HDF5_Read::read_rdms(arma::mat &D1a,
+   void HDF5_Read_Contiguous::read_rdms(arma::mat &D1a,
                           arma::mat &D1b,
 			  arma::mat &D2ab) {
       read_opdm(D1a, D1b);
       read_tpdm(D2ab);
    }
 
-   void HDF5_Read::read_opdm(arma::mat &D1a,
+   void HDF5_Read_Contiguous::read_opdm(arma::mat &D1a,
 		          arma::mat &D1b) {
       std::ifstream file(OPDM_H5FILE);
       if( !file.good() )
@@ -100,7 +100,7 @@ namespace mcpdft {
       status = H5Fclose(file_id); 
    }
 
-   void HDF5_Read::read_tpdm(arma::mat &D2ab) {
+   void HDF5_Read_Contiguous::read_tpdm(arma::mat &D2ab) {
       std::ifstream file(TPDM_H5FILE);
       if( !file.good() )
 	throw "\n  Warning: No accessible HDF5 file by the name \"tpdm.h5\" exists!\n";
