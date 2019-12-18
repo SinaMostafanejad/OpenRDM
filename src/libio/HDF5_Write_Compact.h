@@ -1,12 +1,12 @@
-#ifndef HDF5_WRITE_H
-#define HDF5_WRITE_H
+#ifndef HDF5_WRITE_COMPACT_H
+#define HDF5_WRITE_COMPACT_H
 
 #include <armadillo>
 #include "IWrite.h"
 
 namespace mcpdft {
 
-    class HDF5_Write: public IWrite {
+    class HDF5WriteCompact: public IWrite {
         public:
            /// Calls write_opdm() and write_tpdm() fxns
            void write_rdms(const arma::mat &D1a,
@@ -24,4 +24,4 @@ namespace mcpdft {
 
 }
 
-#endif // HDF5_WRITE_H
+#endif // HDF5_WRITE_COMPACT_H

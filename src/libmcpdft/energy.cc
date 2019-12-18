@@ -2,13 +2,15 @@
 #include <sys/sysinfo.h>
 #include "energy.h"
 #include "mcpdft.h"
-// #include "diskRW.h"
 #include "libMem.h"
 #include "openrdmConfig.h"
 #include <string>
-#include "HDF5_Read.h"
-#include "HDF5_Write.h"
-#include "HDF5Factory.h"
+#include "HDF5_Read_Contiguous.h"
+#include "HDF5_Write_Contiguous.h"
+#include "HDF5_Read_Compact.h"
+#include "HDF5_Write_Compact.h"
+#include "HDF5ContiguousFactory.h"
+#include "HDF5CompactFactory.h"
 #ifdef WITH_LIBXC
    #include <xc.h>
 #else
@@ -125,7 +127,8 @@ namespace mcpdft {
       IRead* ird;
       IWrite* iwt;
 
-      iof = new HDF5Factory;
+//      iof = new HDF5ContiguousFactory;
+      iof = new HDF5CompactFactory;
       iwt = iof->create_IWrite();
       iwt->write_rdms(D1a,D1b,D2ab);
       ird = iof->create_IRead();
