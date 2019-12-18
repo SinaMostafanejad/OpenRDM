@@ -6,7 +6,7 @@
 
 namespace mcpdft {
 
-    class HDF5_Write_Contiguous: public IWrite {
+    class HDF5WriteContiguous: public IWrite {
         public:
            /// Calls write_opdm() and write_tpdm() fxns
            void write_rdms(const arma::mat &D1a,

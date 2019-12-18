@@ -6,7 +6,7 @@
 
 namespace mcpdft {
 
-class HDF5_Read_Contiguous: public IRead {
+class HDF5ReadContiguous: public IRead {
     public:
        /// Calls read_opdm() and read_tpdm() fxns
        void read_rdms(arma::mat &D1a,

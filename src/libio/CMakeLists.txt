@@ -4,10 +4,16 @@ target_sources(openrdm
 	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Contiguous.h
 	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Contiguous.cc
 	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Contiguous.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Compact.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Compact.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Compact.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Compact.h
 	       ${CMAKE_CURRENT_LIST_DIR}/IWrite.h
 	       ${CMAKE_CURRENT_LIST_DIR}/IRead.h
 	       ${CMAKE_CURRENT_LIST_DIR}/IOFactory.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5Factory.h
+	       #	       ${CMAKE_CURRENT_LIST_DIR}/IOFactory.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5ContiguousFactory.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5CompactFactory.h
 )
 
 target_include_directories(openrdm INTERFACE ${CMAKE_CURRENT_LIST_DIR})
