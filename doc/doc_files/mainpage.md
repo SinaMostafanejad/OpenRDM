@@ -1,7 +1,7 @@
 OpenRDM     {#mainpage}
 =========
 
-![](@ref OpenRDMmain.png)
+![](@ref OpenRDM_Christmas.png)
 
 The github repository for <b>OpenRDM</b> library 
 is located at [here](https://github.com/SinaMostafanejad/OpenRDM).
