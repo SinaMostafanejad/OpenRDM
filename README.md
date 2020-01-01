@@ -72,8 +72,6 @@ For user's convenience, we have placed a configure script in project's root dire
 
 If you have any problems working with <b>OpenRDM</b> software, please take a glance at the [Known Issues](https://sinamostafanejad.github.io/OpenRDM/issues.html) page of the [documentation](https://sinamostafanejad.github.io/OpenRDM/index.html).
 
-## HOW TO CONTACT US
-
 You can report bugs or request new features by opening issues and submitting pull requests. Feel free to contact the author for any feedbacks or suggestions.
 
 ## HOW TO CITE US
