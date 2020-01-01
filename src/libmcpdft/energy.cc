@@ -9,8 +9,11 @@
 #include "HDF5_Write_Contiguous.h"
 #include "HDF5_Read_Compact.h"
 #include "HDF5_Write_Compact.h"
+#include "HDF5_Read_Chunked.h"
+#include "HDF5_Write_Chunked.h"
 #include "HDF5ContiguousFactory.h"
 #include "HDF5CompactFactory.h"
+#include "HDF5ChunkedFactory.h"
 #ifdef WITH_LIBXC
    #include <xc.h>
 #else
@@ -128,7 +131,8 @@ namespace mcpdft {
       IWrite* iwt;
 
 //      iof = new HDF5ContiguousFactory;
-      iof = new HDF5CompactFactory;
+//      iof = new HDF5CompactFactory;
+      iof = new HDF5ChunkedFactory;
       iwt = iof->create_IWrite();
       iwt->write_rdms(D1a,D1b,D2ab);
       ird = iof->create_IRead();
