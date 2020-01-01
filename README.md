@@ -40,7 +40,7 @@
 
 # OpenRDM
 
-An ab initio library for strongly-correlated many-body systems based on multiconfiguration pair-density functional theory.
+An open-source library for reduced-density matrix-based analysis and computation.
 
 ## OVERVIEW
 
@@ -72,9 +72,13 @@ For user's convenience, we have placed a configure script in project's root dire
 
 If you have any problems working with <b>OpenRDM</b> software, please take a glance at the [Known Issues](https://sinamostafanejad.github.io/OpenRDM/issues.html) page of the [documentation](https://sinamostafanejad.github.io/OpenRDM/index.html).
 
+## HOW TO CONTACT US
+
+You can report bugs or request new features by opening issues and submitting pull requests. Feel free to contact the author for any feedbacks or suggestions.
+
 ## HOW TO CITE US
 
-We appreciate your time for using <b>OpenRDM</b>. We do our best to keep the program up-to-date. In order to help us to do our job better, please cite the following manuscripts in your works
+We appreciate your time for using <b>OpenRDM</b> and do our best to keep the program up-to-date. Your support through citing the following manuscripts helps us to add more exciting features to <b>OpenRDM</b> and improve its performance in its future releases.
 
 [1] [M. Mostafanejad and A. E. DePrince III, J. Chem. Theory Comput. 15, 290-302 (2019). "Combining Pair-Density Functional Theory and Variational Two-Electron Reduced-Density Matrix Methods"](https://pubs.acs.org/doi/10.1021/acs.jctc.8b00988)
 
