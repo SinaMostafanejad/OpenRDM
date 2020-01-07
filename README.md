@@ -40,13 +40,15 @@
 
 # OpenRDM
 
-An ab initio library for strongly-correlated many-body systems based on multiconfiguration pair-density functional theory.
+An open-source library for reduced-density matrix-based analysis and computation.
 
 ## OVERVIEW
 
-<b>OpenRDM</b> is a source-independent version of the original <a href="https://github.com/edeprince3/RDMinoles">RDM-INOLES</a> plugin to the Psi4 quantum chemistry program package. <b>OpenRDM</b> uses multiconfigurational pair-density functional theory (MCPDFT) to provide an accurate and efficient description of static and dynamical correlation effects.
+<b>OpenRDM</b> is a standalone quantum chemistry software that adopts multiconfigurational pair-density functional theory (MCPDFT) to provide an accurate and efficient description of static and dynamical correlation effects in strongly-correlated systems.
 
-Please refer to the <b>OpenRDM</b> <a href="https://sinamostafanejad.github.io/OpenRDM/index.html">documentation</a> for further details about MCPDFT and its implementation.
+Its plugin to the Psi4 quantum chemistry program package can be found <a href="https://github.com/edeprince3/RDMinoles">here</a>.
+
+Please refer to the <a href="https://sinamostafanejad.github.io/OpenRDM/index.html">documentation</a> for further details about <b>OpenRDM</b>.
 <!-- Both translated and fully-translated versions of Slater and Vosko-Wilk-Nusair random-phase approximation expression III (SVWN3), Perdew-Burke-Ernzerhof (PBE), revised PBE (revPBE), Becke88 exchange and one-parameter correlation functional (BOP) and Becke and Lee-Yang-Parr (BLYP) on-top pair-density exchange-correlation functionals are available at the moment. In addition, the global-, double- and range-separated hybrid multi-configurational OTPDs such as wPBE and LRC-wPBE have also been implemented. However, this part of the project also is under the ongoing developement.
 
 In summary, RDM-INOLES:
@@ -62,22 +64,24 @@ In summary, RDM-INOLES:
 
 ## INSTALLATION
 
-We adopt CMake for the installation procedure and package management.
+The installation procedure is detailed in the [documentation](https://sinamostafanejad.github.io/OpenRDM/howtouse.html).
 
-At the moment, this prototype can be processed by running the configure script to obtain an MCPDFT energy correction on the H2 molecule at its equilibrium bond length adopting minimal basis and SVWN3 exchange-correlation functional.
-
-Please feel free to modify the configure script and/or CMakeLists.txt to address your needs.
+For user's convenience, we have placed a configure script in project's root directory; Feel free to change its contents to address your needs.
 
 ## KNOWN ISSUES
 
 If you have any problems working with <b>OpenRDM</b> software, please take a glance at the [Known Issues](https://sinamostafanejad.github.io/OpenRDM/issues.html) page of the [documentation](https://sinamostafanejad.github.io/OpenRDM/index.html).
 
-## REFERENCES
+You can report bugs or request new features by opening issues and submitting pull requests. Feel free to contact the author for any feedbacks or suggestions.
 
-[1] M. Mostafanejad and A. E. DePrince III, J. Chem. Theory Comput. 15, 290-302 (2019). "Combining Pair-Density Functional Theory and Variational Two-Electron Reduced-Density Matrix Methods"
+## HOW TO CITE US
 
-[2] J. Fosso-Tande, T.-S. Nguyen, G. Gidofalvi, and A. E. DePrince III, J. Chem. Theory Comput., 12, 2260-2271 (2016). "Large-scale variational two-electron reduced-density-matrix-driven complete active space self-consistent field methods."
+We appreciate your time for using <b>OpenRDM</b> and do our best to keep the program up-to-date. Your support through citing the following manuscripts helps us to add more exciting features to <b>OpenRDM</b> and improve its performance in its future releases.
 
-[3] J. Toulouse, K. Sharkas, E. Bremond and C. Adamo J. Chem. Phys. 135, 101102 (2011). "Rationale for a new class of double-hybrid approximations in density-functional theory"
+[1] [M. Mostafanejad and A. E. DePrince III, J. Chem. Theory Comput. 15, 290-302 (2019). "Combining Pair-Density Functional Theory and Variational Two-Electron Reduced-Density Matrix Methods"](https://pubs.acs.org/doi/10.1021/acs.jctc.8b00988)
 
-[4] M. Torheyden and E. F. Valeev J. Chem. Phys. 131, 171103 (2009). "Universal perturbative explicitly correlatedbasis set incompleteness correction"
+[2] [M. Mostafanejad, M. D. Liebenthal, and A. E. DePrince III arXiv:1911.11162 (2019). "Global hybrid multiconfiguration pair-density functional theory"](https://arxiv.org/abs/1911.11162v1)
+
+[3] [J. W. Mullinax, L. N. Koulias, E. Maradzike, M. Mostafanejad, E. Epifanovsky, G. Gidofalvi, and A. E. DePrince III, J. Chem. Theory Comput. 15, 6164-6178 (2019). "Heterogeneous CPU + GPU Algorithm for Variational Two-Electron Reduced-Density Matrix-Driven Complete Active-Space Self-Consistent Field Theory"](https://pubs.acs.org/doi/10.1021/acs.jctc.9b00768)
+
+[4] [J. Fosso-Tande, T.-S. Nguyen, G. Gidofalvi, and A. E. DePrince III, J. Chem. Theory Comput., 12, 2260-2271 (2016). "Large-scale variational two-electron reduced-density-matrix-driven complete active space self-consistent field methods"](https://pubs.acs.org/doi/10.1021/acs.jctc.6b00190)
