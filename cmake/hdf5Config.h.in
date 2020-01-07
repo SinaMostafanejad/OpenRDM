@@ -1,0 +1,2 @@
+#cmakedefine CHUNK_DIM0 @CHUNK_DIM0@ 
+#cmakedefine CHUNK_DIM1 @CHUNK_DIM1@

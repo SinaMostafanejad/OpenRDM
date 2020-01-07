@@ -1,2 +1,2 @@
-#cmakedefine WITH_LIBXC
-#cmakedefine WITH_OPENMP
+#cmakedefine WITH_LIBXC @WITH_LIBXC@
+#cmakedefine WITH_OPENMP @WITH_OPENMP@
