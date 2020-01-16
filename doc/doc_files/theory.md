@@ -131,10 +131,10 @@ obtained from a MR method, as
 
 \f{eqnarray}{
 \label{EQ:TR}\tag{13}
-        \zeta_{\text{tr}}(\mathbf{r}) &=& \f{cases}{
-               \sqrt{1-R(\mathbf{r})} &,& \quad R(\mathbf{r}) \leq 1     \\\
-                      0               &,& \quad R(\mathbf{r}) > 1       
-    \f} 
+        \zeta_{\text{tr}}(\mathbf{r}) =& \begin{cases}
+               \sqrt{1-R(\mathbf{r})} ,& \quad R(\mathbf{r}) \leq 1     \\\
+                      0               ,& \quad R(\mathbf{r}) > 1       
+    \end{cases} 
 \f}
 
 where the second case accounts for the fact that the argument of the
