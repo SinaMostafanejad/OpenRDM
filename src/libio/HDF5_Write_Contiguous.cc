@@ -1,109 +1,27 @@
 #include <armadillo>
 #include <fstream>
 #include "mcpdft.h"
-#include "diskRW.h"
+#include "HDF5_Write_Contiguous.h"
 #include "hdf5.h"
 #include <assert.h>
 
 #define OPDM_H5FILE  "opdm.h5"
 #define TPDM_H5FILE  "tpdm.h5"
-#define OPDM_DATASET "opdm_dst"
-#define TPDM_DATASET "tpdm_dst"
-
+#define D1A_DATASET  "/D1a/D1a_DataSet"
+#define D1B_DATASET  "/D1b/D1b_DataSet"
+#define D2AB_DATASET "/D2ab/D2ab_DataSet"
 #define RANK 2
 
 namespace mcpdft {
-   DiskRW::DiskRW()  {}
-   DiskRW::~DiskRW() {}
-
-   void DiskRW::read_rdms(arma::mat &D1a,
-                          arma::mat &D1b,
-			  arma::mat &D2ab) {
-      read_opdm(D1a, D1b);
-      read_tpdm(D2ab);
-   }
-
-   void DiskRW::read_opdm(arma::mat &D1a,
-		          arma::mat &D1b) {
-      std::ifstream file(OPDM_H5FILE);
-      if( !file.good() )
-	throw "\n  Warning: No accessible HDF5 file by the name \"opdm.h5\" exists!\n";
-        file.close();
-
-      assert( D1a.n_cols == D1a.n_rows );
-      assert( D1b.n_cols == D1b.n_rows );
-      size_t dim = D1a.n_cols;
-
-      /* file indentifiers and handles */
-      hid_t file_id;
-      hid_t D1a_dst_id, D1b_dst_id;
-      herr_t status;
-
-      /* Open the existing HDF5 file in the read-only mode */
-      file_id = H5Fopen(OPDM_H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
-
-      /* Open the existing HDF5 dataset in the read-only mode */
-      D1a_dst_id = H5Dopen2(file_id,"/D1a/D1a_DataSet", H5P_DEFAULT);
-
-      /* Open the existing HDF5 dataset in the read-only mode */
-      D1b_dst_id = H5Dopen2(file_id,"/D1b/D1b_DataSet", H5P_DEFAULT);
-
-      /* Read the D1a_DataSet */
-      status = H5Dread(D1a_dst_id, H5T_NATIVE_DOUBLE,
-                       H5S_ALL, H5S_ALL, H5P_DEFAULT, D1a.memptr());
-
-      /* Read the D1a_DataSet */
-      status = H5Dread(D1b_dst_id, H5T_NATIVE_DOUBLE,
-                       H5S_ALL, H5S_ALL, H5P_DEFAULT, D1b.memptr());
-
-      /* Close datasets. */
-      status = H5Dclose(D1a_dst_id);
-      status = H5Dclose(D1b_dst_id);
-
-      /* Close the file. */
-      status = H5Fclose(file_id); 
-   }
-
-   void DiskRW::read_tpdm(arma::mat &D2ab) {
-      std::ifstream file(TPDM_H5FILE);
-      if( !file.good() )
-	throw "\n  Warning: No accessible HDF5 file by the name \"tpdm.h5\" exists!\n";
-        file.close();
-
-      assert( D2ab.n_cols == D2ab.n_rows );
-      size_t dim = D2ab.n_cols;
-
-      /* file indentifiers and handles */
-      hid_t file_id;
-      hid_t D2ab_dst_id;
-      herr_t status;
-
-      /* Open the existing HDF5 file in the read-only mode */
-      file_id = H5Fopen(TPDM_H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
-
-      /* Open the existing HDF5 dataset in the read-only mode */
-      D2ab_dst_id = H5Dopen2(file_id,"/D2ab/D2ab_DataSet", H5P_DEFAULT);
-
-      /* Read the D2ab_DataSet */
-      status = H5Dread(D2ab_dst_id, H5T_NATIVE_DOUBLE,
-                       H5S_ALL, H5S_ALL, H5P_DEFAULT, D2ab.memptr());
-
-      /* Close datasets. */
-      status = H5Dclose(D2ab_dst_id);
-
-      /* Close the file. */
-      status = H5Fclose(file_id); 
-   }
-
-   void DiskRW::write_rdms(const arma::mat &D1a, 
-                           const arma::mat &D1b,
-			   const arma::mat &D2ab) {
+   void HDF5WriteContiguous::write_rdms(const arma::mat &D1a, 
+                               const arma::mat &D1b,
+			       const arma::mat &D2ab) {
       write_opdm(D1a, D1b);
       write_tpdm(D2ab);
    }
 
-   void DiskRW::write_opdm(const arma::mat &D1a,
-		           const arma::mat &D1b) {
+   void HDF5WriteContiguous::write_opdm(const arma::mat &D1a,
+		               const arma::mat &D1b) {
       assert( D1a.n_cols == D1a.n_rows );
       assert( D1b.n_cols == D1b.n_rows );
       size_t dim = D1a.n_cols;
@@ -138,12 +56,12 @@ namespace mcpdft {
       dataspace_id = H5Screate_simple(RANK, dims, NULL);
 
       /* Create a dataset in group "/D1a" */
-      D1a_dst_id = H5Dcreate2(file_id, "/D1a/D1a_DataSet",
+      D1a_dst_id = H5Dcreate2(file_id, D1A_DATASET,
         	              H5T_IEEE_F64LE, dataspace_id,
                               H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
       /* Create a dataset in group "/D1b" */
-      D1b_dst_id = H5Dcreate2(file_id, "/D1b/D1b_DataSet",
+      D1b_dst_id = H5Dcreate2(file_id, D1B_DATASET,
         	              H5T_IEEE_F64LE, dataspace_id,
                               H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 
@@ -182,7 +100,7 @@ namespace mcpdft {
       status = H5Fclose(file_id); 
    }
 
-   void DiskRW::write_tpdm(const arma::mat &D2ab) {
+   void HDF5WriteContiguous::write_tpdm(const arma::mat &D2ab) {
       assert( D2ab.n_cols == D2ab.n_rows );
       size_t dim = D2ab.n_cols;
 
@@ -213,7 +131,7 @@ namespace mcpdft {
       dataspace_id = H5Screate_simple(RANK, dims, NULL);
 
       /* Create a dataset in group "/D2ab" */
-      D2ab_dst_id = H5Dcreate2(file_id, "/D2ab/D2ab_DataSet",
+      D2ab_dst_id = H5Dcreate2(file_id, D2AB_DATASET,
         	              H5T_IEEE_F64LE, dataspace_id,
                               H5P_DEFAULT, H5P_DEFAULT, H5P_DEFAULT);
 

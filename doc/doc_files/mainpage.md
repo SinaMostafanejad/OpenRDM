@@ -1,4 +1,7 @@
-@mainpage OpenRDM
+OpenRDM     {#mainpage}
+=========
+
+![](@ref OpenRDMmain.png)
 
 The github repository for <b>OpenRDM</b> library 
 is located at [here](https://github.com/SinaMostafanejad/OpenRDM).
@@ -8,6 +11,10 @@ is located at [here](https://github.com/SinaMostafanejad/OpenRDM).
   - [Background](@ref background)
   - [Multiconfiguration Pair-Density Functional Theory](@ref mcpdft)
 + [How to Use](@ref howtouse)
++ [Running the Tests](@ref runningtests)
 + [Dependencies](@ref dependencies)
 + [Known Issues](@ref issues)
-+ [test](@ref test)
++ [Releases](@ref releases)
++ [Important Notes](@ref notes)
++ [Acknowledgments](@ref acknowledgments)
++ [To Do](@ref todo)

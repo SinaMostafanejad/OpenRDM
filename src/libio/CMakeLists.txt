@@ -1,10 +1,24 @@
 target_sources(openrdm
                INTERFACE
-	       ${CMAKE_CURRENT_LIST_DIR}/memRW.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/memRW.h
-	       ${CMAKE_CURRENT_LIST_DIR}/diskRW.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/diskRW.h
-	       ${CMAKE_CURRENT_LIST_DIR}/rdmInterface.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Contiguous.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Contiguous.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Contiguous.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Contiguous.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Compact.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Compact.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Compact.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Compact.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Chunked.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Chunked.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Chunked.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Chunked.h
+	       ${CMAKE_CURRENT_LIST_DIR}/IWrite.h
+	       ${CMAKE_CURRENT_LIST_DIR}/IRead.h
+	       ${CMAKE_CURRENT_LIST_DIR}/IOFactory.h
+	       #	       ${CMAKE_CURRENT_LIST_DIR}/IOFactory.cc
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5ContiguousFactory.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5CompactFactory.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5ChunkedFactory.h
 )
 
 target_include_directories(openrdm INTERFACE ${CMAKE_CURRENT_LIST_DIR})

@@ -1,13 +1,13 @@
 #/bin/cmake
 #============================ Pre-configure ========================
-#rm -rf cmake_install.cmake \
-#       CMakeFiles/ \
-#       CMakeCache.txt \
-#       mcpdft \
-#       build/
-#
-#mkdir build && cd build
-cd build
+rm -rf cmake_install.cmake \
+       CMakeFiles/ \
+       CMakeCache.txt \
+       mcpdft \
+       build/
+
+mkdir build && cd build
+#cd build
 #============================ Configure ============================
 #cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug \
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
@@ -16,12 +16,15 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
       -DWITH_ARMADILLO=OFF \
       -DWITH_LIBXC=OFF \
       -DWITH_HDF5=ON \
+      -DWITH_CHUNKING=ON \
       -DWITH_OPENMP=ON \
+      -DCHUNK_DIM0=2 \
+      -DCHUNK_DIM1=2 \
       ..
       #-DLibxc_DIR=<Address of Libxc installation> for
       #find_package(Libxc) to be able to find it
 #============================ Build ================================
-#cmake --build . --target clean
+cmake --build . --target clean
 cmake --build . --config Release -- -j $(nproc)
 #============================ Install ==============================
 make install #for Unix Makefiles

@@ -1,22 +1,34 @@
-@page todo To Do 
+To Do   {#todo}
+=======
 
 The following is a list of important tasks that need to be done:
 
 + MCPDFT:
    - Finish the implementation of the fully-translated density function.
 + HDF5 library:
-   - Interfacing the HDF5 with OpenRDM within the diskRW.cc implementation.
+   - Think about using creational patters instead of a inflexible interface
+     class.
    - Providing a simple example showing the application of
      HDF5 in a disk-based low-memory algorithm.
 + Libxc library:
-   - Adopt some design patterns to wrap the Libxc library
+   - Adopt Abstract Factory pattern to wrap the Libxc library
      and tune it towards MCPDFT in OpenRDM.
 + Documentation:
-   - Provide a concise and clear explanation of MCPDFT and
-     a more detailed documentation for the member variables
-     and functions.
-   - Consider migration from Doxygen to Sphinx or keeping
-     both which might be redundant.
+   - Notify the user of the absence of a CMake configure file
+     that helps find_package() find the openrdm package. When provided,
+     the expedient solution provided in "How to Use" section should be
+     updated.
++ Interface:
+   - OpenRDM needs have a (series) of class(es) for interfacing with QC softwares.
+     For example, Psi4 provides intermediate files and PSIO class for dealing with this issue;
+     Possibly, having a simple class would address the problem in Psi4. Other programs need to
+     have a similar functionalities to handle this problem. The next candidate in this direction 
+     would be PySCF.
++ CMake:
+   - Migrate to superbuild structure.
+   - Manage the tests in a more elaborate way.
+   - Provide installation and packaging procedure. The code is in need of a configure file for
+     CMake find_package() to be able to be found by other projects.
 
 There are also long-term goals:
 

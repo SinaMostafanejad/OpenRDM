@@ -34,6 +34,10 @@ configure_file(
    "${OPENRDM_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.h.in"
    "${OPENRDM_SOURCE_DIR}/src/libmcpdft/${PROJECT_NAME}Config.h"
 )
+configure_file(
+   "${OPENRDM_SOURCE_DIR}/cmake/hdf5Config.h.in"
+   "${OPENRDM_SOURCE_DIR}/src/libio/hdf5Config.h"
+)
 #===================================================================
 option(CODE_COVERAGE "${Cyan}Enable coverage reporting${ColourReset}" OFF)
 option(BUILD_TESTING "${Cyan}Build the testing tree${ColourReset}" ON)
@@ -41,6 +45,11 @@ option(WITH_ARMADILLO "${cyan}Build with Armadillo linear algebra library${Colou
 option(WITH_LIBXC "${cyan}Build with Libxc density functional library${ColourReset}" OFF)
 option(WITH_HDF5 "${cyan}Build with HDF5${ColourReset}" ON)
 option(WITH_OPENMP "${cyan}Build with HDF5${ColourReset}" OFF)
+if(${WITH_HDF5})
+   option(ENABLE_CHUNKING "${cyan}compile libio with chunking enabled in HDF5${ColourReset}" ON)
+endif()
+option(CHUNK_DIM0 "${cyan}HDF5 chunk size (dim 0)${ColourReset}" "1")
+option(CHUNK_DIM1 "${cyan}HDF5 chunk size (dim 1)${ColourReset}" "1")
 #===================================================================
 # Code Coverage Configuration
 add_library(coverage_config INTERFACE)
