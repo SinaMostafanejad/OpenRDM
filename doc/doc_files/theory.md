@@ -124,16 +124,16 @@ where
     R(\mathbf{r}) = \frac{4~ \Pi(\mathbf{r})}{\rho^2(\mathbf{r})}.
 \f}
 
-The basic assumption underlying the ""translated"" (t) OTPD functionals
+The basic assumption underlying the "translated" (t) OTPD functionals
 proposed in Ref. \[[3](https://doi.org/10.1021/ct500483t)\] is that the spin
 polarization factor can be similarly defined for a density and OTPD
 obtained from a MR method, as
 
-\f{align}{
+\f{eqnarray}{
 \label{EQ:TR}\tag{13}
-        \zeta_{\text{tr}}(\mathbf{r}) &= \f{cases}{
-               \sqrt{1-R(\mathbf{r})} &  \quad R(\mathbf{r}) \leq 1     \\\
-                      0               &  \quad R(\mathbf{r}) > 1       
+        \zeta_{\text{tr}}(\mathbf{r}) &=& \f{cases}{
+               \sqrt{1-R(\mathbf{r})} &,& \quad R(\mathbf{r}) \leq 1     \\\
+                      0               &,& \quad R(\mathbf{r}) > 1       
     \f} 
 \f}
 
@@ -167,7 +167,7 @@ It is important to note that, in deriving the translated OTPD functional
 expression in Eq.~\f$\eqref{EQ:TRE}\f$, no dependence on \f$\nabla\Pi(\mathbf{r})\f$
 is assumed. A scheme in which the OTPD functional depends explicitly upon
 \f$\nabla\Pi(\mathbf{r})\f$ has also been proposed.\[[5](https://doi.org/10.1021/acs.jctc.7b00967)\]
-The corresponding ""fully-translated"" (ft) functionals are defined as
+The corresponding "fully-translated" (ft) functionals are defined as
 
 \f{equation}{
 \label{EQ:FTRE}\tag{17}
