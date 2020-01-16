@@ -17,20 +17,31 @@ myhf.kernel()
 # Orbital energies, Mulliken population etc.
 #myhf.analyze()
 
-cmat = myhf.mo_coeff
-c_occ = myhf.mo_occ
+nao = mol.nao_nr()
+
+cmat_mo = myhf.mo_coeff
+print(cmat_mo)
+cmat_mo_occ = myhf.mo_occ
 
 overlap = myhf.get_ovlp()
 
-dmat = myhf.make_rdm1()
-dtemp = np.matmul(cmat.transpose(),dmat)
-dmat_mo = np.matmul(dtemp,cmat)
+#dmat = myhf.make_rdm1()
+#dtemp = np.matmul(cmat_mo.transpose(),dmat)
+#dmat_mo = np.matmul(dtemp,cmat_mo)
+dmat_mo = np.zeros((nao,nao))
+dmat_mo[0][0] = 1.0
 print(dmat_mo)
 
-eigval, eigvec = myhf.eig(dmat,overlap)
+eigval, eigvec = myhf.eig(dmat_mo,overlap)
 print(eigval)
 
 jmat_ao = myhf.get_j()
-jtemp = np.matmul(cmat.transpose(),jmat_ao)
-jmat_mo = np.matmul(jtemp,cmat)
-print(0.5 * jmat_mo)
+jtemp = np.matmul(cmat_mo.transpose(),jmat_ao)
+jmat_mo = np.matmul(jtemp,cmat_mo)
+jmat_mo *= 0.5
+print(jmat_mo)
+
+ca = 2.0 * np.vdot(dmat_mo,jmat_mo)
+print("Coulomb energy = %15.10lf\n" % ca)
+
+
