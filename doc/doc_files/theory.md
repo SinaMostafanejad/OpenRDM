@@ -58,10 +58,10 @@ in Eqs. \f$\eqref{EQ:1RDM}\f$ and \f$\eqref{EQ:2RDM}\f$ is implied.
 
 @section mcpdft Multiconfiguration Pair-Density Functional Theory
 
-The MCDPFT energy expression can be written as
+The multiconfiguration pair-density functional theory (MC-DPFT) energy expression can be written as
 
-\f{equation}{\tag{5}\label{EQ:EMCPDFT}
-E_{\text{MCPDFT}} = 2h^i_i + h^t_u {}^1D^t_u + E_\text{H} + E_\text{xc}\left[\rho,\Pi,|\nabla\rho|,|\nabla\Pi|\right],
+\f{equation}{\tag{5}\label{EQ:EMC-PDFT}
+E_{\text{MC-PDFT}} = 2h^i_i + h^t_u {}^1D^t_u + E_\text{H} + E_\text{xc}\left[\rho,\Pi,|\nabla\rho|,|\nabla\Pi|\right],
 \f}
 
 where the Hartree energy, \f$E_\text{H}\f$, is
@@ -100,4 +100,78 @@ and
                                  &+& \psi^*_p(\mathbf{r}) \psi^*_q(\mathbf{r}) \psi_r(\mathbf{r}) \nabla\psi_s(\mathbf{r}) ~],
 \f}
 
-respectively. Here, the 1- and 2-RDMs are obtained from an MR computation.
+respectively. Here, the 1- and 2-RDMs are obtained from an MR computation. 
+
+At this stage, we must identify a suitable OTPD functional for use in MC-PDFT.
+The simplest class of functionals can be derived from existing approximate
+exchange-correlation (XC) functionals employed within Kohn-Sham DFT by first
+recognizing that, for a density derived from a single Slater determinant,
+the spin magnetization can be expressed exactly in terms of the OTPD and the
+total density. \[[1](https://journals.aps.org/pra/abstract/10.1103/PhysRevA.44.1549),
+[2](https://doi.org/10.1007/BF01114982)\] More specifically, the spin
+polarization factor, \f$\zeta(\mathbf{r}) = m(\mathbf{r})/\rho(mathbf{r})\f$,
+can be expressed as
+
+\f{equation}{
+\label{EQ:ZETR}\tag{11}
+    \zeta(\mathbf{r}) = \sqrt{1-R(\mathbf{r})},
+\f}
+
+where
+
+\f{equation}{
+\label{EQ:OTR}\tag{12}
+    R(\mathbf{r}) = \frac{4~ \Pi(\mathbf{r})}{\rho^2(\mathbf{r})}.
+\f}
+
+The basic assumption underlying the ``translated'' (t) OTPD functionals
+proposed in Ref. \[[3](https://doi.org/10.1021/ct500483t)\] is that the spin
+polarization factor can be similarly defined for a density and OTPD
+obtained from a MR method, as
+
+\f{align}
+\label{EQ:TR}\tag{13}
+        \zeta_{\text{tr}}(\mathbf{r}) &= \f{cases}{
+               \sqrt{1-R(\mathbf{r})} &  \quad R(\mathbf{r}) \leq 1     \\\
+                      0               &  \quad R(\mathbf{r}) > 1       
+    \f} 
+\f}
+
+where the second case accounts for the fact that the argument of the
+square root can become negative for \f$\rho(\mathbf{r})\f$ and 
+\f$\Pi(\mathbf{r})\f$ that are not derived from a single-configuration 
+wave function.  The translated OTPD functional is then defined as
+
+\f{eqnarray}{
+\label{EQ:TRE}\tag{14}
+E_{\text{OTPD}}\left[\rho(\mathbf{r}), \Pi(\mathbf{r}),| \nabla\rho(\mathbf{r})| \right] \equiv \nonumber \\\
+E_{\text{xc}}[\tilde{\rho}_\alpha(\mathbf{r}), \tilde{\rho}_\beta(\mathbf{r}), |\nabla\tilde{\rho}_\alpha(\mathbf{r})|, |\nabla\tilde{\rho}_\beta(\mathbf{r})|],
+\f}
+
+where the tilde refers to translated densities and their gradients, given
+by \[[3](https://doi.org/10.1021/ct500483t),[4](https://doi.org/10.1021/acs.accounts.6b00471)\]
+
+\f{equation}{
+\label{EQ:TR}\tag{15}
+\tilde{\rho}_\sigma(\mathbf{r}) = \frac{\rho(\mathbf{r})}{2} \left(1 + c_\sigma \zeta_{\text{tr}}(\mathbf{r})\right),
+\f}
+
+and
+
+\f{equation}{\tag{16}
+\nabla\tilde{\rho}_\sigma(\mathbf{r}) = \frac{\nabla\rho(\mathbf{r})}{2} \left(1 + c_\sigma \zeta_{\text{tr}}(\mathbf{r})\right),
+\end{equation}
+
+respectively. Here, \f$c_\sigma\f$ = 1~(-1) when \f$\sigma = \alpha\f$ (\f$\beta\f$).
+
+It is important to note that, in deriving the translated OTPD functional
+expression in Eq.~\eqref{EQ:TRE}, no dependence on \f$\nabla\Pi(\mathbf{r})\f$
+is assumed. A scheme in which the OTPD functional depends explicitly upon
+\f$\nabla\Pi(\mathbf{r})\f$ has also been proposed.\[[5](10.1021/acs.jctc.7b00967)\]
+The corresponding ``fully-translated'' (ft) functionals are defined as
+
+\f{eqnarray}{
+\label{EQ:FTRE}\tag{17}
+E_{\text{OTPD}}\left[\rho(\mathbf{r}), \Pi(\mathbf{r}), |\nabla\rho(\mathbf{r})|,|\nabla\Pi(\mathbf{r}) \right|] \equiv \nonumber \\\
+E_{\text{xc}}[\tilde{\rho}_\alpha(\mathbf{r}), \tilde{\rho}_\beta(\mathbf{r}), |\nabla\tilde{\rho}_\alpha(\mathbf{r})|, |\nabla\tilde{\rho}_\beta(\mathbf{r})|]
+\f}
