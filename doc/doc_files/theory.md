@@ -151,7 +151,7 @@ where the tilde refers to translated densities and their gradients, given
 by \[[3](https://doi.org/10.1021/ct500483t),[4](https://doi.org/10.1021/acs.accounts.6b00471)\]
 
 \f{equation}{
-\label{EQ:TR}\tag{15}
+\label{EQ:TRHO}\tag{15}
 \tilde{\rho}_\sigma(\mathbf{r}) = \frac{\rho(\mathbf{r})}{2} \left(1 + c_\sigma \zeta_{\text{tr}}(\mathbf{r})\right),
 \f}
 
