@@ -20,6 +20,11 @@ if(${WITH_OPENMP})
   target_link_libraries(openrdm INTERFACE OpenMP::OpenMP_CXX)
 endif()
 
+if(${WITH_PYBIND})
+   find_package(pybind11 CONFIG REQUIRED)
+   target_link_libraries(openrdm INTERFACE pybind11::embed)
+endif()
+
 target_link_libraries(openrdm INTERFACE coverage_config)
 
 install(TARGETS openrdm
