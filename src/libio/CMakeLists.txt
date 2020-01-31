@@ -19,6 +19,8 @@ target_sources(openrdm
 	       ${CMAKE_CURRENT_LIST_DIR}/HDF5ContiguousFactory.h
 	       ${CMAKE_CURRENT_LIST_DIR}/HDF5CompactFactory.h
 	       ${CMAKE_CURRENT_LIST_DIR}/HDF5ChunkedFactory.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5Client.h
+	       ${CMAKE_CURRENT_LIST_DIR}/HDF5Client.cc
 )
 
 target_include_directories(openrdm INTERFACE ${CMAKE_CURRENT_LIST_DIR})

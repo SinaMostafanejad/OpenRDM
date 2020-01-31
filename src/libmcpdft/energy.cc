@@ -5,15 +5,16 @@
 #include "libMem.h"
 #include "openrdmConfig.h"
 #include <string>
-#include "HDF5_Read_Contiguous.h"
-#include "HDF5_Write_Contiguous.h"
-#include "HDF5_Read_Compact.h"
-#include "HDF5_Write_Compact.h"
-#include "HDF5_Read_Chunked.h"
-#include "HDF5_Write_Chunked.h"
-#include "HDF5ContiguousFactory.h"
-#include "HDF5CompactFactory.h"
-#include "HDF5ChunkedFactory.h"
+//#include "HDF5_Read_Contiguous.h"
+//#include "HDF5_Write_Contiguous.h"
+//#include "HDF5_Read_Compact.h"
+//#include "HDF5_Write_Compact.h"
+//#include "HDF5_Read_Chunked.h"
+//#include "HDF5_Write_Chunked.h"
+//#include "HDF5ContiguousFactory.h"
+//#include "HDF5CompactFactory.h"
+//#include "HDF5ChunkedFactory.h"
+#include "HDF5Client.h"
 #ifdef WITH_LIBXC
    #include <xc.h>
 #else
@@ -126,18 +127,24 @@ namespace mcpdft {
       arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
       arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
       arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
-      IOFactory* iof;
-      IRead* ird;
-      IWrite* iwt;
+      HDF5Client* h5client = new HDF5Client();
+      HDF5Client::factory_mode mode(HDF5Client::factory_mode::WRITE);
+      h5client->factory_client(H5D_COMPACT,mode,D1a,D1b,D2ab);
+      mode = HDF5Client::factory_mode::READ;
+      h5client->factory_client(H5D_COMPACT,mode,D1a,D1b,D2ab);
+      delete h5client;
+      // IOFactory* iof;
+      // IRead* ird;
+      // IWrite* iwt;
 
-//      iof = new HDF5ContiguousFactory;
-//      iof = new HDF5CompactFactory;
-      iof = new HDF5ChunkedFactory;
-      iwt = iof->create_IWrite();
-      iwt->write_rdms(D1a,D1b,D2ab);
-      ird = iof->create_IRead();
-      ird->read_rdms(d1a,d1b,d2ab);
-      delete iof;
+//    //   iof = new HDF5ContiguousFactory;
+//    //   iof = new HDF5CompactFactory;
+      // iof = new HDF5ChunkedFactory;
+      // iwt = iof->create_IWrite();
+      // iwt->write_rdms(D1a,D1b,D2ab);
+      // ird = iof->create_IRead();
+      // ird->read_rdms(d1a,d1b,d2ab);
+      // delete iof;
       // IWrite* h5w = iof->create_IWrite();
       // h5w->write_opdm(D1a,D1b);
       // DiskRW dskrw;
