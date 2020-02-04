@@ -13,14 +13,14 @@ mkdir build && cd build
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
       -DCODE_COVERAGE=ON \
       -DBUILD_TESTING=ON \
-      -DWITH_ARMADILLO=OFF \
+      -DWITH_ARMADILLO=ON \
       -DWITH_LIBXC=OFF \
       -DWITH_HDF5=ON \
       -DWITH_PYBIND=ON \
       -DWITH_CHUNKING=ON \
-      -DWITH_OPENMP=ON \
       -DCHUNK_DIM0=2 \
       -DCHUNK_DIM1=2 \
+      -DWITH_OPENMP=ON \
       ..
       #-DLibxc_DIR=<Address of Libxc installation> for
       #find_package(Libxc) to be able to find it
