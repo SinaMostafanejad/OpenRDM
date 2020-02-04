@@ -124,15 +124,21 @@ namespace mcpdft {
 
       size_t nbfs = mc->get_nbfs();
       size_t nbfs2 = nbfs * nbfs;
+
       arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
       arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
       arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
+
       HDF5Client* h5client = new HDF5Client();
+
       HDF5Client::factory_mode mode(HDF5Client::factory_mode::WRITE);
       h5client->factory_client(H5D_COMPACT,mode,D1a,D1b,D2ab);
+
       mode = HDF5Client::factory_mode::READ;
       h5client->factory_client(H5D_COMPACT,mode,D1a,D1b,D2ab);
+
       delete h5client;
+
       // IOFactory* iof;
       // IRead* ird;
       // IWrite* iwt;

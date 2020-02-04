@@ -3,7 +3,6 @@
 
 #include <armadillo>
 #include <string>
-//#include "IOFactory.h"
 #include "HDF5_Read_Contiguous.h"
 #include "HDF5_Write_Contiguous.h"
 #include "HDF5_Read_Compact.h"
@@ -24,47 +23,46 @@ class HDF5Client {
       /// destructor
       ~HDF5Client();
 
+      /// factory modes
       enum factory_mode {
          READ ,
 	 WRITE,
       };
 
-      /// HDF5 factory client read
+      /// HDF5 factory client
       void factory_client(H5D_layout_t layout,
 		          factory_mode mode,
                           const arma::mat &D1a,
 	                  const arma::mat &D1b,
 	                  const arma::mat &D2ab);
 
-//      factory_client_write(H5D_layout_t layout)
-
       /* accessors */
+
+      /// setting out factory layout
       void set_factory_layout(const H5D_layout_t layout);
+ 
+      /// getting factory layout
+      H5D_layout_t get_factory_layout() const;
 
-      H5D_layout_t get_factory_layout(H5D_layout_t layout) const;
-
+      /// get alpha-spin 1-electron reduced-density matrix
       arma::mat get_D1a() const;
+      /// get beta-spin 1-electron reduced-density matrix
       arma::mat get_D1b() const;
+      /// get alpha-beta spin-block of the 2-electron reduced-density matrix
       arma::mat get_D2ab() const;
 
+      /// set alpha-spin 1-electron reduced-density matrix
       void set_D1a(const arma::mat &D1a);
+      /// set beta-spin 1-electron reduced-density matrix
       void set_D1b(const arma::mat &D1b);
+      /// set alpha-beta spin-block of the 2-electron reduced-density matrix
       void set_D2ab(const arma::mat &D2ab);
 
    private:
-//       /// IOFactory factory object
-//       IOFactory* io_factory_;
-//       
-//       /// IRead factory object
-//       IRead* iread_factory_;
-// 
-//       /// IWrite factory object
-//       IWrite* iwrite_factory;
-
       /// HDF5 factory (layout) type
       H5D_layout_t layout_;
 
-      /// factory mode (R and W or RW modes)
+      /// factory mode (READ and WRITE)
       std::string factory_mode_;
 
       /// alpha-spin 1-electron reduced-density matrix
@@ -73,7 +71,7 @@ class HDF5Client {
       /// alpha-spin 1-electron reduced-density matrix
       arma::mat D1b_;
 
-      /// alpha-beta spin-block of 2-electron reduced-density matrix
+      /// alpha-beta spin-block of the 2-electron reduced-density matrix
       arma::mat D2ab_;
 
 };
