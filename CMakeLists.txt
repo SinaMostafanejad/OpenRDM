@@ -2,10 +2,10 @@
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 # project name and its corresponding specifications
 project(openrdm LANGUAGES CXX C)
-set(mydft_URL "https://github.com/SinaMostafanejad/OpenRDM")
-set(mydft_EMAIL "s_mostafanejad@fsu.edu")
-set(mydft_LICENSE "BSD-3 Clause")
-set(mydfft_DESCRIPTION "An open-source library for reduced-density matrix-based analysis and computation")
+set(openrdm_URL "https://github.com/SinaMostafanejad/OpenRDM")
+set(openrdm_EMAIL "smostafanejad@fsu.edu")
+set(openrdm_LICENSE "BSD-3 Clause")
+set(openrdm_DESCRIPTION "An open-source library for reduced-density matrix-based analysis and computation")
 if(POLICY CMP0079)
     cmake_policy(SET CMP0079 NEW)
 endif()
@@ -34,10 +34,12 @@ configure_file(
    "${OPENRDM_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.h.in"
    "${OPENRDM_SOURCE_DIR}/src/libmcpdft/${PROJECT_NAME}Config.h"
 )
-configure_file(
-   "${OPENRDM_SOURCE_DIR}/cmake/hdf5Config.h.in"
-   "${OPENRDM_SOURCE_DIR}/src/libio/hdf5Config.h"
-)
+if(${WITH_HDF5})
+   configure_file(
+      "${OPENRDM_SOURCE_DIR}/cmake/hdf5Config.h.in"
+      "${OPENRDM_SOURCE_DIR}/src/libio/hdf5Config.h"
+   )
+endif()
 #===================================================================
 option(CODE_COVERAGE "${Cyan}Enable coverage reporting${ColourReset}" OFF)
 option(BUILD_TESTING "${Cyan}Build the testing tree${ColourReset}" ON)
