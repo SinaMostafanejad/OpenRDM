@@ -12,6 +12,7 @@
 #include "HDF5ContiguousFactory.h"
 #include "HDF5CompactFactory.h"
 #include "HDF5ChunkedFactory.h"
+#include "hdf5.h"
 
 namespace mcpdft {
 

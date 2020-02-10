@@ -31,9 +31,9 @@ if(WITH_HDF5)
       set(HDF5_INCLUDE_DIRS ${OPENRDM_STAGING_PREFIX}/hdf5/include CACHE PATH "path to hdf5 include directory" FORCE)
       set(HDF5_LIBRARIES    ${OPENRDM_STAGING_PREFIX}/hdf5/lib/libhdf5.a CACHE PATH "path to hdf5 library directory" FORCE)
       set(HDF5_HL_LIBRARIES ${OPENRDM_STAGING_PREFIX}/hdf5/lib/libhdf5_hl.a CACHE PATH "path to hdf5 library directory" FORCE)
-      message(STATUS "${Cyan}HDF5 ${HDF5_VERSION} is found!${ColourReset}")
-      message(STATUS "${Cyan}The list of HDF5 libraries to be linked:${ColourReset} ${HDF5_LIBRARIES}")
-      message(STATUS "${Cyan}The list of HDF5 include directories:${ColourReset} ${HDF5_INCLUDE_DIRS}")
+      message(STATUS "${Magenta}HDF5 ${HDF5_VERSION} is found!${ColourReset}")
+      message(STATUS "${Magenta}The list of HDF5 libraries to be linked:${ColourReset} ${HDF5_LIBRARIES}")
+      message(STATUS "${Magenta}The list of HDF5 include directories:${ColourReset} ${HDF5_INCLUDE_DIRS}")
       if(HDF5_FOUND)
          target_include_directories(openrdm INTERFACE 
                                     $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/upstream/hdf5_src/src>

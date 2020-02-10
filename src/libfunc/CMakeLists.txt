@@ -1,8 +1,14 @@
+foreach(idx functional.cc
+            functional.h)
 target_sources(openrdm
                INTERFACE
-               ${CMAKE_CURRENT_LIST_DIR}/functional.cc
-               ${CMAKE_CURRENT_LIST_DIR}/functional.h
+               $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${idx}>
+	       $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
 )
+endforeach()
 
-target_include_directories(openrdm INTERFACE ${CMAKE_CURRENT_LIST_DIR})
-
+target_include_directories(openrdm
+                           INTERFACE
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+                           $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
+)

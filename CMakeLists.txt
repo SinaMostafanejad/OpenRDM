@@ -1,7 +1,10 @@
 # The minimum required version for CMake
 cmake_minimum_required(VERSION 3.12 FATAL_ERROR)
 # project name and its corresponding specifications
-project(openrdm LANGUAGES CXX C)
+project(openrdm
+       	LANGUAGES CXX C
+	VERSION 0.2.0
+)
 set(${PROJECT_NAME}_URL "https://github.com/SinaMostafanejad/OpenRDM")
 set(${PROJECT_NAME}_EMAIL "s_mostafanejad@fsu.edu")
 set(${PROJECT_NAME}_LICENSE "BSD-3 Clause")
@@ -14,21 +17,53 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 #===================================================================
+add_library(openrdm INTERFACE)
+add_library(openrdm::openrdm ALIAS openrdm)
+#===================================================================
 # include modules from cmake directory
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 include(custom_color_messages)
 include(ExternalProject)
 #===================================================================
-if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
-	set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}/${PROJECT_NAME}" CACHE PATH "Install path" FORCE)
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "Build type" FORCE)
 endif()
-message(STATUS "${Red}OpenRDM install:${ColourReset} ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "${Cyan}Build type set to${ColourReset} ${CMAKE_BUILD_TYPE}")
+#-------------------------------------------------------------------
 set(OPENRDM_SOURCE_DIR ${PROJECT_SOURCE_DIR})
 set(OPENRDM_BINARY_DIR ${PROJECT_BINARY_DIR})
 set(OPENRDM_STAGING_PREFIX ${OPENRDM_BINARY_DIR}/stage)
 list(APPEND THIRDLIBLIST "")
 list(APPEND EXTLIBLIST "")
+#-------------------------------------------------------------------
+if(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+	set(CMAKE_INSTALL_PREFIX "${OPENRDM_STAGING_PREFIX}" CACHE PATH "Install path" FORCE)
+endif()
+message(STATUS "${Cyan}OpenRDM will be installed to${ColourReset} ${CMAKE_INSTALL_PREFIX}")
+#===================================================================
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OPENRDM_STAGING_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OPENRDM_STAGING_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OPENRDM_STAGING_PREFIX}/${CMAKE_INSTALL_BINDIR})
+#-------------------------------------------------------------------
+# Offer the user the choice of overriding the installation directories
+set(INSTALL_LIBDIR ${CMAKE_INSTALL_LIBDIR} CACHE PATH "Installation directory for libraries")
+set(INSTALL_BINDIR ${CMAKE_INSTALL_BINDIR} CACHE PATH "Installation directory for executables")
+set(INSTALL_INCLUDEDIR ${CMAKE_INSTALL_INCLUDEDIR} CACHE PATH "Installation directory for header files")
+if(WIN32 AND NOT CYGWIN)
+  set(DEF_INSTALL_CMAKEDIR CMake)
+else()
+  set(DEF_INSTALL_CMAKEDIR share/cmake/${PROJECT_NAME})
+endif()
+set(INSTALL_CMAKEDIR ${DEF_INSTALL_CMAKEDIR} CACHE PATH "Installation directory for CMake files")
+#-------------------------------------------------------------------
+# Report to user
+foreach(i LIB BIN INCLUDE CMAKE)
+  file(TO_NATIVE_PATH ${CMAKE_INSTALL_PREFIX}/${INSTALL_${i}DIR} path_ )
+  message(STATUS "${Cyan}Installing ${i} components to${ColourReset} ${path_}")
+  unset(path_)
+endforeach()
 #===================================================================
 configure_file(
    "${OPENRDM_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.h.in"
@@ -44,7 +79,7 @@ option(BUILD_TESTING "${Cyan}Build the testing tree${ColourReset}" ON)
 option(WITH_ARMADILLO "${cyan}Build with Armadillo linear algebra library${ColourReset}" ON)
 option(WITH_LIBXC "${cyan}Build with Libxc density functional library${ColourReset}" OFF)
 option(WITH_HDF5 "${cyan}Build with HDF5${ColourReset}" ON)
-option(WITH_OPENMP "${cyan}Build with HDF5${ColourReset}" OFF)
+option(WITH_OPENMP "${cyan}Build with OpenMP${ColourReset}" OFF)
 if(${WITH_HDF5})
 	option(WITH_CHUNKING "${cyan}compile libio with chunking enabled in HDF5${ColourReset}" ON)
 	if(${WITH_CHUNKING})
@@ -54,28 +89,28 @@ if(${WITH_HDF5})
 endif()
 #===================================================================
 # Code Coverage Configuration
-add_library(coverage_config INTERFACE)
-
-if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-  # Add required flags (GCC & LLVM/Clang)
-  target_compile_options(coverage_config INTERFACE
-    -O0        # no optimization
-    -g         # generate debug info
-    --coverage # sets all required flags
-  )
-  set(CMAKE_CXX_FLAGS="-g -O0 -Wall -W -Wshadow -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
-  set(CMAKE_C_FLAGS="-g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
-  set(CMAKE_EXE_LINKER_FLAGS="-fprofile-arcs -ftest-coverage")
-  set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
-  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
-    target_link_options(coverage_config INTERFACE --coverage)
-  else()
-    target_link_libraries(coverage_config INTERFACE --coverage)
-  endif()
-endif()
+#add_library(coverage_config INTERFACE)
+#
+#if(CODE_COVERAGE AND CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+#  # Add required flags (GCC & LLVM/Clang)
+#  target_compile_options(coverage_config INTERFACE
+#    -O0        # no optimization
+#    -g         # generate debug info
+#    --coverage # sets all required flags
+#  )
+#  set(CMAKE_CXX_FLAGS="-g -O0 -Wall -W -Wshadow -Wunused-variable -Wunused-parameter -Wunused-function -Wunused -Wno-system-headers -Wno-deprecated -Woverloaded-virtual -Wwrite-strings -fprofile-arcs -ftest-coverage")
+#  set(CMAKE_C_FLAGS="-g -O0 -Wall -W -fprofile-arcs -ftest-coverage")
+#  set(CMAKE_EXE_LINKER_FLAGS="-fprofile-arcs -ftest-coverage")
+#  set(CMAKE_CXX_OUTPUT_EXTENSION_REPLACE 1)
+#  if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.13)
+#    target_link_options(coverage_config INTERFACE --coverage)
+#  else()
+#    target_link_libraries(coverage_config INTERFACE --coverage)
+#  endif()
+#endif()
 #===================================================================
-add_subdirectory(src)
 add_subdirectory(external)
+add_subdirectory(src)
 if(${WITH_ARMADILLO})
    add_dependencies(openrdm armadillo)
 endif()
@@ -85,6 +120,39 @@ endif()
 if(${WITH_HDF5})
    add_dependencies(openrdm hdf5)
 endif()
+if(${WITH_OPENMP})
+   find_package(OpenMP REQUIRED)
+   target_link_libraries(openrdm INTERFACE OpenMP::OpenMP_CXX)
+endif()
+#===================================================================
+#write_basic_package_version_file(
+#	"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+#        VERSION ${PROJECT_VERSION}
+#        COMPATIBILITY SameMajorVersion
+#)
+#configure_package_config_file(
+#   "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
+#   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+#   INSTALL_DESTINATION ${INSTALL_INCLUDEDIR}
+#)
+##-------------------------------------------------------------------
+#install(EXPORT ${PROJECT_NAME}_Targets
+#        FILE ${PROJECT_NAME}Targets.cmake
+#        NAMESPACE "${PROJECT_NAME}::"
+#	DESTINATION ${INSTALL_CMAKEDIR}
+#)
+#install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+#              "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+#        DESTINATION ${INSTALL_CMAKEDIR}
+#)
+#install(DIRECTORY ${PROJECT_SOURCE_DIR}/src
+#	DESTINATION ${INSTALL_INCLUDEDIR}
+#        FILES_MATCHING
+#        PATTERN *.h
+#)
+#-------------------------------------------------------------------
+set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
+include(CPack)
 #===================================================================
 # Only build tests if we are the top-level project
 # Allows this to be used by super projects with `add_subdirectory`

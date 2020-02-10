@@ -152,6 +152,7 @@ class MCPDFT {
       void set_tr_sigma_ab(const arma::vec &tr_sigma_ab);
       void set_tr_sigma_bb(const arma::vec &tr_sigma_bb);
       //==========================================// end of accessors
+      void print_banner() const;
 
    protected:
       //=========== utility functions ============//
@@ -161,7 +162,6 @@ class MCPDFT {
       void read_energies_from_file(std::string test_case);
       void read_opdm_from_file(std::string test_case);
       void read_cmat_from_file(std::string test_case);
-      void print_banner() const;
       //==========================================// end of utility functions
 
    private:
