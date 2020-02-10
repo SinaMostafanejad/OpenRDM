@@ -39,6 +39,9 @@
     <th align="left">Miscellaneous</th>
     <th align="left">
       <a href="http://hits.dwyl.io/SinaMostafanejad/OpenRDM"><img alt="Hit counts" src="http://hits.dwyl.io/SinaMostafanejad/OpenRDM.svg"></a>
+      <a href="https://www.hitwebcounter.com" target="_blank">
+<img src="https://hitwebcounter.com/counter/counter.php?page=7193289&style=0025&nbdigits=10&type=page&initCount=1140" title="Free-Counter" Alt="hitwebcounter"   border="0" >
+</a>                                    
     </th>
   </tr>
 </table>
