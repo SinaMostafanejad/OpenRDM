@@ -17,7 +17,7 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 #===================================================================
-add_library(openrdm INTERFACE)
+add_library(openrdm STATIC "")
 add_library(openrdm::openrdm ALIAS openrdm)
 #===================================================================
 # include modules from cmake directory

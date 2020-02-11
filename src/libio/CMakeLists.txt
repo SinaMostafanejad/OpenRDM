@@ -19,16 +19,16 @@ foreach(idx HDF5_Read_Contiguous.cc
 	    HDF5Client.h
 	    HDF5Client.cc)
 target_sources(openrdm
-               INTERFACE
+               PRIVATE
 	       $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${idx}>
 	       $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
 )
 endforeach()
 
-target_link_libraries(openrdm INTERFACE ${HDF5_LIBRARIES} dl)
+target_link_libraries(openrdm PUBLIC ${HDF5_LIBRARIES} ${CMAKE_DL_LIBS})
 
 target_include_directories(openrdm
-                           INTERFACE
+                           PUBLIC
 	                   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 	                   $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
 )

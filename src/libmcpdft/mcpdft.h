@@ -154,15 +154,15 @@ class MCPDFT {
       //==========================================// end of accessors
       void print_banner() const;
 
-   protected:
-      //=========== utility functions ============//
-      void read_grids_from_file(std::string test_case);
-      void read_orbitals_from_file(std::string test_case);
-      void read_gradients_from_file(std::string test_case);
-      void read_energies_from_file(std::string test_case);
-      void read_opdm_from_file(std::string test_case);
-      void read_cmat_from_file(std::string test_case);
-      //==========================================// end of utility functions
+   protected:   
+       //=========== utility functions ============//
+       void read_grids_from_file(std::string test_case);
+       void read_orbitals_from_file(std::string test_case);
+       void read_gradients_from_file(std::string test_case);
+       void read_energies_from_file(std::string test_case);
+       void read_opdm_from_file(std::string test_case);
+       void read_cmat_from_file(std::string test_case);
+       //==========================================// end utility functions
 
    private:
        /// A boolean variable to show if a chose functional is GGA or not

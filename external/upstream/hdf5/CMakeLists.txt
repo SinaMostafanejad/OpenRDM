@@ -35,11 +35,11 @@ if(WITH_HDF5)
       message(STATUS "${Magenta}The list of HDF5 libraries to be linked:${ColourReset} ${HDF5_LIBRARIES}")
       message(STATUS "${Magenta}The list of HDF5 include directories:${ColourReset} ${HDF5_INCLUDE_DIRS}")
       if(HDF5_FOUND)
-         target_include_directories(openrdm INTERFACE 
+         target_include_directories(openrdm PUBLIC
                                     $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/upstream/hdf5_src/src>
                                     $<INSTALL_INTERFACE:${HDF5_INCLUDE_DIRS}>
            			   )
-         target_link_libraries(openrdm INTERFACE ${HDF5_LIBRARIES})
+         target_link_libraries(openrdm PUBLIC ${HDF5_LIBRARIES})
       endif()
    endif()
 endif()

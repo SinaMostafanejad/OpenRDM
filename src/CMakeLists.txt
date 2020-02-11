@@ -5,6 +5,16 @@ foreach(idx libmcpdft
        add_subdirectory(${idx})
 endforeach()
 
+set_target_properties(openrdm
+   PROPERTIES
+      POSITION_INDEPENDENT_CODE 1
+      ARCHIVE_OUTPUT_NAME "openrdm"
+      DEBUG_POSTFIX "_sd"
+      RELEASE_POSTFIX "_s"
+      SKIP_BUILD_RPATH OFF
+      BUILD_WITH_INSTALL_RPATH OFF
+      INSTALL_RPATH_USE_LINK_PATH ON
+)
 #target_link_libraries(openrdm INTERFACE coverage_config)
 #-------------------------------------------------------------------
 install(TARGETS
@@ -50,6 +60,5 @@ foreach(idx libmcpdft
                DESTINATION ${INSTALL_INCLUDEDIR}
                FILES_MATCHING
                PATTERN *.h
-	       PATTERN *.cc
        )
 endforeach()

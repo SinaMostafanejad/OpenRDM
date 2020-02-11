@@ -33,11 +33,11 @@ if(WITH_ARMADILLO)
       message(STATUS "${Magenta}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")
       message(STATUS "${Magenta}The list of Armadillo include directories:${ColourReset} ${ARMADILLO_INCLUDE_DIRS}")
       #      if(ARMADILLO_FOUND)
-         target_include_directories(openrdm INTERFACE 
+      target_include_directories(openrdm PUBLIC 
                                     $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/thirdparty/armadillo_src/include>
                                     $<INSTALL_INTERFACE:${ARMADILLO_INCLUDE_DIRS}>
            			   )
-         target_link_libraries(openrdm INTERFACE ${ARMADILLO_LIBRARIES})
+			   target_link_libraries(openrdm PUBLIC ${ARMADILLO_LIBRARIES})
 	 #      endif()
    endif()
 endif()
