@@ -2,9 +2,7 @@
 list(APPEND TEST_SET h2_tsvwn_sto3g
 	             h2_tpbe_sto3g)
 
-add_executable(mcpdft main.cc
-	              utility.cc
-)
+add_executable(mcpdft main.cc)
 target_link_libraries(mcpdft PUBLIC openrdm)
 target_compile_definitions(mcpdft PUBLIC openrdm)
 
