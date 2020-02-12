@@ -39,7 +39,7 @@
     <th align="left">Miscellaneous</th>
     <th align="left">
      <!-- <a href="http://hits.dwyl.io/SinaMostafanejad/OpenRDM"><img alt="Hit counts" src="http://hits.dwyl.io/SinaMostafanejad/OpenRDM.svg"></a> -->
-Visitors: <a href="https://github.com/SinaMostafanejad/OpenRDM" ><img src="https://www.webfreecounter.com/hit.php?id=guxcaqf&nd=9&style=20" border="0" alt="free counter"></a>
+Visitors: <a href="https://www.webfreecounter.com/" ><img src="https://www.webfreecounter.com/hit.php?id=guxcaqf&nd=9&style=20" border="0" alt="free counter"></a>
     </th>
   </tr>
 </table>
