@@ -23,4 +23,4 @@ endif()
 \endcode
 
 Let us know on [Slack](https://openrdm.slack.com/join/shared_invite/enQtOTM2MDg2MzUxNjIyLWNlMzFlOWFhYTVlZGQ3ZGYxNWY3NTk4ZjRhYzM3MTU5MWZhN2VhY2Y5NzBiNjVjYzU1YWJkZDc2ODdhYTM4Yjg) or open an issue on the [main page](https://github.com/SinaMostafanejad/OpenRDM) of the <b>OpenRDM</b> repository
-should you have any problems or need any assistance.
+should you have any problems or need any assistance regarding to the <b>OpenRDM</b> project.

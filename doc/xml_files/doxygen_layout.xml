@@ -8,11 +8,11 @@
        <tab type="user" visible="yes" title="Background" url="@ref background"/>
        <tab type="user" visible="yes" title="Multiconfiguration Pair-Density Functional Theory" url="@ref mcpdft"/>
     </tab>
-    <tab type="usergroup" visible="yes" title="How to Install" url="@ref installation"/>
-    <tab type="usergroup" visible="yes" title="How to Use" url="@ref howtouse"/>
-    <tab type="usergroup" visible="yes" title="Running the Tests" url="@ref runningtests"/>
+    <tab type="usergroup" visible="yes" title="How to install" url="@ref installation"/>
+    <tab type="usergroup" visible="yes" title="How to use" url="@ref howtouse"/>
+    <tab type="usergroup" visible="yes" title="Running the tests" url="@ref runningtests"/>
     <tab type="usergroup" visible="yes" title="Dependencies" url="@ref dependencies"/>
-    <tab type="usergroup" visible="yes" title="Known Issues" url="@ref issues"/>
+    <tab type="usergroup" visible="yes" title="Known issues" url="@ref issues"/>
     <tab type="usergroup" visible="yes" title="Releases" url="@ref releases">
        <tab type="usergroup" visible="yes" title="Version 0.0.0" url="@ref v000"/>
        <tab type="usergroup" visible="yes" title="Version 0.1.0" url="@ref v010">
@@ -21,7 +21,7 @@
           <tab type="user" visible="yes" title="Version 0.1.0-0.3.0" url="@ref v010030"/>
        </tab>
     </tab>
-    <tab type="usergroup" visible="yes" title="Important Notes" url="@ref notes">
+    <tab type="usergroup" visible="yes" title="Important notes" url="@ref notes">
        <tab type="user" visible="yes" title="OpenMP" url="@ref openmp"/>
     </tab>
     <tab type="usergroup" visible="yes" title="Acknowledgments" url="@ref acknowledgments"/>
