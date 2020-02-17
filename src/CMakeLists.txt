@@ -1,11 +1,19 @@
+set(sources_ "")
+set(targets_ "${PROJECT_NAME}")
 foreach(idx libmcpdft
 	    libmem
             libio
             libfunc)
+       list(APPEND sources_ "${idx}")
        add_subdirectory(${idx})
 endforeach()
+if(WITH_PSI4)
+   list(APPEND sources_ libpsi4)
+   list(APPEND targets_ mcpdft_iface)
+   add_subdirectory(libpsi4)
+endif()
 
-set_target_properties(openrdm
+set_target_properties(${PROJECT_NAME}
    PROPERTIES
       POSITION_INDEPENDENT_CODE 1
       ARCHIVE_OUTPUT_NAME "openrdm"
@@ -15,10 +23,9 @@ set_target_properties(openrdm
       BUILD_WITH_INSTALL_RPATH OFF
       INSTALL_RPATH_USE_LINK_PATH ON
 )
-#target_link_libraries(openrdm INTERFACE coverage_config)
 #-------------------------------------------------------------------
 install(TARGETS
-           openrdm
+           ${targets_}
 	EXPORT
            ${PROJECT_NAME}_Targets
 	ARCHIVE
@@ -52,13 +59,14 @@ install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
               "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
         DESTINATION ${INSTALL_CMAKEDIR}
 )
-foreach(idx libmcpdft
-	    libmem
-            libio
-            libfunc)
+foreach(idx IN LISTS sources_)
        install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${idx}/
                DESTINATION ${INSTALL_INCLUDEDIR}
                FILES_MATCHING
                PATTERN *.h
        )
 endforeach()
+#-------------------------------------------------------------------
+unset(targets_)
+unset(sources_)
+

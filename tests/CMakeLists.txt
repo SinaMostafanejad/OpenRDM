@@ -18,6 +18,6 @@ foreach(test_id IN LISTS TEST_SET)
     endif()
     add_test(NAME ${test_id}
              COMMAND mcpdft "${test_id}" ${functional_id}
-             WORKING_DIRECTORY ${OPENRDM_SOURCE_DIR}/tests
+	     WORKING_DIRECTORY ${OPENRDM_SOURCE_DIR}/tests
 	    )
 endforeach()

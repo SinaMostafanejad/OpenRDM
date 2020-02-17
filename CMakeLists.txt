@@ -57,6 +57,7 @@ else()
   set(DEF_INSTALL_CMAKEDIR share/cmake/${PROJECT_NAME})
 endif()
 set(INSTALL_CMAKEDIR ${DEF_INSTALL_CMAKEDIR} CACHE PATH "Installation directory for CMake files")
+set(CMAKE_INSTALL_MESSAGE LAZY)
 #-------------------------------------------------------------------
 # Report to user
 foreach(i LIB BIN INCLUDE CMAKE)
@@ -80,12 +81,26 @@ option(WITH_ARMADILLO "${cyan}Build with Armadillo linear algebra library${Colou
 option(WITH_LIBXC "${cyan}Build with Libxc density functional library${ColourReset}" OFF)
 option(WITH_HDF5 "${cyan}Build with HDF5${ColourReset}" ON)
 option(WITH_OPENMP "${cyan}Build with OpenMP${ColourReset}" OFF)
+option(WITH_PSI4 "${cyan}Enable Psi4 interface${ColourReset}" OFF)
 if(${WITH_HDF5})
 	option(WITH_CHUNKING "${cyan}compile libio with chunking enabled in HDF5${ColourReset}" ON)
 	if(${WITH_CHUNKING})
            option(CHUNK_DIM0 "${cyan}HDF5 chunk size (dim 0)${ColourReset}" "1")
            option(CHUNK_DIM1 "${cyan}HDF5 chunk size (dim 1)${ColourReset}" "1")
 	endif()
+endif()
+#===================================================================
+if(WITH_PSI4)
+   set(PYTHON_EXECUTABLE  "/home/sina/Packages/anaconda3/envs/p4dev/bin/python")
+   set(PYTHON_LIBRARIES  "/home/sina/Packages/anaconda3/envs/p4dev/lib")
+   find_package(PythonInterp 3.0 REQUIRED)
+   find_package(PythonLibs ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR} EXACT REQUIRED)
+   find_package(psi4 1.1 CONFIG REQUIRED)
+   if(psi4_FOUND)
+      get_property(loc_ TARGET psi4::core PROPERTY LOCATION)
+      message(STATUS "${Cyan}Psi4 (${psi4_VERSION}) is found in ${loc_} ${ColourReset}")
+      unset(loc_)
+   endif()
 endif()
 #===================================================================
 # Code Coverage Configuration
@@ -125,32 +140,6 @@ if(${WITH_OPENMP})
    target_link_libraries(openrdm INTERFACE OpenMP::OpenMP_CXX)
 endif()
 #===================================================================
-#write_basic_package_version_file(
-#	"${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-#        VERSION ${PROJECT_VERSION}
-#        COMPATIBILITY SameMajorVersion
-#)
-#configure_package_config_file(
-#   "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
-#   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-#   INSTALL_DESTINATION ${INSTALL_INCLUDEDIR}
-#)
-##-------------------------------------------------------------------
-#install(EXPORT ${PROJECT_NAME}_Targets
-#        FILE ${PROJECT_NAME}Targets.cmake
-#        NAMESPACE "${PROJECT_NAME}::"
-#	DESTINATION ${INSTALL_CMAKEDIR}
-#)
-#install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
-#              "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
-#        DESTINATION ${INSTALL_CMAKEDIR}
-#)
-#install(DIRECTORY ${PROJECT_SOURCE_DIR}/src
-#	DESTINATION ${INSTALL_INCLUDEDIR}
-#        FILES_MATCHING
-#        PATTERN *.h
-#)
-#-------------------------------------------------------------------
 set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 include(CPack)
 #===================================================================
