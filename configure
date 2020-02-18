@@ -1,37 +1,48 @@
-#/bin/cmake
+#!/bin/bash
 #============================ Pre-configure ========================
-rm -rf cmake_install.cmake \
-       CMakeFiles/ \
-       CMakeCache.txt \
-       mcpdft \
-       build/
-
-mkdir build && cd build
+#rm -rf cmake_install.cmake \
+#       CMakeFiles/ \
+#       CMakeCache.txt \
+#       mcpdft \
+#       build/
+#
+#mkdir build && cd build
 #cd build
 #============================ Configure ============================
 #cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug \
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
-      -DCODE_COVERAGE=ON \
-      -DBUILD_TESTING=ON \
-      -DWITH_ARMADILLO=ON \
-      -DWITH_OPENMP=ON \
-      -DWITH_LIBXC=OFF \
-      -DWITH_HDF5=ON \
-      -DWITH_CHUNKING=OFF \
-      -DCHUNK_DIM0=2 \
-      -DCHUNK_DIM1=2 \
-      ..
+cmake -H. \
+      -B build \
+      -G "Unix Makefiles" \
+      -D CMAKE_BUILD_TYPE=Release \
+      -D CODE_COVERAGE=ON \
+      -D BUILD_TESTING=ON \
+      -D WITH_ARMADILLO=ON \
+      -D WITH_OPENMP=ON \
+      -D WITH_LIBXC=OFF \
+      -D WITH_HDF5=ON \
+      -D WITH_CHUNKING=OFF \
+      -D CHUNK_DIM0=2 \
+      -D CHUNK_DIM1=2 \
+      -D WITH_PSI4=ON \
+      -D psi4_DIR="/home/sina/MySoftwares/psi4_01_09_2020/objdir/stage/share/cmake/psi4" \
+      -D PYTHON_EXECUTABLE="/home/sina/Packages/anaconda3/envs/p4dev/bin/python" \
+      -D PYTHON_LIBRARY="/home/sina/Packages/anaconda3/envs/p4dev/lib/libpython3.7m.so" \
+      -D PYTHON_INCLUDE_DIR="/home/sina/Packages/anaconda3/envs/p4dev/include/python3.7m"
       #-DLibxc_DIR=<Address of Libxc installation> for
       #find_package(Libxc) to be able to find it
+#      -D PYTHON_EXECUTABLE="/home/sina/Packages/anaconda3/envs/p4dev/bin" \
+#      -C "/home/sina/MySoftwares/psi4_01_09_2020/objdir/stage/share/cmake/psi4/psi4PluginCache.cmake" \
 #============================ Build ================================
-cmake --build . --target clean
-cmake --build . --config Release -- -j $(nproc)
+cmake --build ./build --target clean
+cmake --build ./build --config Release -- -j $(nproc)
 #============================ Install ==============================
-cmake --build . --target install -- -j $(nproc)
+cmake --build ./build --target install -- -j $(nproc)
 #make install #for Unix Makefiles
 #ninja install #for Ninja
 #============================ Test =================================
+cd build
 ctest -V -j $(nproc)
+cd ..
 #ctest -j $(nproc) -M Experimental -T Start --track "Test Series" \
 #      -T Configure \
 #      -T Build \
