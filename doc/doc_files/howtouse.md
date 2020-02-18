@@ -9,7 +9,7 @@ add the following commands to the <i>CMakeLists.txt</i> file in the root directo
 
 \code{.cmake}
 # Set the openrdm_DIR variable to the OpenRDM's "openrdmConfig.cmake" config file address
-set(openrdm_DIR "home/OpenRDM/build/stage/share/cmake/openrdm")
+set(openrdm_DIR "/home/OpenRDM/build/stage/share/cmake/openrdm")
 
 # Find the OpenRDM library
 find_package(openrdm CONFIG REQUIRED)
