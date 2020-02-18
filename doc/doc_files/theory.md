@@ -164,7 +164,7 @@ and
 respectively. Here, \f$c_\sigma\f$ = 1~(-1) when \f$\sigma = \alpha\f$ (\f$\beta\f$).
 
 It is important to note that, in deriving the translated OTPD functional
-expression in Eq.~\f$\eqref{EQ:TRE}\f$, no dependence on \f$\nabla\Pi(\mathbf{r})\f$
+expression in Eq. \f$\eqref{EQ:TRE}\f$, no dependence on \f$\nabla\Pi(\mathbf{r})\f$
 is assumed. A scheme in which the OTPD functional depends explicitly upon
 \f$\nabla\Pi(\mathbf{r})\f$ has also been proposed.\[[5](https://doi.org/10.1021/acs.jctc.7b00967)\]
 The corresponding "fully-translated" (ft) functionals are defined as

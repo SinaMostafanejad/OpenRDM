@@ -1,0 +1,50 @@
+# openrdmConfig.cmake
+# -------------------
+#
+# openrdm cmake module.
+# This module sets the following variables in your project:
+#
+# ::
+#
+#   openrdm_FOUND - true if openrdm found on the system
+#   openrdm_VERSION - openrdm version in format Major.Minor.Release
+#
+#
+# Exported targets:
+#
+# ::
+#
+# If openrdm is found, this module defines the following :prop_tgt:`IMPORTED`
+# targets. ::
+#   openrdm::openrdm - the main openrdm shared library with header & defs attached.
+#
+#
+# Suggested usage:
+#
+# ::
+#
+#   find_package(openrdm)
+#   find_package(openrdm @PROJECT_VERSION@ CONFIG REQUIRED)
+#
+#
+# The following variables can be set to guide the search for this package:
+#
+# ::
+#
+#   openrdm_DIR - CMake variable, set to directory containing this Config file
+#   CMAKE_PREFIX_PATH - CMake variable, set to root directory of this package
+#   PATH - environment variable, set to bin directory of this package
+#   CMAKE_DISABLE_FIND_PACKAGE_openrdm - CMake variable, disables
+#       find_package(openrdm) perhaps to force internal build
+
+@PACKAGE_INIT@
+
+#list(APPEND CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS "pthread;dl")
+#include(InstallRequiredSystemLibraries)
+
+include(CMakeFindDependencyMacro)
+find_dependency(HDF5)
+find_dependency(Armadillo)
+
+include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+check_required_components("@PROJECT_NAME@")

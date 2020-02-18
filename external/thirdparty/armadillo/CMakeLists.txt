@@ -1,5 +1,5 @@
 if(WITH_ARMADILLO)
-   include(FindArmadillo)
+#   include(FindArmadillo)
    if(ARMADILLO_FOUND)
       message(STATUS "${Yellow}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
       message(STATUS "${Yellow}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")
@@ -29,16 +29,16 @@ if(WITH_ARMADILLO)
       set(armadillo_INSTALL_DIR  ${OPENRDM_STAGING_PREFIX}/armadillo CACHE PATH "path to armadillo root directory" FORCE)
       set(ARMADILLO_INCLUDE_DIRS ${OPENRDM_STAGING_PREFIX}/armadillo/include CACHE PATH "path to armadillo include directory" FORCE)
       set(ARMADILLO_LIBRARIES    ${OPENRDM_STAGING_PREFIX}/armadillo/lib/libarmadillo.so CACHE PATH "path to armadillo library directory" FORCE)
-      message(STATUS "${Cyan}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
-      message(STATUS "${Cyan}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")
-      message(STATUS "${Cyan}The list of Armadillo include directories:${ColourReset} ${ARMADILLO_INCLUDE_DIRS}")
-      if(ARMADILLO_FOUND)
-         target_include_directories(openrdm INTERFACE 
+      message(STATUS "${Magenta}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
+      message(STATUS "${Magenta}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")
+      message(STATUS "${Magenta}The list of Armadillo include directories:${ColourReset} ${ARMADILLO_INCLUDE_DIRS}")
+      #      if(ARMADILLO_FOUND)
+      target_include_directories(openrdm PUBLIC 
                                     $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/thirdparty/armadillo_src/include>
                                     $<INSTALL_INTERFACE:${ARMADILLO_INCLUDE_DIRS}>
            			   )
-         target_link_libraries(openrdm INTERFACE ${ARMADILLO_LIBRARIES})
-      endif()
+			   target_link_libraries(openrdm PUBLIC ${ARMADILLO_LIBRARIES})
+	 #      endif()
    endif()
 endif()
 

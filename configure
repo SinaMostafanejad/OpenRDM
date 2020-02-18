@@ -14,13 +14,13 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
       -DCODE_COVERAGE=ON \
       -DBUILD_TESTING=ON \
       -DWITH_ARMADILLO=ON \
+      -DWITH_OPENMP=ON \
       -DWITH_LIBXC=OFF \
       -DWITH_HDF5=ON \
       -DWITH_PYBIND=ON \
       -DWITH_CHUNKING=ON \
       -DCHUNK_DIM0=2 \
       -DCHUNK_DIM1=2 \
-      -DWITH_OPENMP=ON \
       ..
       #-DLibxc_DIR=<Address of Libxc installation> for
       #find_package(Libxc) to be able to find it
@@ -28,7 +28,8 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release \
 cmake --build . --target clean
 cmake --build . --config Release -- -j $(nproc)
 #============================ Install ==============================
-make install #for Unix Makefiles
+cmake --build . --target install -- -j $(nproc)
+#make install #for Unix Makefiles
 #ninja install #for Ninja
 #============================ Test =================================
 ctest -V -j $(nproc)

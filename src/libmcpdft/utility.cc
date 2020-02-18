@@ -156,7 +156,7 @@ namespace mcpdft {
    }
 
    void MCPDFT::read_cmat_from_file(std::string test_case) {
-       std::string cmat_fname  = std::string("tests/")
+       std::string cmat_fname  = std::string("./")
 	                       + test_case
 			       + std::string("/cmat.txt");
        std::ifstream file;

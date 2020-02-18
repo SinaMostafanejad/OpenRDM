@@ -1,7 +1,14 @@
+foreach(idx libMem.cc
+            libMem.h)
 target_sources(openrdm
- 	       INTERFACE
-	       ${CMAKE_CURRENT_LIST_DIR}/libMem.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/libMem.h
+               PRIVATE
+               $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${idx}>
+               $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
 )
+endforeach()
 
-target_include_directories(openrdm INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_include_directories(openrdm
+                           PUBLIC
+                           $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+                           $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
+)

@@ -38,8 +38,7 @@
   <tr>
     <th align="left">Miscellaneous</th>
     <th align="left">
-      <a href="http://hits.dwyl.io/SinaMostafanejad/OpenRDM"><img alt="Hit counts" src="http://hits.dwyl.io/SinaMostafanejad/OpenRDM.svg"></a>
-    </th>
+    <a href="http://hits.dwyl.io/SinaMostafanejad/OpenRDM"><img alt="Hit counts" src="http://hits.dwyl.io/SinaMostafanejad/OpenRDM.svg"></a>
   </tr>
 </table>
 

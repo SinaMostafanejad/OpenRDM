@@ -1,27 +1,34 @@
+foreach(idx HDF5_Read_Contiguous.cc
+	    HDF5_Read_Contiguous.h
+	    HDF5_Write_Contiguous.cc
+	    HDF5_Write_Contiguous.h
+	    HDF5_Read_Compact.cc
+	    HDF5_Read_Compact.h
+	    HDF5_Write_Compact.cc
+	    HDF5_Write_Compact.h
+	    HDF5_Read_Chunked.cc
+	    HDF5_Read_Chunked.h
+	    HDF5_Write_Chunked.cc
+	    HDF5_Write_Chunked.h
+	    IWrite.h
+	    IRead.h
+	    IOFactory.h
+	    HDF5ContiguousFactory.h
+	    HDF5CompactFactory.h
+	    HDF5ChunkedFactory.h
+	    HDF5Client.h
+	    HDF5Client.cc)
 target_sources(openrdm
-               INTERFACE
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Contiguous.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Contiguous.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Contiguous.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Contiguous.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Compact.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Compact.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Compact.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Compact.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Chunked.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Read_Chunked.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Chunked.cc
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5_Write_Chunked.h
-	       ${CMAKE_CURRENT_LIST_DIR}/IWrite.h
-	       ${CMAKE_CURRENT_LIST_DIR}/IRead.h
-	       ${CMAKE_CURRENT_LIST_DIR}/IOFactory.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5ContiguousFactory.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5CompactFactory.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5ChunkedFactory.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5Client.h
-	       ${CMAKE_CURRENT_LIST_DIR}/HDF5Client.cc
+               PRIVATE
+	       $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${idx}>
+	       $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
 )
+endforeach()
 
-target_include_directories(openrdm INTERFACE ${CMAKE_CURRENT_LIST_DIR})
+target_link_libraries(openrdm PUBLIC ${HDF5_LIBRARIES} ${CMAKE_DL_LIBS})
 
-target_link_libraries(openrdm INTERFACE ${HDF5_LIBRARIES} dl)
+target_include_directories(openrdm
+                           PUBLIC
+	                   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+	                   $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
+)

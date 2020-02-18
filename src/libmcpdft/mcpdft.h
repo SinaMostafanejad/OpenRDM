@@ -152,17 +152,17 @@ class MCPDFT {
       void set_tr_sigma_ab(const arma::vec &tr_sigma_ab);
       void set_tr_sigma_bb(const arma::vec &tr_sigma_bb);
       //==========================================// end of accessors
-
-   protected:
-      //=========== utility functions ============//
-      void read_grids_from_file(std::string test_case);
-      void read_orbitals_from_file(std::string test_case);
-      void read_gradients_from_file(std::string test_case);
-      void read_energies_from_file(std::string test_case);
-      void read_opdm_from_file(std::string test_case);
-      void read_cmat_from_file(std::string test_case);
       void print_banner() const;
-      //==========================================// end of utility functions
+
+   protected:   
+       //=========== utility functions ============//
+       void read_grids_from_file(std::string test_case);
+       void read_orbitals_from_file(std::string test_case);
+       void read_gradients_from_file(std::string test_case);
+       void read_energies_from_file(std::string test_case);
+       void read_opdm_from_file(std::string test_case);
+       void read_cmat_from_file(std::string test_case);
+       //==========================================// end utility functions
 
    private:
        /// A boolean variable to show if a chose functional is GGA or not

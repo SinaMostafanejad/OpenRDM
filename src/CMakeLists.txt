@@ -1,5 +1,3 @@
-add_library(openrdm INTERFACE)
-
 foreach(idx libmcpdft
 	    libmem
             libio
@@ -7,28 +5,60 @@ foreach(idx libmcpdft
        add_subdirectory(${idx})
 endforeach()
 
-target_include_directories(openrdm INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libmcpdft>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libmem>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libio>
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/libfunc>
-  $<INSTALL_INTERFACE:${CMAKE_STAGING_PREFIX}/openrdm/include
+set_target_properties(openrdm
+   PROPERTIES
+      POSITION_INDEPENDENT_CODE 1
+      ARCHIVE_OUTPUT_NAME "openrdm"
+      DEBUG_POSTFIX "_sd"
+      RELEASE_POSTFIX "_s"
+      SKIP_BUILD_RPATH OFF
+      BUILD_WITH_INSTALL_RPATH OFF
+      INSTALL_RPATH_USE_LINK_PATH ON
 )
-
-if(${WITH_OPENMP})
-  find_package(OpenMP REQUIRED)
-  target_link_libraries(openrdm INTERFACE OpenMP::OpenMP_CXX)
-endif()
-
-if(${WITH_PYBIND})
-   find_package(pybind11 CONFIG REQUIRED)
-   target_link_libraries(openrdm INTERFACE pybind11::embed)
-endif()
-
-target_link_libraries(openrdm INTERFACE coverage_config)
-
-install(TARGETS openrdm
-	RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR} 
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-	ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
-
+#target_link_libraries(openrdm INTERFACE coverage_config)
+#-------------------------------------------------------------------
+install(TARGETS
+           openrdm
+	EXPORT
+           ${PROJECT_NAME}_Targets
+	ARCHIVE
+	   DESTINATION ${INSTALL_LIBDIR}
+	   COMPONENT lib
+        LIBRARY
+           DESTINATION ${INSTALL_LIBDIR}
+	   COMPONENT lib
+	PUBLIC_HEADER
+	DESTINATION ${INSTALL_INCLUDEDIR}
+	   COMPONENT dev
+#        INCLUDES ${CMAKE_INSTALL_INCLUDEDIR}
+)
+write_basic_package_version_file(
+	"${OPENRDM_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+        VERSION ${PROJECT_VERSION}
+        COMPATIBILITY SameMajorVersion
+)
+configure_package_config_file(
+   "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.cmake.in"
+   "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+   INSTALL_DESTINATION ${INSTALL_INCLUDEDIR}
+)
+install(EXPORT ${PROJECT_NAME}_Targets
+        FILE ${PROJECT_NAME}Targets.cmake
+        NAMESPACE "${PROJECT_NAME}::"
+        DESTINATION ${INSTALL_CMAKEDIR}
+)
+#-------------------------------------------------------------------
+install(FILES "${PROJECT_BINARY_DIR}/${PROJECT_NAME}Config.cmake"
+              "${PROJECT_BINARY_DIR}/${PROJECT_NAME}ConfigVersion.cmake"
+        DESTINATION ${INSTALL_CMAKEDIR}
+)
+foreach(idx libmcpdft
+	    libmem
+            libio
+            libfunc)
+       install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${idx}/
+               DESTINATION ${INSTALL_INCLUDEDIR}
+               FILES_MATCHING
+               PATTERN *.h
+       )
+endforeach()
