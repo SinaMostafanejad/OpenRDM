@@ -69,10 +69,12 @@ configure_file(
    "${OPENRDM_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.h.in"
    "${OPENRDM_SOURCE_DIR}/src/libmcpdft/${PROJECT_NAME}Config.h"
 )
-configure_file(
-   "${OPENRDM_SOURCE_DIR}/cmake/hdf5Config.h.in"
-   "${OPENRDM_SOURCE_DIR}/src/libio/hdf5Config.h"
-)
+if(${WITH_HDF5})
+   configure_file(
+      "${OPENRDM_SOURCE_DIR}/cmake/hdf5Config.h.in"
+      "${OPENRDM_SOURCE_DIR}/src/libio/hdf5Config.h"
+   )
+endif()
 #===================================================================
 option(CODE_COVERAGE "${Cyan}Enable coverage reporting${ColourReset}" OFF)
 option(BUILD_TESTING "${Cyan}Build the testing tree${ColourReset}" ON)

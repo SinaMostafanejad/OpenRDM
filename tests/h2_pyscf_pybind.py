@@ -1,7 +1,9 @@
 import numpy as np
 import pyscf
+import h5py
 
-from pyscf import gto, scf, fci
+from pyscf import gto, dft, scf, fci
+from pyscf.dft import numint
 #from pyscf.tools import cubegen
 
 mol = pyscf.M(
@@ -10,7 +12,20 @@ mol = pyscf.M(
     symmetry = True,
 )
 
-myhf = mol.HF()
+#myhf = mol.HF()
+#myhf.kernel()
+myhf = dft.RKS(mol)
+myhf.grids.atom_grid = (75, 302)
+
+#myhf.grids.radi_method = dft.treutler
+myhf.grids.radi_method = dft.mura_knowles
+
+myhf.grids.becke_scheme = dft.original_becke
+
+myhf.grids.prune = dft.nwchem_prune
+
+#myhf.grids.level = 3
+
 myhf.kernel()
 
 # Orbital energies, Mulliken population etc.
@@ -33,6 +48,8 @@ print(smat)
 dmat_mo = np.zeros((nao,nao))
 dmat_mo[0][0] = 1.0
 print(dmat_mo)
+dm = myhf.make_rdm1()
+print(dm)
 
 #eigval, eigvec = myhf.eig(dmat_mo,smat)
 #print(eigval)
@@ -54,4 +71,16 @@ print(jmat_mo)
 coulomb_en = 2.0 * np.vdot(dmat_mo,jmat_mo)
 print("Classical Coulomb energy = %15.10lf\n" % coulomb_en)
 
+coords = myhf.grids.coords
+weights = myhf.grids.weights
+ao_value = numint.eval_ao(mol, coords, deriv=1)
+f = h5py.File("dataset.h5",'w')
+f["/Grids"] = ao_value
+rho0 = f["/Grids"][0,:]
+print(rho0)
+print(ao_value.shape)
+#print(coords.shape)
+# The first row of rho is electron density, the rest three rows are electron
+# density gradients which are needed for GGA functional
+rho = numint.eval_rho(mol, ao_value, dmat_mo, xctype='GGA')
 
