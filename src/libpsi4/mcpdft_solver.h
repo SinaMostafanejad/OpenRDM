@@ -94,13 +94,17 @@ class MCPDFTSolver: public Wavefunction{
     virtual bool same_a_b_orbs() const { return same_a_b_orbs_; }
     virtual bool same_a_b_dens() const { return same_a_b_dens_; }
 
-  protected:
+    /// print banner
+    void print_banner();
+
+//  protected:
 
 ///======================
     double coulomb_energy_;
     double hf_ex_energy_;
     double lr_ex_energy_;
 ///======================
+
 
     /// use low-memory algorithm?
     bool is_low_memory_;

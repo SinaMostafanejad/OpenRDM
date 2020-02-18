@@ -13,10 +13,11 @@ if(WITH_PSI4)
               list(APPEND psi4_i_list_ ${idx})
       endforeach()
       add_psi4_plugin(mcpdft_iface
-                      STATIC
-                     $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${psi4_i_list_}>
-                     $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
+	              STATIC
+                      $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${psi4_i_list_}>
+                      $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
       )
+      unset(psi4_i_list_)
    else()
       add_library(mcpdft_iface STATIC "")
       foreach(idx plugin.cc                          
@@ -46,8 +47,8 @@ if(WITH_PSI4)
       PROPERTIES
          POSITION_INDEPENDENT_CODE 1
          ARCHIVE_OUTPUT_NAME "mcpdft_iface"
-         DEBUG_POSTFIX "_sd"
-         RELEASE_POSTFIX "_s"
+         DEBUG_POSTFIX "_d"
+	 RELEASE_POSTFIX "_s"
          SKIP_BUILD_RPATH OFF
          BUILD_WITH_INSTALL_RPATH OFF
          INSTALL_RPATH_USE_LINK_PATH ON

@@ -112,6 +112,28 @@ MCPDFTSolver::~MCPDFTSolver() {
 
 }
 
+void MCPDFTSolver::print_banner() {
+   outfile->Printf("\n\n");
+   outfile->Printf( "        ********************************************************************\n");
+   outfile->Printf( "        *                                                                  *\n");
+   outfile->Printf( "        *    MCPDFT: Multiconfigurational Pair-Density Functional Theory   *\n");
+   outfile->Printf( "        *                                                                  *\n");
+   outfile->Printf( "        *    Mohammad Mostafanejad and A. Eugene DePrince III              *\n");
+   outfile->Printf( "        *                                                                  *\n");
+   outfile->Printf( "        ********************************************************************\n");
+   outfile->Printf("\n\n");
+
+   outfile->Printf("\n\n");
+   outfile->Printf("        The following paper should be cited when using MCPDFT:\n");
+   outfile->Printf("\n");
+   outfile->Printf("        M. Mostafanejad, and A. E. DePrince III,\n");
+   outfile->Printf("        J. Chem. Theory Comput. 15, 290-302 (2019).\n");
+   outfile->Printf("\n");
+   outfile->Printf("        URL: https://doi.org/10.1021/acs.jctc.8b00988\n");
+   outfile->Printf("\n");
+   outfile->Printf("\n\n");
+}
+
 // initialize members of the MCPDFTSolver class
 void MCPDFTSolver::common_init() {
 
