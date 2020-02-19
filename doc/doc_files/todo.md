@@ -9,11 +9,6 @@ The following is a list of important tasks that need to be done:
 + Libxc library:
    - Adopt Abstract Factory pattern to wrap the Libxc library
      and tune it towards MCPDFT in OpenRDM.
-+ Documentation:
-   - Notify the user of the absence of a CMake configure file
-     that helps find_package() find the openrdm package. When provided,
-     the expedient solution provided in "How to Use" section should be
-     updated.
 + Interface:
    - OpenRDM needs have a (series) of class(es) for interfacing with QC softwares.
      For example, Psi4 provides intermediate files and PSIO class for dealing with this issue;
@@ -26,8 +21,6 @@ The following is a list of important tasks that need to be done:
 + CMake:
    - Migrate to superbuild structure.
    - Manage the tests in a more elaborate way.
-   - Provide installation and packaging procedure. The code is in need of a configure file for
-     CMake find_package() to be able to be found by other projects.
 
 There are also long-term goals:
 

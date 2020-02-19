@@ -10,6 +10,7 @@
 #cd build
 #============================ Configure ============================
 #cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug \
+<<<<<<< HEAD
 cmake -H. \
       -B build \
       -G "Unix Makefiles" \
@@ -19,6 +20,7 @@ cmake -H. \
       -D WITH_ARMADILLO=ON \
       -D WITH_OPENMP=ON \
       -D WITH_LIBXC=OFF \
+      -D WITH_PYBIND=ON \
       -D WITH_HDF5=ON \
       -D WITH_CHUNKING=OFF \
       -D CHUNK_DIM0=2 \
