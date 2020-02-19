@@ -10,7 +10,6 @@
 #cd build
 #============================ Configure ============================
 #cmake -G "Ninja" -DCMAKE_BUILD_TYPE=Debug \
-<<<<<<< HEAD
 cmake -H. \
       -B build \
       -G "Unix Makefiles" \

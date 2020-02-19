@@ -61,7 +61,7 @@ if(WITH_PYBIND)
       message(STATUS "${Cyan}The list of pybind11 libraries to be linked:${ColourReset} ${pybind11_LIBRARIES}")
       message(STATUS "${Cyan}The list of pybind11 include directories:${ColourReset} ${pybind11_INCLUDE_DIRS}")
       #message(STATUS "${Cyan}The list of pybind11 definitions:${ColourReset} ${pybind11_DEFINITIONS}")
-      target_include_directories(openrdm INTERFACE
+      target_include_directories(openrdm PUBLIC
                                  $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/upstream/pybind11_src/include>
                                  $<INSTALL_INTERFACE:${pybind11_INCLUDE_DIRS}>
                                 )
