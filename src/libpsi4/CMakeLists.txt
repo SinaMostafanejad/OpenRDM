@@ -12,52 +12,43 @@ if(WITH_PSI4)
                   read_range_separated_integrals.cc)
               list(APPEND psi4_i_list_ ${idx})
       endforeach()
-      add_psi4_plugin(mcpdft_iface
-	              STATIC
-                      $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${psi4_i_list_}>
-                      $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
+      add_psi4_plugin(mcpdft
+               	      MODULE
+                      ${CMAKE_CURRENT_LIST_DIR}/${psi4_i_list_}
       )
       unset(psi4_i_list_)
    else()
-      add_library(mcpdft_iface STATIC "")
+      add_library(mcpdft STATIC "")
       foreach(idx plugin.cc                          
                   mcpdft_solver.cc     
                   read_opdm.cc
                   read_tpdm.cc
                   lsda_gga_functionals.cc
                   rs_functionals.cc
-                  read_range_separated_integrals.cc)
-      target_sources(mcpdft_iface
+                  read_range_separated_integrals.cc
+		  pymodule.py
+		  __init__.py)
+      target_sources(mcpdft
                      PUBLIC
                      $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${idx}>
                      $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
       )
       endforeach()
    endif()
-   target_link_libraries(mcpdft_iface PUBLIC psi4::core)
-   target_include_directories(mcpdft_iface
-                              PUBLIC
-                              ${PYTHON_INCLUDE_DIRS}
-   )
-   target_link_libraries(mcpdft_iface
-                         PUBLIC
-                         ${PYTHON_LIBRARIES}
-   )
-   set_target_properties(mcpdft_iface
+   set_target_properties(mcpdft
       PROPERTIES
-         POSITION_INDEPENDENT_CODE 1
-         ARCHIVE_OUTPUT_NAME "mcpdft_iface"
+         POSITION_INDEPENDENT_CODE ON
+         ARCHIVE_OUTPUT_NAME "mcpdft"
          DEBUG_POSTFIX "_d"
-	 RELEASE_POSTFIX "_s"
+	 #RELEASE_POSTFIX "_s"
          SKIP_BUILD_RPATH OFF
          BUILD_WITH_INSTALL_RPATH OFF
          INSTALL_RPATH_USE_LINK_PATH ON
    )
-   target_include_directories(mcpdft_iface
+   target_include_directories(mcpdft
                               PUBLIC
                               $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
                               $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
    )
-   target_link_libraries(openrdm PUBLIC mcpdft_iface)
+   #target_link_libraries(openrdm PUBLIC mcpdft)
 endif()
-

@@ -9,7 +9,7 @@ foreach(idx libmcpdft
 endforeach()
 if(WITH_PSI4)
    list(APPEND sources_ libpsi4)
-   list(APPEND targets_ mcpdft_iface)
+   list(APPEND targets_ mcpdft)
    add_subdirectory(libpsi4)
 endif()
 

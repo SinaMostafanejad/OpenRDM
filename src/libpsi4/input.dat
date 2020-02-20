@@ -1,0 +1,77 @@
+memory 8 gb
+# first, import vrdm_casscf_private library
+sys.path.insert(0, '/home/sina/MOLSSI')
+import v2rdm_casscf
+# second, import mcpdft library
+sys.path.insert(0, './..')
+import mcpdft
+
+
+molecule mol {
+0 3
+#N
+#N 1 5.0
+#O
+#H 1 R
+#H 1 R 2 A
+#R = 0.9
+#A = 104.5
+O
+O 1 7.0
+#symmetry c1
+}
+
+set {
+  basis sto-3g #cc-pvdz
+  maxiter 500
+  # it is important that the scf_type is set to df for v2rdm-casscf (it is assumed in mcpdft)
+  scf_type df
+  d_convergence 1e-8
+  # it is important that the reference is set to rhf/rohf for v2rdm-casscf
+  reference rohf
+}
+
+set v2rdm_casscf {
+
+  positivity dqg
+  opdm_write_full true
+  tpdm_write_full true
+  constrain_spin true
+  # nat_orbs = true for polyradical analysis
+  nat_orbs true
+  r_convergence  1e-5
+  e_convergence  1e-4
+  cg_convergence 1e-6
+  maxiter 1000000
+
+  optimize_orbitals true
+
+  mu_update_frequency 500
+
+  restricted_docc  [ 1, 0, 0, 0, 0, 1, 0, 0 ]
+  active           [ 2, 0, 1, 1, 0, 2, 1, 1 ]
+  
+  #restricted_docc  [ 1, 0, 0, 0 ]
+  #active           [ 3, 0, 1, 2 ]
+  #restricted_docc  [ 2 ]
+  #active           [ 8 ]
+}
+
+# it is important that the reference is set to uks for mcpdft
+set mcpdft {
+  reference uks
+  mcpdft_reference v2rdm
+  mcpdft_type df
+  mcpdft_method 1h_mcpdft
+  mcpdft_functional pbe
+  # Make sure the nat_orbs = true in v2rdm_casscf option set
+  polyradical_analysis true
+}
+
+# run v2rdm-casscf
+en,wfn = energy('v2rdm-casscf',return_wfn=True)
+
+# pass v2rdm-casscf wavefunction object into mcpdft
+en,wfn2=energy('mcpdft',ref_wfn=wfn,return_wfn=True)
+oeprop(wfn2, 'MULLIKEN_CHARGES')
+

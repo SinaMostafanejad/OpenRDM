@@ -1,10 +1,10 @@
 #!/bin/bash
 #============================ Pre-configure ========================
-#rm -rf cmake_install.cmake \
-#       CMakeFiles/ \
-#       CMakeCache.txt \
-#       mcpdft \
-#       build/
+rm -rf cmake_install.cmake \
+       CMakeFiles/ \
+       CMakeCache.txt \
+       mcpdft \
+       build/
 #
 #mkdir build && cd build
 #cd build
@@ -19,13 +19,14 @@ cmake -H. \
       -D WITH_ARMADILLO=ON \
       -D WITH_OPENMP=ON \
       -D WITH_LIBXC=OFF \
-      -D WITH_PYBIND=ON \
+      -D WITH_PYBIND=OFF \
       -D WITH_HDF5=ON \
       -D WITH_CHUNKING=OFF \
       -D CHUNK_DIM0=2 \
       -D CHUNK_DIM1=2 \
       -D WITH_PSI4=ON \
       -D psi4_DIR="/home/sina/MySoftwares/psi4_01_09_2020/objdir/stage/share/cmake/psi4" \
+      -D pybind11_DIR="/home/sina/Packages/anaconda3/envs/p4dev/share/cmake/pybind11" \
       -D PYTHON_EXECUTABLE="/home/sina/Packages/anaconda3/envs/p4dev/bin/python" \
       -D PYTHON_LIBRARY="/home/sina/Packages/anaconda3/envs/p4dev/lib/libpython3.7m.so" \
       -D PYTHON_INCLUDE_DIR="/home/sina/Packages/anaconda3/envs/p4dev/include/python3.7m"
