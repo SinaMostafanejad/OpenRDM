@@ -24,13 +24,14 @@
 #endif()
 
 if(WITH_PYBIND)
-        find_package(pybind11 2.4.3 CONFIG QUIET)
+   add_dependencies(${PROJECT_NAME} pybind11)
+   find_package(pybind11 2.4.3 CONFIG QUIET REQUIRED)
    if(pybind11_FOUND)
       message(STATUS "${Yellow}pybind11 ${pybind11_VERSION} is found!${ColourReset}")
-      message(STATUS "${Yellow}The list of pybind11 libraries to be linked:${ColourReset} ${pybind11_LIBRARIES}")
       message(STATUS "${Yellow}The list of pybind11 include directories:${ColourReset} ${pybind11_INCLUDE_DIRS}")
+      target_include_directories(${PROJECT_NAME} PUBLIC ${HDF5_INCLUDE_DIRS})
    else()
-      message(STATUS "${Cyan}pybind11 is not found. Building from extrenal source...${ColourReset}")
+      message(STATUS "${Yellow}Building pybind11 from extrenal source...${ColourReset}")
       include(ExternalProject)
       ExternalProject_Add(pybind11
          GIT_REPOSITORY git@github.com:pybind/pybind11.git
@@ -50,22 +51,19 @@ if(WITH_PYBIND)
                     -DCMAKE_INSTALL_BINDIR=<INSTALL_DIR>/bin
                     -DCMAKE_INSTALL_INCLUDEDIR=<INSTALL_DIR>/include
                     -DCMAKE_INSTALL_DATADIR=<INSTALL_DIR>/share
-		    #BUILD_BYPRODUCTS=<INSTALL_DIR>/lib/pybind11.a
 		    #BUILD_ALWAYS YES
       )
       set(pybind11_DIR ${OPENRDM_STAGING_DIR}/pybind11/share/cmake/pybind11 CACHE PATH "path to internally built pybind11Config.cmake" FORCE)
       set(pybind11_INSTALL_DIR  ${OPENRDM_STAGING_PREFIX}/pybind11 CACHE PATH "path to pybind11 root directory" FORCE)
       set(pybind11_INCLUDE_DIRS ${OPENRDM_STAGING_PREFIX}/pybind11/include CACHE PATH "path to pybind11 include directory" FORCE)
-      #set(pybind11_LIBRARIES    ${OPENRDM_STAGING_PREFIX}/pybind11/lib/pybind11.a CACHE PATH "path to pybind11 library directory" FORCE)
-      #message(STATUS "${Cyan}pybind11 ${pybind11_VERSION} is found!${ColourReset}")
-      message(STATUS "${Cyan}The list of pybind11 libraries to be linked:${ColourReset} ${pybind11_LIBRARIES}")
-      message(STATUS "${Cyan}The list of pybind11 include directories:${ColourReset} ${pybind11_INCLUDE_DIRS}")
-      #message(STATUS "${Cyan}The list of pybind11 definitions:${ColourReset} ${pybind11_DEFINITIONS}")
-      target_include_directories(openrdm PUBLIC
-                                 $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/upstream/pybind11_src/include>
-                                 $<INSTALL_INTERFACE:${pybind11_INCLUDE_DIRS}>
-                                )
-			#target_link_libraries(openrdm INTERFACE ${pybind11_LIBRARIES})
+      message(STATUS "${Yellow}The list of pybind11 libraries to be linked:${ColourReset} ${pybind11_LIBRARIES}")
+      message(STATUS "${Yellow}The list of pybind11 include directories:${ColourReset} ${pybind11_INCLUDE_DIRS}")
+      if(pybind11_FOUND)
+         target_include_directories(${PROJECT_NAME} PUBLIC
+                                    $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/upstream/pybind11_src/include>
+                                    $<INSTALL_INTERFACE:${pybind11_INCLUDE_DIRS}>
+         )
+      endif()
    endif()
 endif()
 

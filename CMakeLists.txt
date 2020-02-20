@@ -102,7 +102,7 @@ if(WITH_PSI4)
    find_package(psi4 1.1 CONFIG REQUIRED)
    if(psi4_FOUND)
       get_property(loc_ TARGET psi4::core PROPERTY LOCATION)
-      message(STATUS "${Cyan}Psi4 (${psi4_VERSION}) is found in ${loc_} ${ColourReset}")
+      message(STATUS "${Yellow}Psi4 (${psi4_VERSION}) is found in ${loc_} ${ColourReset}")
       unset(loc_)
    endif()
 endif()
@@ -129,20 +129,21 @@ endif()
 #endif()
 #===================================================================
 add_subdirectory(external)
+
+if(WITH_OPENMP)
+   find_package(OpenMP REQUIRED QUIET)
+   if(OpenMP_FOUND)
+	   target_link_libraries(${PROJECT_NAME}
+		                 PUBLIC
+				 OpenMP::OpenMP_CXX
+				 OpenMP::OpenMP_C
+      )
+   else()
+      message(FATAL_ERROR "OpenMP is not found!" )
+   endif()
+endif()
+
 add_subdirectory(src)
-if(${WITH_ARMADILLO})
-   add_dependencies(openrdm armadillo)
-endif()
-if(${WITH_LIBXC})
-   add_dependencies(openrdm libxc)
-endif()
-if(${WITH_HDF5})
-   add_dependencies(openrdm hdf5)
-endif()
-if(${WITH_OPENMP})
-   find_package(OpenMP REQUIRED)
-   target_link_libraries(openrdm INTERFACE OpenMP::OpenMP_CXX)
-endif()
 #===================================================================
 set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
 include(CPack)

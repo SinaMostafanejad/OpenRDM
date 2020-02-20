@@ -3,5 +3,5 @@ if(WITH_ARMADILLO)
 endif()
 
 foreach(idx IN LISTS THIRDLIBLIST)
-        add_subdirectory(${idx})
+   add_subdirectory(${idx})
 endforeach()

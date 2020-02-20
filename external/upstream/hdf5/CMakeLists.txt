@@ -1,13 +1,17 @@
 if(WITH_HDF5)
-   include(FindHDF5)
-   if(NOT HDF5_FOUND)
+   add_dependencies(${PROJECT_NAME} HDF5)
+   find_package(HDF5 QUIET REQUIRED COMPONENTS C CXX)
+   if(HDF5_FOUND)
       message(STATUS "${Yellow}HDF5 ${HDF5_VERSION} is found!${ColourReset}")
       message(STATUS "${Yellow}The list of HDF5 libraries to be linked:${ColourReset} ${HDF5_LIBRARIES}")
       message(STATUS "${Yellow}The list of HDF5 include directories:${ColourReset} ${HDF5_INCLUDE_DIRS}")
       message(STATUS "${Yellow}The list of HDF5 definitions:${ColourReset} ${HDF5_DEFINITIONS}")
+      target_include_directories(${PROJECT_NAME} PUBLIC ${HDF5_INCLUDE_DIRS})
+      target_link_libraries(${PROJECT_NAME} PUBLIC ${HDF5_LIBRARIES})
    else()
+      message(STATUS "${Yellow}Building HDF5 from external source...${ColourReset}")
       include(ExternalProject)
-      ExternalProject_Add(hdf5
+      ExternalProject_Add(HDF5
          GIT_REPOSITORY https://bitbucket.hdfgroup.org/scm/hdffv/hdf5.git
          GIT_TAG 643d298823255a684862f4c6eb85ac5afde4b796 
          UPDATE_COMMAND ""
@@ -31,15 +35,15 @@ if(WITH_HDF5)
       set(HDF5_INCLUDE_DIRS ${OPENRDM_STAGING_PREFIX}/hdf5/include CACHE PATH "path to hdf5 include directory" FORCE)
       set(HDF5_LIBRARIES    ${OPENRDM_STAGING_PREFIX}/hdf5/lib/libhdf5.a CACHE PATH "path to hdf5 library directory" FORCE)
       set(HDF5_HL_LIBRARIES ${OPENRDM_STAGING_PREFIX}/hdf5/lib/libhdf5_hl.a CACHE PATH "path to hdf5 library directory" FORCE)
-      message(STATUS "${Magenta}HDF5 ${HDF5_VERSION} is found!${ColourReset}")
-      message(STATUS "${Magenta}The list of HDF5 libraries to be linked:${ColourReset} ${HDF5_LIBRARIES}")
-      message(STATUS "${Magenta}The list of HDF5 include directories:${ColourReset} ${HDF5_INCLUDE_DIRS}")
+      message(STATUS "${Yellow}HDF5 ${HDF5_VERSION} is found!${ColourReset}")
+      message(STATUS "${Yellow}The list of HDF5 libraries to be linked:${ColourReset} ${HDF5_LIBRARIES}")
+      message(STATUS "${Yellow}The list of HDF5 include directories:${ColourReset} ${HDF5_INCLUDE_DIRS}")
       if(HDF5_FOUND)
-         target_include_directories(openrdm PUBLIC
+         target_include_directories(${PROJECT_NAME} PUBLIC
                                     $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/upstream/hdf5_src/src>
                                     $<INSTALL_INTERFACE:${HDF5_INCLUDE_DIRS}>
-           			   )
-         target_link_libraries(openrdm PUBLIC ${HDF5_LIBRARIES})
+         )
+         target_link_libraries(${PROJECT_NAME} PUBLIC ${HDF5_LIBRARIES})
       endif()
    endif()
 endif()

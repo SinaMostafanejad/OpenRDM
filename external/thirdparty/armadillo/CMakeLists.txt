@@ -1,12 +1,16 @@
 if(WITH_ARMADILLO)
-#   include(FindArmadillo)
+   add_dependencies(${PROJECT_NAME} Armadillo)
+   find_package(Armadillo QUIET REQUIRED)
    if(ARMADILLO_FOUND)
       message(STATUS "${Yellow}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
       message(STATUS "${Yellow}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")
       message(STATUS "${Yellow}The list of Armadillo include directories:${ColourReset} ${ARMADILLO_INCLUDE_DIRS}")
+      target_include_directories(${PROJECT_NAME} PUBLIC ${ARMADILLO_INCLUDE_DIRS})
+      target_link_libraries(${PROJECT_NAME} PUBLIC ${ARMADILLO_LIBRARIES})
    else()
+      message(STATUS "${Yellow}Building Armadillo from external source...${ColourReset}")
       include(ExternalProject)
-      ExternalProject_Add(armadillo
+      ExternalProject_Add(Armadillo
          GIT_REPOSITORY git@gitlab.com:conradsnicta/armadillo-code.git
          GIT_TAG 64c517324f996df27528ffdc519277c92b6ce0e7
          UPDATE_COMMAND ""
@@ -25,20 +29,20 @@ if(WITH_ARMADILLO)
 		    -DCMAKE_INSTALL_DATADIR=<INSTALL_DIR>/share
          BUILD_ALWAYS YES
       )
-      set(armadillo_DIR ${OPENRDM_STAGING_DIR}/armadillo/share/Armadillo/CMake CACHE PATH "path to internally built ArmadilloConfig.cmake" FORCE)
-      set(armadillo_INSTALL_DIR  ${OPENRDM_STAGING_PREFIX}/armadillo CACHE PATH "path to armadillo root directory" FORCE)
+      set(Armadillo_DIR ${OPENRDM_STAGING_DIR}/armadillo/share/Armadillo/CMake CACHE PATH "path to internally built ArmadilloConfig.cmake" FORCE)
+      set(Armadillo_INSTALL_DIR  ${OPENRDM_STAGING_PREFIX}/armadillo CACHE PATH "path to armadillo root directory" FORCE)
       set(ARMADILLO_INCLUDE_DIRS ${OPENRDM_STAGING_PREFIX}/armadillo/include CACHE PATH "path to armadillo include directory" FORCE)
       set(ARMADILLO_LIBRARIES    ${OPENRDM_STAGING_PREFIX}/armadillo/lib/libarmadillo.so CACHE PATH "path to armadillo library directory" FORCE)
-      message(STATUS "${Magenta}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
-      message(STATUS "${Magenta}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")
-      message(STATUS "${Magenta}The list of Armadillo include directories:${ColourReset} ${ARMADILLO_INCLUDE_DIRS}")
-      #      if(ARMADILLO_FOUND)
-      target_include_directories(openrdm PUBLIC 
+      message(STATUS "${Yellow}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
+      message(STATUS "${Yellow}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")
+      message(STATUS "${Yellow}The list of Armadillo include directories:${ColourReset} ${ARMADILLO_INCLUDE_DIRS}")
+      if(ARMADILLO_FOUND)
+	 target_include_directories(${PROJECT_NAME} PUBLIC 
                                     $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/thirdparty/armadillo_src/include>
                                     $<INSTALL_INTERFACE:${ARMADILLO_INCLUDE_DIRS}>
-           			   )
-			   target_link_libraries(openrdm PUBLIC ${ARMADILLO_LIBRARIES})
-	 #      endif()
+         )
+         target_link_libraries(${PROJECT_NAME} PUBLIC ${ARMADILLO_LIBRARIES})
+      endif()
    endif()
 endif()
 
