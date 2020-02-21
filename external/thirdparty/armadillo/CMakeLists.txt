@@ -1,6 +1,6 @@
 if(WITH_ARMADILLO)
    add_dependencies(${PROJECT_NAME} Armadillo)
-   find_package(Armadillo QUIET REQUIRED)
+   find_package(Armadillo QUIET)
    if(ARMADILLO_FOUND)
       message(STATUS "${Yellow}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
       message(STATUS "${Yellow}The list of Armadillo libraries to be linked:${ColourReset} ${ARMADILLO_LIBRARIES}")

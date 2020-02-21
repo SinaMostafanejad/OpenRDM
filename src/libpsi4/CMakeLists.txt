@@ -50,5 +50,5 @@ if(WITH_PSI4)
                               $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
                               $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
    )
-   #target_link_libraries(openrdm PUBLIC mcpdft)
+   target_link_libraries(openrdm INTERFACE mcpdft)
 endif()

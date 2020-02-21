@@ -106,6 +106,18 @@ if(WITH_PSI4)
       unset(loc_)
    endif()
 endif()
+#-------------------------------------------------------------------
+if(WITH_OPENMP)
+   find_package(OpenMP REQUIRED QUIET)
+   if(OpenMP_FOUND)
+      target_link_libraries(${PROJECT_NAME}
+                            PRIVATE
+		            OpenMP::OpenMP_CXX
+      )
+   else()
+      message(FATAL_ERROR "OpenMP is not found!" )
+   endif()
+endif()
 #===================================================================
 # Code Coverage Configuration
 #add_library(coverage_config INTERFACE)
@@ -129,20 +141,6 @@ endif()
 #endif()
 #===================================================================
 add_subdirectory(external)
-
-if(WITH_OPENMP)
-   find_package(OpenMP REQUIRED QUIET)
-   if(OpenMP_FOUND)
-	   target_link_libraries(${PROJECT_NAME}
-		                 PUBLIC
-				 OpenMP::OpenMP_CXX
-				 OpenMP::OpenMP_C
-      )
-   else()
-      message(FATAL_ERROR "OpenMP is not found!" )
-   endif()
-endif()
-
 add_subdirectory(src)
 #===================================================================
 set(CPACK_RESOURCE_FILE_LICENSE "${PROJECT_SOURCE_DIR}/LICENSE")
