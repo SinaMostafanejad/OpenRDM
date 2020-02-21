@@ -25,7 +25,7 @@
 
 if(WITH_PYBIND)
    add_dependencies(${PROJECT_NAME} pybind11)
-   find_package(pybind11 2.4.3 CONFIG QUIET REQUIRED)
+   find_package(pybind11 CONFIG QUIET)
    if(pybind11_FOUND)
       message(STATUS "${Yellow}pybind11 ${pybind11_VERSION} is found!${ColourReset}")
       message(STATUS "${Yellow}The list of pybind11 include directories:${ColourReset} ${pybind11_INCLUDE_DIRS}")
