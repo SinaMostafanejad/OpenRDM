@@ -23,10 +23,10 @@
 #    set(pybind11_DIR ${STAGED_INSTALL_PREFIX}/share/cmake/pybind11 CACHE PATH "path to internally built pybind11Config.cmake" FORCE)
 #endif()
 
-if(WITH_PYBIND)
+if(${WITH_PYBIND})
    add_dependencies(${PROJECT_NAME} pybind11)
    find_package(pybind11 CONFIG QUIET)
-   if(pybind11_FOUND)
+   if(${pybind11_FOUND})
       message(STATUS "${Yellow}pybind11 ${pybind11_VERSION} is found!${ColourReset}")
       message(STATUS "${Yellow}The list of pybind11 include directories:${ColourReset} ${pybind11_INCLUDE_DIRS}")
       target_include_directories(${PROJECT_NAME} PUBLIC ${HDF5_INCLUDE_DIRS})
@@ -56,9 +56,9 @@ if(WITH_PYBIND)
       set(pybind11_DIR ${OPENRDM_STAGING_DIR}/pybind11/share/cmake/pybind11 CACHE PATH "path to internally built pybind11Config.cmake" FORCE)
       set(pybind11_INSTALL_DIR  ${OPENRDM_STAGING_PREFIX}/pybind11 CACHE PATH "path to pybind11 root directory" FORCE)
       set(pybind11_INCLUDE_DIRS ${OPENRDM_STAGING_PREFIX}/pybind11/include CACHE PATH "path to pybind11 include directory" FORCE)
-      message(STATUS "${Yellow}The list of pybind11 libraries to be linked:${ColourReset} ${pybind11_LIBRARIES}")
-      message(STATUS "${Yellow}The list of pybind11 include directories:${ColourReset} ${pybind11_INCLUDE_DIRS}")
-      if(pybind11_FOUND)
+      if(${pybind11_FOUND})
+         message(STATUS "${Yellow}The list of pybind11 libraries to be linked:${ColourReset} ${pybind11_LIBRARIES}")
+         message(STATUS "${Yellow}The list of pybind11 include directories:${ColourReset} ${pybind11_INCLUDE_DIRS}")
          target_include_directories(${PROJECT_NAME} PUBLIC
                                     $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/upstream/pybind11_src/include>
                                     $<INSTALL_INTERFACE:${pybind11_INCLUDE_DIRS}>
