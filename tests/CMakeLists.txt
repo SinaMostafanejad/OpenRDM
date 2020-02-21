@@ -3,12 +3,14 @@ list(APPEND TEST_SET h2_tsvwn_sto3g
 	             h2_tpbe_sto3g)
 
 add_executable(mcpdft_test main.cc)
-target_link_libraries(mcpdft_test PUBLIC openrdm)
-target_compile_definitions(mcpdft_test PUBLIC openrdm)
 
-if(WITH_LIBXC)
+if(${WITH_LIBXC})
+   add_dependencies(mcpdft_test Libxc)
    target_include_directories(mcpdft_test PRIVATE ${Libxc_INCLUDE_DIRS})
 endif()
+
+target_link_libraries(mcpdft_test PUBLIC openrdm)
+target_compile_definitions(mcpdft_test PUBLIC openrdm)
 
 foreach(test_id IN LISTS TEST_SET)
     if("${test_id}" STREQUAL "h2_tsvwn_sto3g")
