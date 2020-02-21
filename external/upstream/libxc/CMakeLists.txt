@@ -1,5 +1,5 @@
 if(${WITH_LIBXC})
-	find_package(Libxc 4.3.4 CONFIG QUIET)
+   find_package(Libxc 4.3.4 CONFIG QUIET)
    if(${Libxc_FOUND})
       message(STATUS "${Yellow}Libxc ${Libxc_VERSION} is found!${ColourReset}")
       message(STATUS "${Yellow}The list of Libxc libraries to be linked:${ColourReset} ${Libxc_LIBRARIES}")
@@ -36,6 +36,11 @@ if(${WITH_LIBXC})
                     -DCMAKE_INSTALL_INCLUDEDIR=<INSTALL_DIR>/include
                     -DCMAKE_INSTALL_DATADIR=<INSTALL_DIR>/share
          BUILD_BYPRODUCTS=<INSTALL_DIR>/lib/libxc.a
+         LOG_CONFIGURE YES
+         LOG_BUILD YES
+         LOG_INSTALL YES
+         LOG_UPDATE YES
+         LOG_OUTPUT_ON_FAILURE YES
          BUILD_ALWAYS YES
       )
       set(Libxc_DIR ${OPENRDM_STAGING_PREFIX}/Libxc/share/cmake/Libxc CACHE PATH "path to internally built LibxcConfig.cmake" FORCE)

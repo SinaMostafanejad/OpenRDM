@@ -1,5 +1,4 @@
 if(${WITH_ARMADILLO})
-   add_dependencies(${PROJECT_NAME} Armadillo)
    find_package(Armadillo 9.4 QUIET)
    if(${ARMADILLO_FOUND})
       message(STATUS "${Yellow}Armadillo ${ARMADILLO_VERSION_STRING} is found!${ColourReset}")
@@ -27,6 +26,11 @@ if(${WITH_ARMADILLO})
 		    -DCMAKE_INSTALL_BINDIR=<INSTALL_DIR>/bin
 		    -DCMAKE_INSTALL_INCLUDEDIR=<INSTALL_DIR>/include
 		    -DCMAKE_INSTALL_DATADIR=<INSTALL_DIR>/share
+         LOG_CONFIGURE YES
+	 LOG_BUILD YES
+         LOG_INSTALL YES
+	 LOG_UPDATE YES
+         LOG_OUTPUT_ON_FAILURE YES
          BUILD_ALWAYS YES
       )
       set(Armadillo_DIR ${OPENRDM_STAGING_PREFIX}/Armadillo/share/Armadillo/CMake CACHE PATH "path to internally built ArmadilloConfig.cmake" FORCE)

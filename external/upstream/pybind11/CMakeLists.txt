@@ -24,7 +24,6 @@
 #endif()
 
 if(${WITH_PYBIND})
-   add_dependencies(${PROJECT_NAME} pybind11)
    find_package(pybind11 CONFIG QUIET)
    if(${pybind11_FOUND})
       message(STATUS "${Yellow}pybind11 ${pybind11_VERSION} is found!${ColourReset}")
@@ -51,7 +50,12 @@ if(${WITH_PYBIND})
                     -DCMAKE_INSTALL_BINDIR=<INSTALL_DIR>/bin
                     -DCMAKE_INSTALL_INCLUDEDIR=<INSTALL_DIR>/include
                     -DCMAKE_INSTALL_DATADIR=<INSTALL_DIR>/share
-		    #BUILD_ALWAYS YES
+         LOG_CONFIGURE YES
+         LOG_BUILD YES
+         LOG_INSTALL YES
+         LOG_UPDATE YES
+         LOG_OUTPUT_ON_FAILURE YES	    
+         #BUILD_ALWAYS YES
       )
       set(pybind11_DIR ${OPENRDM_STAGING_DIR}/pybind11/share/cmake/pybind11 CACHE PATH "path to internally built pybind11Config.cmake" FORCE)
       set(pybind11_INSTALL_DIR  ${OPENRDM_STAGING_PREFIX}/pybind11 CACHE PATH "path to pybind11 root directory" FORCE)

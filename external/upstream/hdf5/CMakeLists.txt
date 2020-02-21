@@ -1,5 +1,4 @@
 if(${WITH_HDF5})
-   add_dependencies(${PROJECT_NAME} HDF5)
    find_package(HDF5 QUIET REQUIRED COMPONENTS C CXX)
    if(${HDF5_FOUND})
       message(STATUS "${Yellow}HDF5 ${HDF5_VERSION} is found!${ColourReset}")
@@ -28,6 +27,11 @@ if(${WITH_HDF5})
 	            -DCMAKE_INSTALL_BINDIR=<INSTALL_DIR>/bin
 	            -DCMAKE_INSTALL_INCLUDEDIR=<INSTALL_DIR>/include
 	            -DCMAKE_INSTALL_DATADIR=<INSTALL_DIR>/share
+         LOG_CONFIGURE YES
+         LOG_BUILD YES
+         LOG_INSTALL YES
+         LOG_UPDATE YES
+         LOG_OUTPUT_ON_FAILURE YES
          #BUILD_ALWAYS YES
       )
       set(HDF5_DIR ${OPENRDM_STAGING_DIR}/hdf5/share/cmake/hdf5 CACHE PATH "path to internally built HDF5Config.cmake" FORCE)
