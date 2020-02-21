@@ -96,7 +96,7 @@ if(${WITH_HDF5})
 	endif()
 endif()
 #===================================================================
-if(WITH_PSI4)
+if(${WITH_PSI4})
    find_package(PythonInterp 3.0 REQUIRED)
    find_package(PythonLibs ${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR} EXACT REQUIRED)
    find_package(psi4 1.1 CONFIG REQUIRED)
@@ -107,9 +107,9 @@ if(WITH_PSI4)
    endif()
 endif()
 #-------------------------------------------------------------------
-if(WITH_OPENMP)
+if(${WITH_OPENMP})
    find_package(OpenMP REQUIRED QUIET)
-   if(OpenMP_FOUND)
+   if(${OpenMP_FOUND})
       target_link_libraries(${PROJECT_NAME}
                             PRIVATE
 		            OpenMP::OpenMP_CXX

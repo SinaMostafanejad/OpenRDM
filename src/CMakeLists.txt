@@ -7,7 +7,7 @@ foreach(idx libmcpdft
        list(APPEND sources_ "${idx}")
        add_subdirectory(${idx})
 endforeach()
-if(WITH_PSI4)
+if(${WITH_PSI4})
    list(APPEND sources_ libpsi4)
    list(APPEND targets_ mcpdft)
    add_subdirectory(libpsi4)

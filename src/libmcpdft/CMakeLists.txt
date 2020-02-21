@@ -15,3 +15,13 @@ target_include_directories(openrdm
                            $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
                            $<INSTALL_INTERFACE:${INSTALL_INCLUDEDIR}>
 )
+
+target_include_directories(openrdm PUBLIC
+                           $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/thirdparty/Armadillo_src/include>
+                           $<INSTALL_INTERFACE:${ARMADILLO_INCLUDE_DIRS}>
+)
+target_link_libraries(openrdm PUBLIC
+                      $<BUILD_INTERFACE:${OPENRDM_BINARY_DIR}/external/thirdparty/Armadillo_bin/libarmadillo.so>
+                      $<INSTALL_INTERFACE:${ARMADILLO_LIBRARIES}>
+)
+

@@ -1,8 +1,5 @@
-if(WITH_PSI4)
-   if(psi4_FOUND)
-      get_property(loc_ TARGET psi4::core PROPERTY LOCATION)
-      message(STATUS "${Cyan}Psi4 (${psi4_VERSION}) is found in ${loc_} ${ColourReset}")
-      unset(loc_)
+if(${WITH_PSI4})
+   if(${psi4_FOUND})
       foreach(idx plugin.cc                          
                   mcpdft_solver.cc     
                   read_opdm.cc
