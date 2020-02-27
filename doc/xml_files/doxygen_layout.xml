@@ -10,6 +10,7 @@
     </tab>
     <tab type="usergroup" visible="yes" title="How to install" url="@ref installation"/>
     <tab type="usergroup" visible="yes" title="How to use" url="@ref howtouse"/>
+    <tab type="usergroup" visible="yes" title="Working with Psi4 plugins" url="@ref workwithpsi4"/>
     <tab type="usergroup" visible="yes" title="Running the tests" url="@ref runningtests"/>
     <tab type="usergroup" visible="yes" title="Dependencies" url="@ref dependencies"/>
     <tab type="usergroup" visible="yes" title="Known issues" url="@ref issues"/>

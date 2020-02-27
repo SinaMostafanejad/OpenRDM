@@ -799,6 +799,7 @@ INPUT                  = $(TRAVIS_BUILD_DIR)/src \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/theory.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/installation.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/howtouse.md \
+                         $(TRAVIS_BUILD_DIR)/doc/doc_files/workwithpsi4.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/runningtests.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/dependencies.md \
                          $(TRAVIS_BUILD_DIR)/doc/doc_files/issues.md \
