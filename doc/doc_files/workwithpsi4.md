@@ -12,8 +12,9 @@ However, modules are created mainly because they can dynamically be
 imported at runtime by the consuming programs. In our sample  
 [input file](https://github.com/SinaMostafanejad/v2rdm_casscf/blob/master/tests/v2rdm_casscf_pdft/input.dat)
 , we show how to import both <i>v2rdm\_casscf</i> and <i>mcpdft</i> modules.
-At lines 51 and 53 of this input file, we call two functions that are provided by
-these modules:
+This input file assumes that you have chosen the second way below (recommended) for 
+connecting OpenRDM with your plugin. At lines 51 and 53 of this input file, we call
+two functions that are provided by these modules:
 
 \code{.py}
 en,wfn=energy('v2rdm-casscf',return_wfn=True)
@@ -45,7 +46,7 @@ to the directory that contains the <i>psi4Config.cmake</i> file so that CMake's 
 function within <b>OpenRDM</b> is able to find the <i>psi4::core</i> IMPORTED target
 and links it to <b>OpenRDM</b>.
 
-@section usingpython Using python
+@subsection usingpython Using python
 
 Assuming that you have installed <b>OpenRDM</b> in <i>/home/OpenRDM</i> directory,
 include the following command in the begining of your Psi4 input file and 
@@ -63,7 +64,7 @@ Check the [input file](https://github.com/SinaMostafanejad/v2rdm_casscf/blob/mas
 in our [v2RDM-CASSCF plugin fork](https://github.com/SinaMostafanejad/v2rdm_casscf)
 for more details.
 
-@section usingcmake Using CMake
+@subsection usingcmake Using CMake
 
 If the infrastructure of your software is managed by the CMake build system
 generator, we recommend that your first take a glance at \ref howtouse section.
