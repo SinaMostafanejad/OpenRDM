@@ -1,6 +1,7 @@
 import numpy as np
 import pyscf
 import h5py
+from scipy import sparse
 
 from pyscf import gto, dft, scf, fci
 from pyscf.dft import numint
@@ -49,6 +50,7 @@ dmat_mo = np.zeros((nao,nao))
 dmat_mo[0][0] = 1.0
 print(dmat_mo)
 dm = myhf.make_rdm1()
+
 print(dm)
 
 #eigval, eigvec = myhf.eig(dmat_mo,smat)
