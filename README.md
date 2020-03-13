@@ -85,7 +85,7 @@ We appreciate your time for using <b>OpenRDM</b> and do our best to keep the pro
 
 [1] [M. Mostafanejad and A. E. DePrince III, J. Chem. Theory Comput. 15, 290-302 (2019). "Combining Pair-Density Functional Theory and Variational Two-Electron Reduced-Density Matrix Methods"](https://pubs.acs.org/doi/10.1021/acs.jctc.8b00988)
 
-[2] [M. Mostafanejad, M. D. Liebenthal, and A. E. DePrince III arXiv:1911.11162 (2019). "Global hybrid multiconfiguration pair-density functional theory"](https://arxiv.org/abs/1911.11162v1)
+[2] [M. Mostafanejad, M. D. Liebenthal, and A. E. DePrince III J. Chem. Theory Comput. JustAccepted (2020). "Global hybrid multiconfiguration pair-density functional theory"](https://doi.org/10.1021/acs.jctc.9b01178)
 
 [3] [J. W. Mullinax, L. N. Koulias, E. Maradzike, M. Mostafanejad, E. Epifanovsky, G. Gidofalvi, and A. E. DePrince III, J. Chem. Theory Comput. 15, 6164-6178 (2019). "Heterogeneous CPU + GPU Algorithm for Variational Two-Electron Reduced-Density Matrix-Driven Complete Active-Space Self-Consistent Field Theory"](https://pubs.acs.org/doi/10.1021/acs.jctc.9b00768)
 
