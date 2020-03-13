@@ -64,6 +64,13 @@ class MCPDFT(mcscf.__class__):
       casdm1a, casdm1b = cas.fcisolver.make_rdm1s(ci, cas.ncas, cas.nelecas)
       return casdm1a, casdm1b
 
+   def make_active_rdm2s(self, cas=None, ci=None):
+      if cas is None: cas = self.cas
+      if ci  is None: ci  = self.ci
+      casdm1s, casdm2s = cas.fcisolver.make_rdm12s(ci, cas.ncas, cas.nelecas, reorder=True)
+      # aa, ab, bb
+      return casdm2s[0], casdm2s[1], casdm2s[2]
+
    def make_full_rdm1s(self, cas=None, ci=None):
       if cas is None: cas = self.cas
       if ci  is None: ci  = self.ci
@@ -82,7 +89,7 @@ class MCPDFT(mcscf.__class__):
       dm1b[ncore:nocc,ncore:nocc] = casdm1b
       return dm1a, dm1b
 
-   def make_active_rdm2s(self, cas=None, ci=None):
+   def make_full_rdm2s(self, cas=None, ci=None):
       if cas is None: cas = self.cas
       if ci  is None: ci  = self.ci
       nmo     = cas.mo_coeff.shape[1]
@@ -90,47 +97,45 @@ class MCPDFT(mcscf.__class__):
       ncas    = cas.ncas
       nocc    = ncore + ncas
       nelecas = cas.nelecas 
-      casdm1a, casdm1b = self.make_active_rdm1s(cas=cas, ci=ci)
       dm2aa = dm2bb, dm2ab = np.zeros((nmo,nmo,nmo,nmo))
+      casdm1a, casdm1b = self.make_active_rdm1s(cas=cas, ci=ci)
+      casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s()
       # Be aware that Chemist's notation should be adopted!
       for i in range(ncore):
          for j in range(ncore):
-         dm2aa[i,i,ncore:nocc,ncore:nocc] = \
-         dm2aa[ncore:nocc,ncore:nocc,i,i] = casdm1a
-         dm2bb[i,ncore:nocc,ncore:nocc,i] = \
-         dm2bb[ncore:nocc,i,i,ncore:nocc] = casdm1b
-      return d2aa, d2bb, d2ab
+            #aa block
+            casdm2aa[i,i,ncore:nocc,ncore:nocc] = \
+            casdm2aa[ncore:nocc,ncore:nocc,i,i] = casdm1a
+            casdm2aa[i,ncore:nocc,ncore:nocc,i] = \
+            casdm2aa[ncore:nocc,i,i,ncore:nocc] = -casdm1a
+            #bb block
+            casdm2bb[i,i,ncore:nocc,ncore:nocc] = \
+            casdm2bb[ncore:nocc,ncore:nocc,i,i] = casdm1b
+            casdm2bb[i,ncore:nocc,ncore:nocc,i] = \
+            casdm2bb[ncore:nocc,i,i,ncore:nocc] = -casdm1b
+            #ab block
+            casdm2ab[i,i,ncore:nocc,ncore:nocc] = \
+            casdm2ab[ncore:nocc,ncore:nocc,i,i] = casdm1b
+      return dm2aa, dm2bb, dm2ab
 
    def kernel(self):
 
       #--------------------------------------------- Active space info
       self.print_active_space()
       #--------------------------------------------- RDMs
-      #dm1 = self.cas.make_rdm1()
-      #dm1_alpha, dm1_beta = self.cas.make_rdm1s()
-      #print(dm1_alpha)
-      #print(dm1_beta)
+      casdm1a, casdm1b             = self.make_active_rdm1s()
+      casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s()
 
-      #dm1_alpha, dm1_beta = pyscf.mcscf.addons.make_rdm1s(self.cas, mo_coeff=self.C_mo, ci=self.ci)
-      #print(dm1_alpha)
-      #print(dm1_beta)
-
-      #dm1_alpha_mo = self.ao2mo_transform(self.C_mo,dm1_alpha)
-      #dm1_beta_mo  = self.ao2mo_transform(self.C_mo,dm1_beta)
-      #print(dm1_alpha_mo)
-      #print(dm1_beta_mo)
-      #casdm1, casdm2 = self.cas.fcisolver.make_rdm12(self.ci, self.ncas, self.nelecas)
-      #dm1, dm2 = pyscf.mcscf.addons._make_rdm12_on_mo(casdm1, casdm2, self.ncore, self.ncas, self.nmo)
-      #print(dm1)
-
-      casdm1a, casdm1b = self.make_active_rdm1s()
-      casdm1 = casdm1a + casdm1b
-      print(casdm1a)
-      print(casdm1b)
+      #casdm1 = casdm1a + casdm1b
+      #print("\n D2aa:\n %s" % casdm2aa)
+      #print("\n D2ab:\n %s" % casdm2ab)
+      #print("\n D2bb:\n %s" % casdm2bb)
+      #print(casdm1a)
+      #print(casdm1b)
       dm1a, dm1b = self.make_full_rdm1s()
       dm1 = dm1a + dm1b
-      print(dm1a)
-      print(dm1b)
+      #print(dm1a)
+      #print(dm1b)
       #print(dm1_beta_mo)
       #--------------------------------------------- nuclear repulsion 
       E_nn   = self.cas._scf.energy_nuc()
@@ -169,5 +174,23 @@ class MCPDFT(mcscf.__class__):
 #vj, vk = cas._scf.get_jk (dm=dm1s)
 #vj = vj[0] + vj[1]
 #print(np.allclose(dm1, dm1_alpha+dm1_beta))
+
+
+# --------------RDM junk-------------
 #dm1s = np.asarray ([dm1_alpha,dm1_beta])
 
+#dm1 = self.cas.make_rdm1()
+#dm1_alpha, dm1_beta = self.cas.make_rdm1s()
+#print(dm1_alpha)
+#print(dm1_beta)
+
+#dm1_alpha, dm1_beta = pyscf.mcscf.addons.make_rdm1s(self.cas, mo_coeff=self.C_mo, ci=self.ci)
+#print(dm1_alpha)
+#print(dm1_beta)
+
+#dm1_alpha_mo = self.ao2mo_transform(self.C_mo,dm1_alpha)
+#dm1_beta_mo  = self.ao2mo_transform(self.C_mo,dm1_beta)
+#print(dm1_alpha_mo)
+#print(dm1_beta_mo)
+#casdm1, casdm2 = self.cas.fcisolver.make_rdm12(self.ci, self.ncas, self.nelecas)
+#dm1, dm2 = pyscf.mcscf.addons._make_rdm12_on_mo(casdm1, casdm2, self.ncore, self.ncas, self.nmo)
