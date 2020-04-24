@@ -28,8 +28,8 @@ cas = mcscf.DFCASSCF(hf, norb, nele, auxbasis='def2-svp-jkfit')
 #cas = mcscf.CASSCF(hf, norb, nele, auxbasis='def2-svp-jkfit')
 cas.natorb = True
 cas.kernel()
-
 #===================================================
 mcpdft = libpyscf.MCPDFT(cas)
-mcpdft.kernel()
+mcpdft.write_hdf5 = True
+mcpdft.kernel(mol)
 #===================================================

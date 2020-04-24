@@ -4,8 +4,13 @@ from functools import reduce
 import time
 import h5py
 import pyscf
-from pyscf import gto, scf, mcscf
+from pyscf import gto, scf
+
+from pyscf import mcscf
 from pyscf.mcscf import addons
+
+from pyscf import dft
+from pyscf.dft import numint
 
 class MCPDFT(mcscf.__class__):
 
@@ -24,6 +29,8 @@ class MCPDFT(mcscf.__class__):
       self.virt    = self.nmo - self.nocc
       self.amo     = self.nmo - self.ncore - (0 if self.nfrz == None else self.nfrz)
 
+      self.write_hdf5 = False
+
    def print_active_space(self):
        print("\n")
        print("----------------------------------------------")
@@ -36,7 +43,6 @@ class MCPDFT(mcscf.__class__):
        print("   Number of active beta electrons:   %s" % self.nelecas[1])
        print("----------------------------------------------")
        print("\n")
-
 
    def ao2mo_transform(self, C_mo, mat):
       return reduce(np.dot,(C_mo.T,mat,C_mo))
@@ -118,18 +124,13 @@ class MCPDFT(mcscf.__class__):
             casdm2ab[ncore:nocc,ncore:nocc,i,i] = casdm1b
       return dm2aa, dm2bb, dm2ab
 
-   def kernel(self):
+   def kernel(self,mol):
 
       #--------------------------------------------- Active space info
       self.print_active_space()
       #--------------------------------------------- RDMs
       casdm1a, casdm1b             = self.make_active_rdm1s()
-      casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s()
-
-      #casdm1 = casdm1a + casdm1b
-      #print("\n D2aa:\n %s" % casdm2aa)
-      #print("\n D2ab:\n %s" % casdm2ab)
-      #print("\n D2bb:\n %s" % casdm2bb)
+      casdm1 = casdm1a + casdm1b
       #print(casdm1a)
       #print(casdm1b)
       dm1a, dm1b = self.make_full_rdm1s()
@@ -137,18 +138,22 @@ class MCPDFT(mcscf.__class__):
       #print(dm1a)
       #print(dm1b)
       #print(dm1_beta_mo)
+      casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s()
+      #print("\n D2aa:\n %s" % casdm2aa)
+      #print("\n D2ab:\n %s" % casdm2ab)
+      #print("\n D2bb:\n %s" % casdm2bb)
       #--------------------------------------------- nuclear repulsion 
       E_nn   = self.cas._scf.energy_nuc()
       #--------------------------------------------- core parts
-      h  = self.cas._scf.get_hcore()
-      h_mo = self.ao2mo_transform(self.C_mo,h)
+      h      = self.cas._scf.get_hcore()
+      h_mo   = self.ao2mo_transform(self.C_mo,h)
       E_core = self.hcore_energy(h_mo,dm1)
       #--------------------------------------------- J and K parts
       Ja = self.cas._scf.get_j (dm=self.ao2mo_transform(self.C_mo.T,dm1a))
       Jb = self.cas._scf.get_j (dm=self.ao2mo_transform(self.C_mo.T,dm1b))
       Ja_mo = self.ao2mo_transform(self.C_mo,Ja)
       Jb_mo = self.ao2mo_transform(self.C_mo,Jb)
-      E_j    = self.Hartree_energy(Ja_mo, Jb_mo, dm1a, dm1b)
+      E_j   = self.Hartree_energy(Ja_mo, Jb_mo, dm1a, dm1b)
       #---------------------------------------------
 
       print('=======================================================')
@@ -164,6 +169,77 @@ class MCPDFT(mcscf.__class__):
       #print(casdm2)
       #print("\n")
       #print(casdm2)
+
+      #--------------------------------------------- extracting grids and orbital values on them
+      dft_obj = dft.RKS(mol)
+      dft_obj.grids.atom_grid = (75, 302)
+      dft_obj.grids.radi_method = dft.treutler
+      dft_obj.grids.prune = dft.nwchem_prune
+      #dft_obj.grids.radi_method = dft.mura_knowles
+      #dft_obj.grids.becke_scheme = dft.original_becke
+      #dft_obj.grids.level = 3
+      dft_obj.kernel()
+      # Orbital energies, Mulliken population etc.
+      #dft_obj.analyze()
+
+      # coords(n_points, 3): the second dimension denotes x, y, z
+      coords  = dft_obj.grids.coords
+      weights = dft_obj.grids.weights
+      #print(coords.shape)
+      #print(weights.shape)
+
+      # super_phi(4, n_points, nao): the first dimension shows phi, phi_x, phi_y and phi_z, respectively
+      ao_value = numint.eval_ao(mol, coords, deriv=1)  
+      super_phi, super_phi_x, super_phi_y, super_phi_z = ao_value
+      #print(super_phi)
+      #print(super_phi_x)
+      #print(ao_value.shape)
+
+      # The first row of rho is electron density, the rest three rows are electron
+      # density gradients which are needed for GGA functional
+      #rho = numint.eval_rho(mol, ao_value, dm1, xctype='GGA')
+
+      if (self.write_hdf5 == True):
+         f = h5py.File("data.h5",'w')
+         f["/N/N_AO"]      = self.nao
+         f["/N/N_MO"]      = self.nmo
+         f["/N/N_FRZ"]     = (0 if self.nfrz == None else self.nfrz)
+         f["/N/N_COR"]     = self.ncore
+         f["/N/N_CAS_ORB"] = self.ncas
+         f["/N/N_CAS_ELE"] = self.nelecas
+         f["/N/N_OCC_ACT"] = self.nocc
+         f["/N/N_VIR_ACT"] = self.virt
+         f["/N/N_MO_ACT"]  = self.amo
+
+         f["/C"]        = self.C_mo
+
+         f["/H/H_CORE_AO"] = h 
+         f["/H/H_CORE_MO"] = h_mo
+
+         f["/E/E_CORE"] = E_core 
+         f["/E/E_HARTREE"] = E_j 
+
+         f["/J/JA_AO"] = Ja
+         f["/J/JB_AO"] = Jb
+         f["/J/JA_MO"] = Ja_mo
+         f["/J/JB_MO"] = Jb_mo
+
+         f["/D/D1/FULL_D1A_MO"] = dm1a 
+         f["/D/D1/FULL_D1B_MO"] = dm1b
+         f["/D/D1/FULL_D1_MO"]  = dm1 
+
+         f["/D/D1/ACT_D1A_MO"] = casdm1a 
+         f["/D/D1/ACT_D1B_MO"] = casdm1b
+         f["/D/D1/ACT_D1_MO"]  = casdm1 
+
+         f["/D/D2/ACT_D2AA_MO"] = casdm2aa
+         f["/D/D2/ACT_D2AB_MO"] = casdm2ab
+         f["/D/D2/ACT_D2BB_MO"] = casdm2bb
+
+         f["/GRIDS/W"] = weights
+         f["/GRIDS/X"] = coords[:,0]
+         f["/GRIDS/Y"] = coords[:,1]
+         f["/GRIDS/Z"] = coords[:,2]
 
       return
 
