@@ -86,8 +86,9 @@ class MCPDFT(mcscf.__class__):
       nocc    = ncore + ncas
       nelecas = cas.nelecas 
       # building core part
-      dm1a = dm1b = np.zeros((nmo,nmo))
-      idx = np.arange(ncore)
+      dm1a = np.zeros((nmo,nmo))
+      dm1b = np.zeros((nmo,nmo))
+      idx  = np.arange(ncore)
       dm1a[idx,idx] = dm1b[idx,idx] = 1.0
       # building active part
       casdm1a, casdm1b = self.make_active_rdm1s(cas=cas, ci=ci)
@@ -103,26 +104,53 @@ class MCPDFT(mcscf.__class__):
       ncas    = cas.ncas
       nocc    = ncore + ncas
       nelecas = cas.nelecas 
-      dm2aa = dm2bb, dm2ab = np.zeros((nmo,nmo,nmo,nmo))
+      # TODO: check to see if it is necessary to change nmo -> nocc
+      dm2aa = np.zeros((nmo,nmo,nmo,nmo))
+      dm2bb = np.zeros((nmo,nmo,nmo,nmo))
+      dm2ab = np.zeros((nmo,nmo,nmo,nmo))
       casdm1a, casdm1b = self.make_active_rdm1s(cas=cas, ci=ci)
       casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s()
       # Be aware that Chemist's notation should be adopted!
+      #----------------
+      # active-active part
+      #----------------
+      dm2aa[ncore:nocc,ncore:nocc,ncore:nocc,ncore:nocc] = casdm2aa
+      dm2bb[ncore:nocc,ncore:nocc,ncore:nocc,ncore:nocc] = casdm2bb
+      dm2ab[ncore:nocc,ncore:nocc,ncore:nocc,ncore:nocc] = casdm2ab
+
       for i in range(ncore):
          for j in range(ncore):
-            #aa block
-            casdm2aa[i,i,ncore:nocc,ncore:nocc] = \
-            casdm2aa[ncore:nocc,ncore:nocc,i,i] = casdm1a
-            casdm2aa[i,ncore:nocc,ncore:nocc,i] = \
-            casdm2aa[ncore:nocc,i,i,ncore:nocc] = -casdm1a
-            #bb block
-            casdm2bb[i,i,ncore:nocc,ncore:nocc] = \
-            casdm2bb[ncore:nocc,ncore:nocc,i,i] = casdm1b
-            casdm2bb[i,ncore:nocc,ncore:nocc,i] = \
-            casdm2bb[ncore:nocc,i,i,ncore:nocc] = -casdm1b
-            #ab block
-            casdm2ab[i,i,ncore:nocc,ncore:nocc] = \
-            casdm2ab[ncore:nocc,ncore:nocc,i,i] = casdm1b
-      return dm2aa, dm2bb, dm2ab
+            #----------------
+            # core-core part
+            #----------------
+            dm2aa[i,i,j,j] = \
+            dm2bb[i,i,j,j] = \
+            dm2ab[i,i,j,j] = 1.0
+
+            dm2aa[i,j,j,i] = \
+            dm2bb[i,j,j,i] = -1.0
+            #----------------
+            # core-active part
+            #----------------
+            ## aa block
+            dm2aa[i,i,ncore:nocc,ncore:nocc] = \
+            dm2aa[ncore:nocc,ncore:nocc,i,i] = casdm1a
+
+            dm2aa[i,ncore:nocc,ncore:nocc,i] = \
+            dm2aa[ncore:nocc,i,i,ncore:nocc] = -casdm1a
+
+            ## bb block
+            dm2bb[i,i,ncore:nocc,ncore:nocc] = \
+            dm2bb[ncore:nocc,ncore:nocc,i,i] = casdm1b
+
+            dm2bb[i,ncore:nocc,ncore:nocc,i] = \
+            dm2bb[ncore:nocc,i,i,ncore:nocc] = -casdm1b
+
+            ## ab block
+            dm2ab[i,i,ncore:nocc,ncore:nocc] = casdm1b
+            dm2ab[ncore:nocc,ncore:nocc,i,i] = casdm1a
+
+      return dm2aa, dm2ab, dm2bb
 
    def kernel(self,mol):
 
@@ -139,9 +167,16 @@ class MCPDFT(mcscf.__class__):
       #print(dm1b)
       #print(dm1_beta_mo)
       casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s()
+      casdm2 = casdm2aa + casdm2ab + casdm2ab.transpose(2,3,0,1) + casdm2bb
+
+      dm2aa, dm2ab, dm2bb = self.make_full_rdm2s()
+      dm2 = dm2aa + dm2ab + dm2ab.transpose(2,3,0,1) + dm2bb  
       #print("\n D2aa:\n %s" % casdm2aa)
       #print("\n D2ab:\n %s" % casdm2ab)
       #print("\n D2bb:\n %s" % casdm2bb)
+      #print("\n CAS D2:\n %s" % casdm2)
+      #print("\n FULL D2:\n %s" % dm2)
+      #print(casdm2 == dm2)
       #--------------------------------------------- nuclear repulsion 
       E_nn   = self.cas._scf.energy_nuc()
       #--------------------------------------------- core parts
@@ -188,11 +223,12 @@ class MCPDFT(mcscf.__class__):
       #print(coords.shape)
       #print(weights.shape)
 
-      # super_phi(4, n_points, nao): the first dimension shows phi, phi_x, phi_y and phi_z, respectively
+      # phi(4, n_points, nao): the first dimension shows phi, phi_x, phi_y and phi_z, respectively
       ao_value = numint.eval_ao(mol, coords, deriv=1)  
-      super_phi, super_phi_x, super_phi_y, super_phi_z = ao_value
-      #print(super_phi)
-      #print(super_phi_x)
+      phi_ao, phi_ao_x, phi_ao_y, phi_ao_z = ao_value
+      phi_mo, phi_mo_x, phi_mo_y, phi_mo_z = mo_value = np.matmul(ao_value, self.C_mo)
+      #print(phi)
+      #print(phi_x)
       #print(ao_value.shape)
 
       # The first row of rho is electron density, the rest three rows are electron
@@ -232,14 +268,30 @@ class MCPDFT(mcscf.__class__):
          f["/D/D1/ACT_D1B_MO"] = casdm1b
          f["/D/D1/ACT_D1_MO"]  = casdm1 
 
+         f["/D/D2/FULL_D2AA_MO"] = dm2aa
+         f["/D/D2/FULL_D2AB_MO"] = dm2ab
+         f["/D/D2/FULL_D2BB_MO"] = dm2bb
+         f["/D/D2/FULL_D2_MO"]   = dm2
+
          f["/D/D2/ACT_D2AA_MO"] = casdm2aa
          f["/D/D2/ACT_D2AB_MO"] = casdm2ab
          f["/D/D2/ACT_D2BB_MO"] = casdm2bb
+         f["/D/D2/ACT_D2_MO"]   = casdm2
 
          f["/GRIDS/W"] = weights
          f["/GRIDS/X"] = coords[:,0]
          f["/GRIDS/Y"] = coords[:,1]
          f["/GRIDS/Z"] = coords[:,2]
+
+         f["/PHI/PHI_AO"]   = phi_ao 
+         f["/PHI/PHI_AO_X"] = phi_ao_x 
+         f["/PHI/PHI_AO_Y"] = phi_ao_y 
+         f["/PHI/PHI_AO_Z"] = phi_ao_z 
+
+         f["/PHI/PHI_MO"]   = phi_mo 
+         f["/PHI/PHI_MO_X"] = phi_mo_x 
+         f["/PHI/PHI_MO_Y"] = phi_mo_y 
+         f["/PHI/PHI_MO_Z"] = phi_mo_z 
 
       return
 
