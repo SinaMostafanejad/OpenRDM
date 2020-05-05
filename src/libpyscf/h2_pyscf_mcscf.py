@@ -17,13 +17,13 @@ bas_lst = ['sto-3g','ccpvdz']
 
 mol = gto.M(
     atom = 'H 0 0 0; H 0 0 0.75',
-    basis = bas_lst[0])
+    basis = bas_lst[1])
 
 hf = scf.RHF(mol).run()
 
 # CAS(2e,2o)
 nele = 2
-norb = 2
+norb = 4
 cas = mcscf.DFCASSCF(hf, norb, nele, auxbasis='def2-svp-jkfit')
 #cas = mcscf.CASSCF(hf, norb, nele, auxbasis='def2-svp-jkfit')
 cas.natorb = True

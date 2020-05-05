@@ -195,15 +195,7 @@ class MCPDFT(mcscf.__class__):
       print("   nuclear repulsion energy:     % .8f" % E_nn)
       print("   one-electron energy:          % .8f" % E_core)
       print("   classical Coulomb energy:     % .8f" % E_j)
-      #print("   classical Coulomb energy:     % .8f" % E_j1)
       print('=======================================================')
-
-      #casdm1, casdm2 = self.cas.fcisolver.make_rdm1s(self.ci, self.ncas, self.nelecas)
-      #casdm1 = self.ao2mo_transform(self.C_mo, casdm1)
-      #print(casdm1)
-      #print(casdm2)
-      #print("\n")
-      #print(casdm2)
 
       #--------------------------------------------- extracting grids and orbital values on them
       dft_obj = dft.RKS(mol)
@@ -217,13 +209,13 @@ class MCPDFT(mcscf.__class__):
       # Orbital energies, Mulliken population etc.
       #dft_obj.analyze()
 
-      # coords(n_points, 3): the second dimension denotes x, y, z
+      # coords(n_points, 3): second dimension denotes x, y, z
       coords  = dft_obj.grids.coords
       weights = dft_obj.grids.weights
       #print(coords.shape)
       #print(weights.shape)
 
-      # phi(4, n_points, nao): the first dimension shows phi, phi_x, phi_y and phi_z, respectively
+      # phi(4, n_points, nao): first dimension shows phi, phi_x, phi_y and phi_z, respectively
       ao_value = numint.eval_ao(mol, coords, deriv=1)  
       phi_ao, phi_ao_x, phi_ao_y, phi_ao_z = ao_value
       phi_mo, phi_mo_x, phi_mo_y, phi_mo_z = mo_value = np.matmul(ao_value, self.C_mo)

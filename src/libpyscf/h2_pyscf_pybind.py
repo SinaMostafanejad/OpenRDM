@@ -81,7 +81,7 @@ f["/Grids"] = ao_value
 rho0 = f["/Grids"][0,:]
 print(rho0)
 print(ao_value.shape)
-#print(coords.shape)
+print(coords.shape)
 # The first row of rho is electron density, the rest three rows are electron
 # density gradients which are needed for GGA functional
 rho = numint.eval_rho(mol, ao_value, dmat_mo, xctype='GGA')
