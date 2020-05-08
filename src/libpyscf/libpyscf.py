@@ -204,28 +204,27 @@ class MCPDFT:
          #----------------
          casdm1, casdm2 = cas.fcisolver.make_rdm12(0, ncas, nelecas)
          dm1[ncore:nocc,ncore:nocc] = casdm1
-
          #----------------
          #   2-RDM
          #----------------
          # active-active part
          #----------------
          dm2[ncore:nocc,ncore:nocc,ncore:nocc,ncore:nocc] = casdm2
-         #----------------
-         # core-core part
-         #----------------
          for i in range(ncore):
             for j in range(ncore):
+               #----------------
+               # core-core part
+               #----------------
                dm2[i,i,j,j] = 4.0
                dm2[i,j,j,i] = -2.0
-         #----------------
-         # core-active part
-         #----------------
-         dm2[i,i,ncore:nocc,ncore:nocc] = \
-         dm2[ncore:nocc,ncore:nocc,i,i] = 2.0*casdm1
+               #----------------
+               # core-active part
+               #----------------
+               dm2[i,i,ncore:nocc,ncore:nocc] = \
+               dm2[ncore:nocc,ncore:nocc,i,i] = 2.0*casdm1
 
-         dm2[i,ncore:nocc,ncore:nocc,i] = \
-         dm2[ncore:nocc,i,i,ncore:nocc] = -casdm1
+               dm2[i,ncore:nocc,ncore:nocc,i] = \
+               dm2[ncore:nocc,i,i,ncore:nocc] = -casdm1
 
       return dm1, dm2
 
