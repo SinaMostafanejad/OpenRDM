@@ -86,7 +86,7 @@ class MCPDFT:
       if self.ref_method == 'MCSCF':
          if ci  is None: ci  = self.ci
          casdm1a, casdm1b = cas.fcisolver.make_rdm1s(ci, cas.ncas, cas.nelecas)
-      else:
+      else: # ref_method == 'DMRG'
          # first argument takes 0 for ground and 1 for excited state
          casdm1a, casdm1b = cas.fcisolver.make_rdm1s(0, self.ncas, self.nelecas)
       return casdm1a, casdm1b
@@ -138,7 +138,6 @@ class MCPDFT:
       dm2aa[ncore:nocc,ncore:nocc,ncore:nocc,ncore:nocc] = casdm2aa
       dm2bb[ncore:nocc,ncore:nocc,ncore:nocc,ncore:nocc] = casdm2bb
       dm2ab[ncore:nocc,ncore:nocc,ncore:nocc,ncore:nocc] = casdm2ab
-
       for i in range(ncore):
          for j in range(ncore):
             #----------------
@@ -173,12 +172,69 @@ class MCPDFT:
 
       return dm2aa, dm2ab, dm2bb
 
+   def make_active_rdm12(self, cas=None, ci=None):
+
+   def make_full_rdm12(self, cas=None, ci=None):
+      if cas is None: cas = self.cas
+      nmo     = cas.mo_coeff.shape[1]
+      ncore   = cas.ncore
+      ncas    = cas.ncas
+      nocc    = ncore + ncas
+      nelecas = cas.nelecas 
+      dm1 = np.zeros((nmo,nmo))
+      dm2 = np.zeros((nmo,nmo,nmo,nmo))
+      if self.ref_method == 'MCSCF':
+         if ci  is None: ci  = self.ci
+         dm1a , dm1b = self.make_full_rdm1s(cas, ci)
+         dm1 = dm1a + dm1b
+         dm2aa, dm2ab, dm2bb = self.make_full_rdm2s(cas,ci)
+         dm2 = dm2aa + dm2ab + dm2ab.transpose(2,3,0,1) + dm2bb
+      else: # ref_method == 'DMRG'
+         #----------------
+         # Be aware that Chemist's notation should be adopted!
+         #----------------
+         #   1-RDM
+         #----------------
+         # core part
+         #----------------
+         idx = np.arange(ncore)
+         dm1[idx,idx] = 2
+         #----------------
+         # active part
+         #----------------
+         casdm1, casdm2 = cas.fcisolver.make_rdm12(0, ncas, nelecas)
+         dm1[ncore:nocc,ncore:nocc] = casdm1
+
+         #----------------
+         #   2-RDM
+         #----------------
+         # active-active part
+         #----------------
+         dm2[ncore:nocc,ncore:nocc,ncore:nocc,ncore:nocc] = casdm2
+         #----------------
+         # core-core part
+         #----------------
+         for i in range(ncore):
+            for j in range(ncore):
+               dm2[i,i,j,j] = 4.0
+               dm2[i,j,j,i] = -2.0
+         #----------------
+         # core-active part
+         #----------------
+         dm2[i,i,ncore:nocc,ncore:nocc] = \
+         dm2[ncore:nocc,ncore:nocc,i,i] = 2.0*casdm1
+
+         dm2[i,ncore:nocc,ncore:nocc,i] = \
+         dm2[ncore:nocc,i,i,ncore:nocc] = -casdm1
+
+      return dm1, dm2
+
    def kernel(self):
 
       #--------------------------------------------- Active space info
       self._print_active_space()
       #--------------------------------------------- RDMs
-      casdm1a, casdm1b             = self.make_active_rdm1s()      # OK with both DMRG and MCSCF ref_methods
+      casdm1a, casdm1b = self.make_active_rdm1s()      # OK with both DMRG and MCSCF ref_methods
       casdm1 = casdm1a + casdm1b
       #print(casdm1a)
       #print(casdm1b)
@@ -186,15 +242,14 @@ class MCPDFT:
       dm1 = dm1a + dm1b
       #print(dm1a)
       #print(dm1b)
-      print(casdm1)
-      #print(dm1_beta_mo)
+      #print(casdm1)
       if (self.ref_method == 'MCSCF'):
          casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s()
          casdm2 = casdm2aa + casdm2ab + casdm2ab.transpose(2,3,0,1) + casdm2bb
 
          dm2aa, dm2ab, dm2bb = self.make_full_rdm2s()
          dm2 = dm2aa + dm2ab + dm2ab.transpose(2,3,0,1) + dm2bb
-      else:
+      else: # ref_method == 'DMRG'
          casdm2 = self.cas.fcisolver.make_rdm12(0, self.ncas, self.nelecas)[1]
       #print("\n D2aa:\n %s" % casdm2aa)
       #print("\n D2ab:\n %s" % casdm2ab)
