@@ -83,12 +83,14 @@ class MCPDFT:
 
    def make_active_rdm1s(self, cas=None, ci=None):
       if cas is None: cas = self.cas
+      ncas    = cas.ncas
+      nelecas = cas.nelecas 
       if self.ref_method == 'MCSCF':
          if ci  is None: ci  = self.ci
-         casdm1a, casdm1b = cas.fcisolver.make_rdm1s(ci, cas.ncas, cas.nelecas)
+         casdm1a, casdm1b = cas.fcisolver.make_rdm1s(ci, ncas, nelecas)
       else: # ref_method == 'DMRG'
          # first argument takes 0 for ground and 1 for excited state
-         casdm1a, casdm1b = cas.fcisolver.make_rdm1s(0, self.ncas, self.nelecas)
+         casdm1a, casdm1b = cas.fcisolver.make_rdm1s(0, ncas, nelecas)
       return casdm1a, casdm1b
 
    def make_full_rdm1s(self, cas=None, ci=None):
@@ -173,6 +175,19 @@ class MCPDFT:
       return dm2aa, dm2ab, dm2bb
 
    def make_active_rdm12(self, cas=None, ci=None):
+      if cas is None: cas = self.cas
+      if ci  is None: ci  = self.ci
+      ncas    = cas.ncas
+      nelecas = cas.nelecas
+      # This class member can distinguish between DMRGSCF and MCSCF cas objects
+      casdm1a, casdm1b = self.make_active_rdm1s(cas, ci)
+      casdm1 = casdm1a + casdm1b
+      if self.ref_method == 'MCSCF':
+         casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s(cas, ci)
+         casdm2 = casdm2aa + casdm2ab + casdm2ab.transpose(2,3,0,1) + casdm2bb
+      else: # ref_method == 'DMRG'
+         casdm2 = cas.fcisolver.make_rdm12(0, ncas, nelecas)[1]
+      return casdm1, casdm2
 
    def make_full_rdm12(self, cas=None, ci=None):
       if cas is None: cas = self.cas
@@ -233,23 +248,22 @@ class MCPDFT:
       #--------------------------------------------- Active space info
       self._print_active_space()
       #--------------------------------------------- RDMs
-      casdm1a, casdm1b = self.make_active_rdm1s()      # OK with both DMRG and MCSCF ref_methods
-      casdm1 = casdm1a + casdm1b
-      #print(casdm1a)
-      #print(casdm1b)
+      casdm1a, casdm1b = self.make_active_rdm1s()   # OK with both DMRG and MCSCF ref_methods
+      #casdm1 = casdm1a + casdm1b
+      casdm1 = self.make_active_rdm12()[0]          # OK with both DMRG and MCSCF ref_methods
       dm1a, dm1b = self.make_full_rdm1s()           # OK with both DMRG and MCSCF ref_methods
-      dm1 = dm1a + dm1b
-      #print(dm1a)
-      #print(dm1b)
-      #print(casdm1)
+      #dm1 = dm1a + dm1b
+      dm1 = self.make_full_rdm12()[0]               # OK with both DMRG and MCSCF ref_methods
+
       if (self.ref_method == 'MCSCF'):
-         casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s()
+         casdm2aa, casdm2ab, casdm2bb = self.make_active_rdm2s()    # Works only with ref_method == 'MCSCF'
          casdm2 = casdm2aa + casdm2ab + casdm2ab.transpose(2,3,0,1) + casdm2bb
 
-         dm2aa, dm2ab, dm2bb = self.make_full_rdm2s()
+         dm2aa, dm2ab, dm2bb = self.make_full_rdm2s()               # Works only with ref_method == 'MCSCF'
          dm2 = dm2aa + dm2ab + dm2ab.transpose(2,3,0,1) + dm2bb
       else: # ref_method == 'DMRG'
-         casdm2 = self.cas.fcisolver.make_rdm12(0, self.ncas, self.nelecas)[1]
+         casdm2 = self.make_active_rdm12()[1]       # OK with both DMRG and MCSCF ref_methods
+         dm2  = self.make_full_rdm12()[1]
       #print("\n D2aa:\n %s" % casdm2aa)
       #print("\n D2ab:\n %s" % casdm2ab)
       #print("\n D2bb:\n %s" % casdm2bb)
@@ -300,7 +314,7 @@ class MCPDFT:
       f["/H/H_CORE_AO"] = h 
       f["/H/H_CORE_MO"] = h_mo
 
-      f["/E/E_CORE"] = E_core 
+      f["/E/E_CORE"]    = E_core 
       f["/E/E_HARTREE"] = E_j 
 
       f["/J/JA_AO"] = Ja
@@ -320,13 +334,12 @@ class MCPDFT:
          f["/D/D2/FULL_D2AA_MO"] = dm2aa
          f["/D/D2/FULL_D2AB_MO"] = dm2ab
          f["/D/D2/FULL_D2BB_MO"] = dm2bb
-         #TODO: construct it through make_full_rdm2
-         f["/D/D2/FULL_D2_MO"]   = dm2
 
          f["/D/D2/ACT_D2AA_MO"] = casdm2aa
          f["/D/D2/ACT_D2AB_MO"] = casdm2ab
          f["/D/D2/ACT_D2BB_MO"] = casdm2bb
       
+      f["/D/D2/FULL_D2_MO"]  = dm2
       f["/D/D2/ACT_D2_MO"]   = casdm2
 
       f["/GRIDS/W"] = weights
