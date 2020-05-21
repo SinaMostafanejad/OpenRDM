@@ -243,6 +243,66 @@ class MCPDFT:
 
       return dm1, dm2
 
+   def write_rdm1s_d2sp_coo(self, dm1a=None, dm1b=None, is_active=False, f=None):
+      row = dm1a.shape[0]
+      col = dm1a.shape[1]
+      assert(row == col)
+      if dm1a.all() == None: dm1a = self.dm1a
+      if dm1b.all() == None: dm1a = self.dm1b
+      if f == None: f = h5py.File('data.h5','w')
+   
+      # storing nonzero elements in the upper triangular part (i <= j)
+      # column-based packing in COO format
+      val     = []
+      row_idx = []
+      col_idx = []
+      nnz = 0  #number of non-zero elements in the upper triangle
+      # Alpha block
+      for i in range(col):
+         for j in range(i,col):
+            dum = dm1a[i][j]
+            if dum == 0.0:
+               continue
+            else:
+               val.append(dum)
+               row_idx.append(i)
+               col_idx.append(j)
+               nnz = nnz + 1
+
+      if (is_active == False):
+         f["/SP_SYMM_D1/FULL_D1a_MO/NNZ"] = nnz
+         f["/SP_SYMM_D1/FULL_D1a_MO/VAL"] = val
+         f["/SP_SYMM_D1/FULL_D1a_MO/ROW_IDX"] = row_idx
+         f["/SP_SYMM_D1/FULL_D1a_MO/COL_IDX"] = col_idx
+      else:
+         f["/SP_SYMM_D1/ACT_D1a_MO/NNZ"] = nnz
+         f["/SP_SYMM_D1/ACT_D1a_MO/VAL"] = val
+         f["/SP_SYMM_D1/ACT_D1a_MO/ROW_IDX"] = row_idx
+         f["/SP_SYMM_D1/ACT_D1a_MO/COL_IDX"] = col_idx
+
+      # Beta block
+      for i in range(col):
+         for j in range(i,col):
+            dum = dm1b[i][j]
+            if dum == 0.0:
+               continue
+            else:
+               val.append(dum)
+               row_idx.append(i)
+               col_idx.append(j)
+               nnz = nnz + 1
+
+      if (is_active == False):
+         f["/SP_SYMM_D1/FULL_D1b_MO/NNZ"] = nnz
+         f["/SP_SYMM_D1/FULL_D1b_MO/VAL"] = val
+         f["/SP_SYMM_D1/FULL_D1b_MO/ROW_IDX"] = row_idx
+         f["/SP_SYMM_D1/FULL_D1b_MO/COL_IDX"] = col_idx
+      else:
+         f["/SP_SYMM_D1/ACT_D1b_MO/NNZ"] = nnz
+         f["/SP_SYMM_D1/ACT_D1b_MO/VAL"] = val
+         f["/SP_SYMM_D1/ACT_D1b_MO/ROW_IDX"] = row_idx
+         f["/SP_SYMM_D1/ACT_D1b_MO/COL_IDX"] = col_idx
+
    def kernel(self):
 
       #--------------------------------------------- Active space info
@@ -263,7 +323,7 @@ class MCPDFT:
          dm2 = dm2aa + dm2ab + dm2ab.transpose(2,3,0,1) + dm2bb
       else: # ref_method == 'DMRG'
          casdm2 = self.make_active_rdm12()[1]       # OK with both DMRG and MCSCF ref_methods
-         dm2  = self.make_full_rdm12()[1]
+         dm2  = self.make_full_rdm12()[1]           # OK with both DMRG and MCSCF ref_methods
       #print("\n D2aa:\n %s" % casdm2aa)
       #print("\n D2ab:\n %s" % casdm2ab)
       #print("\n D2bb:\n %s" % casdm2bb)
@@ -356,6 +416,13 @@ class MCPDFT:
       f["/PHI/PHI_MO_X"] = phi_mo_x 
       f["/PHI/PHI_MO_Y"] = phi_mo_y 
       f["/PHI/PHI_MO_Z"] = phi_mo_z 
+      
+      # writing spin blocks of full 1-RDMs into HDF5 file object f
+      # (COO sparse format with matrix symmetry)
+      self.write_rdm1s_d2sp_coo(dm1a,dm1b,is_active=False,f=f)
+      # writing spin blocks of active-space 1-RDMs into HDF5 file object f
+      # (COO sparse format with matrix symmetry)
+      self.write_rdm1s_d2sp_coo(casdm1a,casdm1b,is_active=True,f=f)
 
       return self
 
@@ -409,6 +476,7 @@ def get_grid_info(mol=None):
    # density gradients which are needed for GGA functional
    #rho = numint.eval_rho(mol, ao_values, dm1, xctype='GGA')
    return coords, weights, ao_values
+
 
 
 
