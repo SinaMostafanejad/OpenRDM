@@ -280,6 +280,10 @@ class MCPDFT:
          f["/SP_SYMM_D1/ACT_D1a_MO/ROW_IDX"] = row_idx
          f["/SP_SYMM_D1/ACT_D1a_MO/COL_IDX"] = col_idx
 
+      val.clear()
+      row_idx.clear()
+      col_idx.clear()
+      nnz = 0  #number of non-zero elements in the upper triangle
       # Beta block
       for i in range(col):
          for j in range(i,col):
