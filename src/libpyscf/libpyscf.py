@@ -247,23 +247,36 @@ class MCPDFT:
       row = dm1a.shape[0]
       col = dm1a.shape[1]
       assert(row == col)
-      if dm1a.all() == None: dm1a = self.dm1a
-      if dm1b.all() == None: dm1a = self.dm1b
+
+      if dm1a.all() == None:
+         if is_active == False:
+            dm1a = self.dm1a
+         else:
+            dm1a = self.casdm1a
+
+      if dm1b.all() == None:
+         if is_active == False:
+            dm1b = self.dm1b
+         else:
+            dm1b = self.casdm1b
+
       if f == None: f = h5py.File('data.h5','w')
-   
+  
+      # TODO: maybe that's a good idea to make it a class member variable and
+      # give the user the choice to choose the tolerance cutoff value
+      tol = 1.0e-20
       # storing nonzero elements in the upper triangular part (i <= j)
-      # column-based packing in COO format
+      # row-based packing in COO format
       val     = []
       row_idx = []
       col_idx = []
       nnz = 0  #number of non-zero elements in the upper triangle
-      # Alpha block
+
+      # alpha block
       for i in range(col):
          for j in range(i,col):
-            dum = dm1a[i][j]
-            if dum == 0.0:
-               continue
-            else:
+            dum = dm1a[i,j]
+            if (abs(dum) > tol):
                val.append(dum)
                row_idx.append(i)
                col_idx.append(j)
@@ -280,17 +293,17 @@ class MCPDFT:
          f["/SP_SYMM_D1/ACT_D1a_MO/ROW_IDX"] = row_idx
          f["/SP_SYMM_D1/ACT_D1a_MO/COL_IDX"] = col_idx
 
+      dum = 0.0
       val.clear()
       row_idx.clear()
       col_idx.clear()
       nnz = 0  #number of non-zero elements in the upper triangle
-      # Beta block
+
+      # beta block
       for i in range(col):
          for j in range(i,col):
-            dum = dm1b[i][j]
-            if dum == 0.0:
-               continue
-            else:
+            dum = dm1b[i,j]
+            if (abs(dum) > tol):
                val.append(dum)
                row_idx.append(i)
                col_idx.append(j)
@@ -306,6 +319,148 @@ class MCPDFT:
          f["/SP_SYMM_D1/ACT_D1b_MO/VAL"] = val
          f["/SP_SYMM_D1/ACT_D1b_MO/ROW_IDX"] = row_idx
          f["/SP_SYMM_D1/ACT_D1b_MO/COL_IDX"] = col_idx
+
+   def write_rdm2s_d2sp_coo(self, dm2aa=None, dm2ab=None, dm2bb=None, is_active=False, f=None):
+      dim1 = dm2aa.shape[0]
+      dim2 = dm2aa.shape[1]
+      dim3 = dm2aa.shape[2]
+      dim4 = dm2aa.shape[3]
+
+      assert(dim1 == dim2 == dim3 == dim4)
+      if dm2aa.all() == None:
+         if is_active == False:
+            dm2aa = self.dm2aa
+         else:
+            dm2aa = self.casdm2aa
+
+      if dm2ab.all() == None:
+         if is_active == False:
+            dm2ab = self.dm2ab
+         else:
+            dm2ab = self.casdm2ab
+
+      if dm2bb.all() == None:
+         if is_active == False:
+            dm2bb = self.dm2bb
+         else:
+            dm2bb = self.casdm2bb
+
+      if f == None: f = h5py.File('data.h5','w')
+   
+      # TODO: maybe that's a good idea to make it a class member variable and
+      # give the user the choice to choose the tolerance cutoff value
+      tol = 1.0e-20
+      # storing nonzero elements in the upper triangular part (i <= j)
+      # row-based packing in COO format
+      val      = []
+      dim1_idx = []
+      dim2_idx = []
+      dim3_idx = []
+      dim4_idx = []
+      nnz = 0  #number of non-zero elements in the upper triangle
+
+      # alpha-alpha block
+      for i in range(dim1):
+         for j in range(i,dim2):
+            for k in range(dim3):
+               for l in range(k,dim4):
+                  dum = dm2aa[i,j,k,l]
+                  if (abs(dum) > tol):
+                     val.append(dum)
+                     dim1_idx.append(i)
+                     dim2_idx.append(j)
+                     dim3_idx.append(k)
+                     dim4_idx.append(l)
+                     nnz = nnz + 1
+
+      if (is_active == False):
+         f["/SP_SYMM_D2/FULL_D2aa_MO/NNZ"] = nnz
+         f["/SP_SYMM_D2/FULL_D2aa_MO/VAL"] = val
+         f["/SP_SYMM_D2/FULL_D2aa_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYMM_D2/FULL_D2aa_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYMM_D2/FULL_D2aa_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYMM_D2/FULL_D2aa_MO/DIM4_IDX"] = dim4_idx
+      else:
+         f["/SP_SYMM_D2/ACT_D2aa_MO/NNZ"] = nnz
+         f["/SP_SYMM_D2/ACT_D2aa_MO/VAL"] = val
+         f["/SP_SYMM_D2/ACT_D2aa_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYMM_D2/ACT_D2aa_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYMM_D2/ACT_D2aa_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYMM_D2/ACT_D2aa_MO/DIM4_IDX"] = dim4_idx
+
+      dum = 0.0
+      val.clear()
+      dim1_idx.clear() 
+      dim2_idx.clear()
+      dim3_idx.clear()
+      dim4_idx.clear()
+      nnz = 0  #number of non-zero elements in the upper triangle
+
+      # alpha-beta block
+      for i in range(dim1):
+         for j in range(i,dim2):
+            for k in range(dim3):
+               for l in range(k,dim4):
+                  dum = dm2ab[i,j,k,l]
+                  if (abs(dum) > tol):
+                     val.append(dum)
+                     dim1_idx.append(i)
+                     dim2_idx.append(j)
+                     dim3_idx.append(k)
+                     dim4_idx.append(l)
+                     nnz = nnz + 1
+
+      if (is_active == False):
+         f["/SP_SYMM_D2/FULL_D2ab_MO/NNZ"] = nnz
+         f["/SP_SYMM_D2/FULL_D2ab_MO/VAL"] = val
+         f["/SP_SYMM_D2/FULL_D2ab_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYMM_D2/FULL_D2ab_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYMM_D2/FULL_D2ab_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYMM_D2/FULL_D2ab_MO/DIM4_IDX"] = dim4_idx
+      else:
+         f["/SP_SYMM_D2/ACT_D2ab_MO/NNZ"] = nnz
+         f["/SP_SYMM_D2/ACT_D2ab_MO/VAL"] = val
+         f["/SP_SYMM_D2/ACT_D2ab_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYMM_D2/ACT_D2ab_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYMM_D2/ACT_D2ab_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYMM_D2/ACT_D2ab_MO/DIM4_IDX"] = dim4_idx
+
+      dum = 0.0
+      val.clear()
+      dim1_idx.clear() 
+      dim2_idx.clear()
+      dim3_idx.clear()
+      dim4_idx.clear()
+      nnz = 0  #number of non-zero elements in the upper triangle
+
+      # beta-beta block
+      for i in range(dim1):
+         for j in range(i,dim2):
+            for k in range(dim3):
+               for l in range(k,dim4):
+                  dum = dm2bb[i,j,k,l]
+                  if (abs(dum) > tol):
+                     val.append(dum)
+                     dim1_idx.append(i)
+                     dim2_idx.append(j)
+                     dim3_idx.append(k)
+                     dim4_idx.append(l)
+                     nnz = nnz + 1
+
+      if (is_active == False):
+         f["/SP_SYMM_D2/FULL_D2bb_MO/NNZ"] = nnz
+         f["/SP_SYMM_D2/FULL_D2bb_MO/VAL"] = val
+         f["/SP_SYMM_D2/FULL_D2bb_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYMM_D2/FULL_D2bb_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYMM_D2/FULL_D2bb_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYMM_D2/FULL_D2bb_MO/DIM4_IDX"] = dim4_idx
+      else:
+         f["/SP_SYMM_D2/ACT_D2bb_MO/NNZ"] = nnz
+         f["/SP_SYMM_D2/ACT_D2bb_MO/VAL"] = val
+         f["/SP_SYMM_D2/ACT_D2bb_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYMM_D2/ACT_D2bb_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYMM_D2/ACT_D2bb_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYMM_D2/ACT_D2bb_MO/DIM4_IDX"] = dim4_idx
 
    def kernel(self):
 
@@ -427,6 +582,11 @@ class MCPDFT:
       # writing spin blocks of active-space 1-RDMs into HDF5 file object f
       # (COO sparse format with matrix symmetry)
       self.write_rdm1s_d2sp_coo(casdm1a,casdm1b,is_active=True,f=f)
+
+      # writing spin blocks of active-space 2-RDMs into HDF5 file object f
+      # (COO sparse format with matrix symmetry)
+      if self.ref_method == 'MCSCF':
+         self.write_rdm2s_d2sp_coo(casdm2aa,casdm2ab,casdm2bb,is_active=True,f=f)
 
       return self
 
