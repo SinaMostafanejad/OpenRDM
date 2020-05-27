@@ -462,6 +462,100 @@ class MCPDFT:
          f["/SP_SYMM_D2/ACT_D2bb_MO/DIM3_IDX"] = dim3_idx
          f["/SP_SYMM_D2/ACT_D2bb_MO/DIM4_IDX"] = dim4_idx
 
+   def write_rdm12_d2sp_coo(self, dm1=None, dm2=None, is_active=False, f=None):
+      row = dm1.shape[0]
+      col = dm1.shape[1]
+
+      dim1 = dm2.shape[0]
+      dim2 = dm2.shape[1]
+      dim3 = dm2.shape[2]
+      dim4 = dm2.shape[3]
+
+      assert(row == col)
+      assert(dim1 == dim2 == dim3 == dim4)
+
+      if dm1.all() == None:
+         if is_active == False:
+            dm1 = self.dm1
+         else:
+            dm1 = self.casdm1
+
+      if dm2.all() == None:
+         if is_active == False:
+            dm2 = self.dm2
+         else:
+            dm2 = self.casdm2
+
+      if f == None: f = h5py.File('data.h5','w')
+  
+      # TODO: maybe that's a good idea to make it a class member variable and
+      # give the user the choice to choose the tolerance cutoff value
+      tol = 1.0e-20
+      # storing nonzero elements in the upper triangular part (i <= j)
+      # row-based packing in COO format
+      val     = []
+      row_idx = []
+      col_idx = []
+      nnz = 0  #number of non-zero elements in the upper triangle
+
+      # writing the non-zero elements of 1-RDM
+      for i in range(col):
+         for j in range(i,col):
+            dum = dm1[i,j]
+            if (abs(dum) > tol):
+               val.append(dum)
+               row_idx.append(i)
+               col_idx.append(j)
+               nnz = nnz + 1
+
+      if (is_active == False):
+         f["/SP_SYMM_D1/FULL_D1_MO/NNZ"] = nnz
+         f["/SP_SYMM_D1/FULL_D1_MO/VAL"] = val
+         f["/SP_SYMM_D1/FULL_D1_MO/ROW_IDX"] = row_idx
+         f["/SP_SYMM_D1/FULL_D1_MO/COL_IDX"] = col_idx
+      else:
+         f["/SP_SYMM_D1/ACT_D1_MO/NNZ"] = nnz
+         f["/SP_SYMM_D1/ACT_D1_MO/VAL"] = val
+         f["/SP_SYMM_D1/ACT_D1_MO/ROW_IDX"] = row_idx
+         f["/SP_SYMM_D1/ACT_D1_MO/COL_IDX"] = col_idx
+
+      dum = 0.0
+      val.clear()
+      dim1_idx = []
+      dim2_idx = []
+      dim3_idx = []
+      dim4_idx = []
+      nnz = 0  #number of non-zero elements in the upper triangle
+
+      # writing the non-zero elements of 2-RDM
+      for i in range(dim1):
+         for j in range(i,dim2):
+            for k in range(dim3):
+               for l in range(k,dim4):
+                  dum = dm2[i,j,k,l]
+                  if (abs(dum) > tol):
+                     val.append(dum)
+                     dim1_idx.append(i)
+                     dim2_idx.append(j)
+                     dim3_idx.append(k)
+                     dim4_idx.append(l)
+                     nnz = nnz + 1
+
+      if (is_active == False):
+         f["/SP_SYMM_D2/FULL_D2_MO/NNZ"] = nnz
+         f["/SP_SYMM_D2/FULL_D2_MO/VAL"] = val
+         f["/SP_SYMM_D2/FULL_D2_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYMM_D2/FULL_D2_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYMM_D2/FULL_D2_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYMM_D2/FULL_D2_MO/DIM4_IDX"] = dim4_idx
+      else:
+         f["/SP_SYMM_D2/ACT_D2_MO/NNZ"] = nnz
+         f["/SP_SYMM_D2/ACT_D2_MO/VAL"] = val
+         f["/SP_SYMM_D2/ACT_D2_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYMM_D2/ACT_D2_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYMM_D2/ACT_D2_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYMM_D2/ACT_D2_MO/DIM4_IDX"] = dim4_idx
+
    def kernel(self):
 
       #--------------------------------------------- Active space info
@@ -587,6 +681,13 @@ class MCPDFT:
       # (COO sparse format with matrix symmetry)
       if self.ref_method == 'MCSCF':
          self.write_rdm2s_d2sp_coo(casdm2aa,casdm2ab,casdm2bb,is_active=True,f=f)
+      else: # ref_method == 'DMRG'
+         # writing spin-free full 1- and 2-RDMs into HDF5 file object f
+         # (COO sparse format with matrix symmetry)
+         self.write_rdm12_d2sp_coo(dm1,dm2,is_active=False,f=f)
+         # writing spin-free active-space 1- and 2-RDMs into HDF5 file object f
+         # (COO sparse format with matrix symmetry)
+         self.write_rdm12_d2sp_coo(casdm1,casdm2,is_active=True,f=f)
 
       return self
 
