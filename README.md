@@ -25,7 +25,7 @@
   <tr>
     <th align="left">Technical Support</th>
     <th align="left">
-      <a href="https://join.slack.com/t/openrdm/shared_invite/enQtOTM2MDg2MzUxNjIyLWNlMzFlOWFhYTVlZGQ3ZGYxNWY3NTk4ZjRhYzM3MTU5MWZhN2VhY2Y5NzBiNjVjYzU1YWJkZDc2ODdhYTM4Yjg"><img alt="Slack Link" src="https://img.shields.io/badge/Chat on-Slack-blue?style=flat&logo=slack"></a>
+      <a href="https://join.slack.com/t/openrdm/shared_invite/zt-er638tpi-2MZLGxi161sQSNC7YnO8lg"><img alt="Slack Link" src="https://img.shields.io/badge/Chat on-Slack-blue?style=flat&logo=slack"></a>
     </th>
   </tr>
   <tr>
