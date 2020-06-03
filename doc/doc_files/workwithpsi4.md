@@ -10,7 +10,7 @@ Psi4 plugins are
 that are <b>not</b> intended to be linked to another target entity.
 However, modules are created mainly because they can dynamically be
 imported at runtime by the consuming programs. In our sample  
-[input file](https://github.com/SinaMostafanejad/v2rdm_casscf/blob/master/tests/v2rdm_casscf_pdft/input.dat)
+[input file](https://github.com/SinaMostafanejad/v2rdm_casscf/blob/OpenRDM-interface/tests/v2rdm_casscf_pdft/input.dat)
 , we show how to import both <i>v2rdm\_casscf</i> and <i>mcpdft</i> modules.
 This input file assumes that you have chosen the second way below (recommended) for 
 connecting OpenRDM with your plugin. At lines 51 and 53 of this input file, we call
@@ -60,7 +60,7 @@ import mcpdft
 In the present example, the <i>mcpdft.so</i> module lives in
 the <i>/home/<b>OpenRDM</b>/build/stage/lib</i> directory.
 
-Check the [input file](https://github.com/SinaMostafanejad/v2rdm_casscf/blob/master/tests/v2rdm_casscf_pdft/input.dat)
+Check the [input file](https://github.com/SinaMostafanejad/v2rdm_casscf/blob/OpenRDM-interface/tests/v2rdm_casscf_pdft/input.dat)
 in our [v2RDM-CASSCF plugin fork](https://github.com/SinaMostafanejad/v2rdm_casscf)
 for more details.
 
