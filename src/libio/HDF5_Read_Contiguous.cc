@@ -5,24 +5,21 @@
 #include "hdf5.h"
 #include <assert.h>
 
-#define OPDM_H5FILE  "opdm.h5"
-#define TPDM_H5FILE  "tpdm.h5"
-#define D1A_DATASET  "/D1a/D1a_DataSet"
-#define D1B_DATASET  "/D1b/D1b_DataSet"
-#define D2AB_DATASET "/D2ab/D2ab_DataSet"
+#include "TOC.h"
+
 #define RANK 2
 
 namespace mcpdft {
 
    void HDF5ReadContiguous::read_rdms(arma::mat &D1a,
-                          arma::mat &D1b,
-			  arma::mat &D2ab) {
+                                      arma::mat &D1b,
+			              arma::mat &D2ab) {
       read_opdm(D1a, D1b);
       read_tpdm(D2ab);
    }
 
    void HDF5ReadContiguous::read_opdm(arma::mat &D1a,
-		          arma::mat &D1b) {
+		                      arma::mat &D1b) {
       std::ifstream file(OPDM_H5FILE);
       if( !file.good() )
 	throw "\n  Warning: No accessible HDF5 file by the name \"opdm.h5\" exists!\n";
