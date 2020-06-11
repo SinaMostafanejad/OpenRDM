@@ -6,6 +6,8 @@
 #include "mcpdft.h"
 #include "openrdmConfig.h"
 
+#include "HDF5Client.h"
+
 #ifdef WITH_OPENMP // _OPENMP
    #include <omp.h>
 #endif
@@ -13,7 +15,7 @@
 namespace mcpdft {
 
    MCPDFT::MCPDFT(std::string test_case)  { common_init(test_case); }
-   MCPDFT::MCPDFT() {}
+   MCPDFT::MCPDFT() { common_init(); }
    MCPDFT::~MCPDFT() {}
 
    void MCPDFT::common_init(std::string test_case) {
@@ -27,9 +29,18 @@ namespace mcpdft {
        }else{
 	  is_gga_ = false;
        }
-
        read_opdm_from_file(test_case);
        // read_cmat_from_file();
+   }
+
+   void MCPDFT::common_init() {
+      // arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
+      // arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
+      // arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
+      HDF5Client* h5client = new HDF5Client();
+      HDF5Client::factory_mode mode(HDF5Client::factory_mode::READ);
+      h5client->factory_client(H5D_COMPACT,mode);
+      delete h5client;
    }
 
    void MCPDFT::build_rho() {

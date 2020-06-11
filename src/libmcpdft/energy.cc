@@ -14,7 +14,7 @@
 //#include "HDF5ContiguousFactory.h"
 //#include "HDF5CompactFactory.h"
 //#include "HDF5ChunkedFactory.h"
-#include "HDF5Client.h"
+//#include "HDF5Client.h"
 #ifdef WITH_LIBXC
    #include <xc.h>
 #else
@@ -128,7 +128,8 @@ namespace mcpdft {
       // arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
       // arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
       // arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
-
+      
+#if 0
       HDF5Client* h5client = new HDF5Client();
 
       HDF5Client::factory_mode mode(HDF5Client::factory_mode::WRITE);
@@ -138,6 +139,8 @@ namespace mcpdft {
       h5client->factory_client(H5D_COMPACT,mode,D1a,D1b,D2ab);
 
       delete h5client;
+
+#endif
 
       // IOFactory* iof;
       // IRead* ird;

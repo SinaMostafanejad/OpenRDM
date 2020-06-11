@@ -31,11 +31,7 @@ class HDF5Client {
       };
 
       /// HDF5 factory client
-      void factory_client(H5D_layout_t layout,
-		          factory_mode mode,
-                          const arma::mat &D1a,
-	                  const arma::mat &D1b,
-	                  const arma::mat &D2ab);
+      void factory_client(H5D_layout_t layout, factory_mode mode);
 
       /* accessors */
 

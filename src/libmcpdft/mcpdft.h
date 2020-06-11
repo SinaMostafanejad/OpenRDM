@@ -7,14 +7,17 @@ namespace mcpdft{
 
 class MCPDFT {
    public:
-      /// constructor
+      /// Constructor
       MCPDFT();
       MCPDFT(std::string test_case);
-      /// destructor
+      /// Destructor
       ~MCPDFT();
 
-      /// initialize the class member variables
+      /// Initialize the class member variables using UTF-format input files
       void common_init(std::string test_case);
+
+      /// Initialize the class member variables using HDF5 input files 
+      void common_init();
 
       /// Build the 1-particle density matrices (OPDMs)
       void build_opdm();

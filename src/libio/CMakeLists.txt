@@ -17,7 +17,11 @@ foreach(idx HDF5_Read_Contiguous.cc
 	    HDF5CompactFactory.h
 	    HDF5ChunkedFactory.h
 	    HDF5Client.h
-	    HDF5Client.cc)
+	    HDF5Client.cc
+	    HDF5ErrorManager.cc
+	    HDF5ErrorManager.h
+	    HDF5Utility.cc
+	    HDF5Utility.h)
 target_sources(openrdm
                PRIVATE
 	       $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${idx}>

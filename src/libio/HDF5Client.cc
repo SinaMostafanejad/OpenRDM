@@ -1,4 +1,5 @@
 #include "HDF5Client.h"
+#include "HDF5Utility.h"
 
 namespace mcpdft {
 
@@ -7,13 +8,12 @@ namespace mcpdft {
    HDF5Client::~HDF5Client() {};
 
    void HDF5Client::factory_client(H5D_layout_t layout,
-                                   factory_mode mode,
-                                   const arma::mat &d1a,
-                                   const arma::mat &d1b,
-                                   const arma::mat &d2ab) {
+                                   factory_mode mode) {
       IOFactory* iof;
       IRead*  ird;
       IWrite* iwt;
+
+      HDF5Utility* utl;
   
       switch (layout) {
         case H5D_COMPACT:
@@ -36,20 +36,19 @@ namespace mcpdft {
       switch(mode) {
          case READ:
 	    {	 
-               arma::mat D1a(d1a);
-               arma::mat D1b(d1b);
-               arma::mat D2ab(d2ab);
+	       utl->read_nbfs();
+	       // utl->read_grids();
                ird = iof->create_IRead();
-               ird->read_rdms(D1a,D1b,D2ab);
-	       set_D1a(D1a);
-	       set_D1b(D1b);
-	       set_D2ab(D2ab);
+               // ird->read_rdms(D1a,D1b,D2ab);
+	       // set_D1a(D1a);
+	       // set_D1b(D1b);
+	       // set_D2ab(D2ab);
 	       break;
 	    }
 	 case WRITE:
 	    {
                iwt = iof->create_IWrite();
-               iwt->write_rdms(d1a,d1b,d2ab);
+               // iwt->write_rdms(d1a,d1b,d2ab);
 	       break;
 	    }
       }
