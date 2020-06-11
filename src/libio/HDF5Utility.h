@@ -6,7 +6,7 @@ namespace mcpdft {
 class HDF5Utility {
    public:
       /// Read the number of basis functions (AOs, MOs, NO, etc.)
-      void read_nbfs();
+      void read_nbfs(int &nao, int &nmo);
 
       /// Read grids w, x, y, z
       void read_grids();

@@ -1,3 +1,4 @@
+#include <armadillo>
 #include "hdf5.h"
 #include "HDF5ErrorManager.h"
 #include "HDF5Utility.h"
@@ -5,9 +6,8 @@
 
 namespace mcpdft {
 
-   void HDF5Utility::read_nbfs() {
+   void HDF5Utility::read_nbfs(int &nao, int &nmo) {
       HDF5ErrorManager::hdf5_file_checker();
-      int *nao{nullptr}, *nmo{nullptr}; 
 
       /* file indentifiers and handles */
       hid_t file_id;
@@ -27,10 +27,10 @@ namespace mcpdft {
 
       /* Read the DataSet */
       status = H5Dread(nao_dst_id, H5T_NATIVE_INT,
-                       H5S_ALL, H5S_ALL, H5P_DEFAULT, nao);
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, &nao);
 
       status = H5Dread(nmo_dst_id, H5T_NATIVE_INT,
-                       H5S_ALL, H5S_ALL, H5P_DEFAULT, nmo);
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, &nmo);
 
       /* Close datasets */
       status = H5Dclose(nao_dst_id);

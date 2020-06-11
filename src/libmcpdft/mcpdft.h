@@ -68,6 +68,8 @@ class MCPDFT {
       bool is_gga() const;
       size_t get_npts() const;
       int    get_nbfs() const;
+      int    get_nao() const;
+      int    get_nmo() const;
       arma::vec get_w() const;
       arma::vec get_x() const;
       arma::vec get_y() const;
@@ -111,6 +113,8 @@ class MCPDFT {
 
       void set_npts(const size_t npts);
       void set_nbfs(const int nbfs);
+      void set_nao(const int nao);
+      void set_nmo(const int nmo);
       void set_w(const arma::vec &w);
       void set_x(const arma::vec &x);
       void set_y(const arma::vec &y);
@@ -186,6 +190,12 @@ class MCPDFT {
       /// number of basis functions
       size_t nbfs_;
       
+      /// number of atomic orbitals (AOs)
+      size_t nao_;
+
+      /// number of molecular orbitals (MOs)
+      size_t nmo_;
+
       /// vector of weights for quadrature grid points
       arma::vec w_;
 

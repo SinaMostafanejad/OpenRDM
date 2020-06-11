@@ -8,12 +8,13 @@ namespace mcpdft {
    HDF5Client::~HDF5Client() {};
 
    void HDF5Client::factory_client(H5D_layout_t layout,
-                                   factory_mode mode) {
+                                   factory_mode mode,
+				   arma::mat &D1a,
+                                   arma::mat &D1b,
+                                   arma::mat D2ab) {
       IOFactory* iof;
       IRead*  ird;
       IWrite* iwt;
-
-      HDF5Utility* utl;
   
       switch (layout) {
         case H5D_COMPACT:
@@ -36,13 +37,8 @@ namespace mcpdft {
       switch(mode) {
          case READ:
 	    {	 
-	       utl->read_nbfs();
-	       // utl->read_grids();
                ird = iof->create_IRead();
-               // ird->read_rdms(D1a,D1b,D2ab);
-	       // set_D1a(D1a);
-	       // set_D1b(D1b);
-	       // set_D2ab(D2ab);
+               ird->read_rdms(D1a,D1b,D2ab);
 	       break;
 	    }
 	 case WRITE:
@@ -56,6 +52,7 @@ namespace mcpdft {
       delete iof;
    }
 
+#if 0
    arma::mat HDF5Client::get_D1a() const { return D1a_;} 
    arma::mat HDF5Client::get_D1b() const { return D1b_;} 
    arma::mat HDF5Client::get_D2ab() const { return D2ab_;} 
@@ -63,5 +60,6 @@ namespace mcpdft {
    void HDF5Client::set_D1a(const arma::mat &D1a)  { D1a_  = D1a;} 
    void HDF5Client::set_D1b(const arma::mat &D1b)  { D1b_  = D1b;} 
    void HDF5Client::set_D2ab(const arma::mat &D2ab) { D2ab_ = D2ab;} 
+#endif
 
 }

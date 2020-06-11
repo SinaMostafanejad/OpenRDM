@@ -31,7 +31,11 @@ class HDF5Client {
       };
 
       /// HDF5 factory client
-      void factory_client(H5D_layout_t layout, factory_mode mode);
+      void factory_client(H5D_layout_t layout,
+		          factory_mode mode,
+			  arma::mat &D1a,
+			  arma::mat &D1b,
+			  arma::mat D2ab);
 
       /* accessors */
 
@@ -40,7 +44,7 @@ class HDF5Client {
  
       /// getting factory layout
       H5D_layout_t get_factory_layout() const;
-
+#if 0
       /// get alpha-spin 1-electron reduced-density matrix
       arma::mat get_D1a() const;
       /// get beta-spin 1-electron reduced-density matrix
@@ -54,14 +58,14 @@ class HDF5Client {
       void set_D1b(const arma::mat &D1b);
       /// set alpha-beta spin-block of the 2-electron reduced-density matrix
       void set_D2ab(const arma::mat &D2ab);
-
+#endif
    private:
       /// HDF5 factory (layout) type
       H5D_layout_t layout_;
 
       /// factory mode (READ and WRITE)
       std::string factory_mode_;
-
+#if 0
       /// alpha-spin 1-electron reduced-density matrix
       arma::mat D1a_;
 
@@ -70,6 +74,7 @@ class HDF5Client {
 
       /// alpha-beta spin-block of the 2-electron reduced-density matrix
       arma::mat D2ab_;
+#endif
 
 };
 

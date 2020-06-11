@@ -1,12 +1,12 @@
 #include <armadillo>
 #include <iostream>
-#include <fstream>
 #include <stdio.h>
 #include <string>
 #include "mcpdft.h"
 #include "openrdmConfig.h"
 
 #include "HDF5Client.h"
+#include "HDF5Utility.h"
 
 #ifdef WITH_OPENMP // _OPENMP
    #include <omp.h>
@@ -34,13 +34,25 @@ namespace mcpdft {
    }
 
    void MCPDFT::common_init() {
-      // arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
-      // arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
-      // arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
-      HDF5Client* h5client = new HDF5Client();
-      HDF5Client::factory_mode mode(HDF5Client::factory_mode::READ);
-      h5client->factory_client(H5D_COMPACT,mode);
-      delete h5client;
+      /* reading naos and nmos from data.h5 HDF5 file */	   
+      int nao{0}, nmo{0};
+      HDF5Utility* h5utl = new HDF5Utility();
+      h5utl->read_nbfs(nao,nmo);
+      set_nao(nao);
+      set_nmo(nmo);
+
+      /* reading active space details from data.h5 HDF5 file */
+
+      arma::mat d1a(nmo, nmo, arma::fill::zeros);
+      arma::mat d1b(nmo, nmo, arma::fill::zeros);
+      arma::mat d2ab(nmo*nmo, nmo*nmo, arma::fill::zeros);
+
+      // HDF5Client* h5client = new HDF5Client();
+      // HDF5Client::factory_mode mode(HDF5Client::factory_mode::READ);
+      // h5client->factory_client(H5D_CONTIGUOUS,mode,d1a,d1b,d2ab);
+      // delete h5client;
+
+      delete h5utl;
    }
 
    void MCPDFT::build_rho() {
@@ -665,6 +677,8 @@ namespace mcpdft {
    bool MCPDFT::is_gga() const { return is_gga_; }
    size_t MCPDFT::get_npts() const { return npts_; }
    int    MCPDFT::get_nbfs() const { return nbfs_; }
+   int MCPDFT::get_nao() const { return nao_; }
+   int MCPDFT::get_nmo() const { return nmo_; }
    arma::vec MCPDFT::get_w() const { return w_; }
    arma::vec MCPDFT::get_x() const { return x_; }
    arma::vec MCPDFT::get_y() const { return y_; }
@@ -702,6 +716,8 @@ namespace mcpdft {
 
    void MCPDFT::set_npts(const size_t npts) { npts_ = npts; }
    void MCPDFT::set_nbfs(const int nbfs)    { nbfs_ = nbfs; }
+   void MCPDFT::set_nao(const int nao) { nao_ = nao; }
+   void MCPDFT::set_nmo(const int nmo) { nmo_ = nmo; }
    void MCPDFT::set_w(const arma::vec &w) { w_ = w; }
    void MCPDFT::set_x(const arma::vec &x) { x_ = x; }
    void MCPDFT::set_y(const arma::vec &y) { y_ = y; }
