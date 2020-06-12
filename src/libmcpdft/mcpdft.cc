@@ -34,14 +34,28 @@ namespace mcpdft {
    }
 
    void MCPDFT::common_init() {
-      /* reading naos and nmos from data.h5 HDF5 file */	   
-      int nao{0}, nmo{0};
       HDF5Utility* h5utl = new HDF5Utility();
+
+      /* reading naos and nmos from data.h5 HDF5 file */	   
+      size_t nao{0}, nmo{0};
       h5utl->read_nbfs(nao,nmo);
       set_nao(nao);
       set_nmo(nmo);
+//      std::printf("NAO, NMO = %d , %d\n",nao,nmo);
 
       /* reading active space details from data.h5 HDF5 file */
+      size_t nactele{0}, nactorb{0};
+      size_t ncore{0}, nfrz{0}, nocc{0}, nvir{0};
+      h5utl->read_active_space_vars(nactele,
+		                    nactorb,
+				    ncore,
+				    nfrz,
+				    nocc,
+				    nvir);
+
+//      std::printf("NCASELE, NCASOBR, NCORE, NFRZ, NOCC, NVIR = %d , %d, %d, %d, %d, %d\n",
+//		  nactele,nactorb,ncore,nfrz,nocc,nvir);
+
 
       arma::mat d1a(nmo, nmo, arma::fill::zeros);
       arma::mat d1b(nmo, nmo, arma::fill::zeros);

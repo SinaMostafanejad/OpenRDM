@@ -7,61 +7,61 @@ namespace mcpdft{
 
 class MCPDFT {
    public:
-      /// Constructor
+      /// constructor
       MCPDFT();
       MCPDFT(std::string test_case);
-      /// Destructor
+      /// destructor
       ~MCPDFT();
 
-      /// Initialize the class member variables using UTF-format input files
+      /// initialize the class member variables using UTF-format input files
       void common_init(std::string test_case);
 
-      /// Initialize the class member variables using HDF5 input files 
+      /// initialize the class member variables using HDF5 input files 
       void common_init();
 
-      /// Build the 1-particle density matrices (OPDMs)
+      /// build the 1-particle density matrices (OPDMs)
       void build_opdm();
 
-      /// Build the alpha-beta block of 2-particle density matrix (TPDM)
+      /// build the alpha-beta block of 2-particle density matrix (TPDM)
       void build_tpdm();
 
-      /// Build density functions and their gradients on the grid points
+      /// build density functions and their gradients on the grid points
       void build_rho();
 
-      /// Build spin and total density functions rhoa(r), rhob(r) and rho(r)
+      /// build spin and total density functions rhoa(r), rhob(r) and rho(r)
       void build_density_functions();
 
-      /// Build density gradients rhoa_x(r), rhoa_y(r) ... on the grid points
+      /// build density gradients rhoa_x(r), rhoa_y(r) ... on the grid points
       void build_density_gradients();
 
-      /// Build on-top pair-density pi(r,r) and its gradinets pi_x(r,r) ... on the grids
+      /// build on-top pair-density pi(r,r) and its gradinets pi_x(r,r) ... on the grids
       void build_pi(const arma::mat &D2ab);
 
-      /// Build on-top pair-density pi(r,r) on the grids
+      /// build on-top pair-density pi(r,r) on the grids
       void build_ontop_pair_density(const arma::mat &D2ab);
 
-      /// Build on-top pair-density gradinets pi_x(r,r), pi_y(r,r) ... on the grids
+      /// build on-top pair-density gradinets pi_x(r,r), pi_y(r,r) ... on the grids
       void build_ontop_pair_density_gradients(const arma::mat &D2ab);
 
-      /// Build R(r) factor
+      /// build R(r) factor
       void build_R();
 
-      /// Translate the one-electron densities and their gradients
+      /// translate the one-electron densities and their gradients
       void translate();
 
-      /// Translate the one-electron density functions
+      /// translate the one-electron density functions
       void translate_density();
 
-      /// Translate the density gradients
+      /// translate the density gradients
       void translate_density_gradients();
 
-      /// Fully translate the one-electron densities 
+      /// fully translate the one-electron densities 
       void fully_translate();
 
-      /// Fully translate the one-electron density functions
+      /// fully translate the one-electron density functions
       void fully_translate_density();
 
-      /// Fully translate the density gradients
+      /// fully translate the density gradients
       void fully_translate_density_gradients();
 
       //=============== accessors ===============//
@@ -159,6 +159,7 @@ class MCPDFT {
       void set_tr_sigma_ab(const arma::vec &tr_sigma_ab);
       void set_tr_sigma_bb(const arma::vec &tr_sigma_bb);
       //==========================================// end of accessors
+      
       void print_banner() const;
 
    protected:   
@@ -195,6 +196,24 @@ class MCPDFT {
 
       /// number of molecular orbitals (MOs)
       size_t nmo_;
+
+      /// number of active electrons
+      size_t nactele;
+
+      /// number of active orbitals
+      size_t nactorb;
+
+      /// number of core orbitals
+      size_t ncore;
+
+      /// number of frozen orbitals
+      size_t nfrz;
+
+      /// number of occupied (inactive) orbotals
+      size_t nocc;
+
+      /// number of virtual (secondary or unoccupied) orbitals
+      size_t nvir;
 
       /// vector of weights for quadrature grid points
       arma::vec w_;
@@ -247,76 +266,76 @@ class MCPDFT {
       /// beta density vector rho_b(r)
       arma::vec rho_b_;
 
-      /// The x-derivative of the beta density vector rho_b(r)
+      /// x-derivative of the beta density vector rho_b(r)
       arma::vec rho_b_x_;
 
-      /// The y-derivative of the beta density vector rho_b(r)
+      /// y-derivative of the beta density vector rho_b(r)
       arma::vec rho_b_y_;
 
-      /// The z-derivative of the beta density vector rho_b(r)
+      /// z-derivative of the beta density vector rho_b(r)
       arma::vec rho_b_z_;
 
       /// total density vector rho_(r)
       arma::vec rho_;
 
-      /// The (fully-)translated alpha density vector tr_rho_a(r)
+      /// (fully-)translated alpha density vector tr_rho_a(r)
       arma::vec tr_rho_a_;
 
-      /// The x-derivative of the (fully-)translated alpha density vector tr_rho_a(r)
+      /// x-derivative of the (fully-)translated alpha density vector tr_rho_a(r)
       arma::vec tr_rho_a_x_;
 
-      /// The y-derivative of the (fully-)translated alpha density vector tr_rho_a(r)
+      /// y-derivative of the (fully-)translated alpha density vector tr_rho_a(r)
       arma::vec tr_rho_a_y_;
 
-      /// The z-derivative of the (fully-)translated alpha density vector tr_rho_a(r)
+      /// z-derivative of the (fully-)translated alpha density vector tr_rho_a(r)
       arma::vec tr_rho_a_z_;
 
-      /// The (fully-)translated beta density vector tr_rho_b(r)
+      /// (fully-)translated beta density vector tr_rho_b(r)
       arma::vec tr_rho_b_;
 
-      /// The x-derivative of the (fully-)translated beta density vector tr_rho_b(r)
+      /// x-derivative of the (fully-)translated beta density vector tr_rho_b(r)
       arma::vec tr_rho_b_x_;
 
-      /// The y-derivative of the (fully-)translated beta density vector tr_rho_b(r)
+      /// y-derivative of the (fully-)translated beta density vector tr_rho_b(r)
       arma::vec tr_rho_b_y_;
 
-      /// The z-derivative of the (fully-)translated beta density vector tr_rho_b(r)
+      /// z-derivative of the (fully-)translated beta density vector tr_rho_b(r)
       arma::vec tr_rho_b_z_;
 
-      /// The (fully-)translated total density vector tr_rho_(r)
+      /// (fully-)translated total density vector tr_rho_(r)
       arma::vec tr_rho_;
 
-      /// The on-top pair-density vector pi_(r)
+      /// on-top pair-density vector pi_(r)
       arma::vec pi_;
 
-      /// The x-derivative of the on-top pair-density vector pi_(r)
+      /// x-derivative of the on-top pair-density vector pi_(r)
       arma::vec pi_x_;
 
-      /// The y-derivative of the on-top pair-density vector pi_(r)
+      /// y-derivative of the on-top pair-density vector pi_(r)
       arma::vec pi_y_;
 
-      /// The z-derivative of the on-top pair-density vector pi_(r)
+      /// z-derivative of the on-top pair-density vector pi_(r)
       arma::vec pi_z_;
 
-      /// The R(r) factor
+      /// R(r) factor
       arma::vec R_;
 
-      /// The sigma alpha-alpha vector sigma_aa(r)
+      /// sigma alpha-alpha vector sigma_aa(r)
       arma::vec sigma_aa_;
 
-      /// The sigma alpha-beta vector sigma_ab(r)
+      /// sigma alpha-beta vector sigma_ab(r)
       arma::vec sigma_ab_;
 
-      /// The sigma beta-beta vector sigma_bb(r)
+      /// sigma beta-beta vector sigma_bb(r)
       arma::vec sigma_bb_;
 
-      /// The (fully-)translated sigma alpha-alpha vector tr_sigma_aa(r)
+      /// (fully-)translated sigma alpha-alpha vector tr_sigma_aa(r)
       arma::vec tr_sigma_aa_;
 
-      /// The (fully-)translated sigma alpha-beta vector tr_sigma_ab(r)
+      /// (fully-)translated sigma alpha-beta vector tr_sigma_ab(r)
       arma::vec tr_sigma_ab_;
 
-      /// The (fully-)translated sigma beta-beta vector tr_sigma_bb(r)
+      /// (fully-)translated sigma beta-beta vector tr_sigma_bb(r)
       arma::vec tr_sigma_bb_;
 };
 
