@@ -621,6 +621,7 @@ class MCPDFT:
       f["/N/N_OCC_ACT"] = self.nocc
       f["/N/N_VIR_ACT"] = self.virt
       f["/N/N_MO_ACT"]  = self.amo
+      f["/N/N_PTS"]     = coords.shape[0]
 
       f["/C"]        = self.C_mo
 

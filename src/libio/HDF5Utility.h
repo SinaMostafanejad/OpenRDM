@@ -1,14 +1,24 @@
 #ifndef HDF5UTILITY_H
 #define HDF5UTILITY_H
 
+#include <armadillo>
+
 namespace mcpdft {
 
 class HDF5Utility {
    public:
-      /// Read the number of basis functions (AOs, MOs, NO, etc.)
-      void read_nbfs(size_t &nao, size_t &nmo);
+      /// constructor
+      HDF5Utility();
 
-      /// Read active space variables (nactele, nactorb, ncore, etc.)
+      /// destructor
+      ~HDF5Utility();
+
+      /// read the number of basis functions (AOs, MOs, NO, etc.)
+      void read_nbfs(size_t &nao,
+		     size_t &nmo,
+		     size_t &npts);
+
+      /// read active space variables (nactele, nactorb, ncore, etc.)
       void read_active_space_vars(size_t &nactele,
 		                  size_t &nactorb,
 				  size_t &ncore, 
@@ -16,10 +26,15 @@ class HDF5Utility {
 				  size_t &nocc, 
 				  size_t &nvir);
 
-      /// Read grids w, x, y, z
-      void read_grids();
+      /// read AO2MO transformation matrix
+      void read_AO2MO_Cmat(arma::mat &Cmat);
+
+      /// read grids w, x, y, z
+      void read_grids(arma::vec &W,
+		      arma::vec &X,
+                      arma::vec &Y,
+                      arma::vec &Z);
 };
 
 }
-
 #endif // HDF5UTILITY_H

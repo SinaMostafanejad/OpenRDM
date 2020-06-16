@@ -37,11 +37,12 @@ namespace mcpdft {
       HDF5Utility* h5utl = new HDF5Utility();
 
       /* reading naos and nmos from data.h5 HDF5 file */	   
-      size_t nao{0}, nmo{0};
-      h5utl->read_nbfs(nao,nmo);
+      size_t nao{0}, nmo{0}, npts{0};
+      h5utl->read_nbfs(nao,nmo,npts);
+      std::printf("NAO, NMO, NPTS = %ld, %ld, %ld\n",nao,nmo,npts);
       set_nao(nao);
       set_nmo(nmo);
-//      std::printf("NAO, NMO = %d , %d\n",nao,nmo);
+      set_npts(npts);
 
       /* reading active space details from data.h5 HDF5 file */
       size_t nactele{0}, nactorb{0};
@@ -54,8 +55,27 @@ namespace mcpdft {
 				    nvir);
 
 //      std::printf("NCASELE, NCASOBR, NCORE, NFRZ, NOCC, NVIR = %d , %d, %d, %d, %d, %d\n",
-//		  nactele,nactorb,ncore,nfrz,nocc,nvir);
+//                  nactele,nactorb,ncore,nfrz,nocc,nvir);
 
+
+      /* reading AO to MO transformation matrix from data.h5 HDF5 file */
+      arma::mat Cmat(nao, nmo, arma::fill::zeros);
+      h5utl->read_AO2MO_Cmat(Cmat);
+//      Cmat.print();
+      set_cmat(Cmat);
+
+      /* reading Cartesian grids and weights from data.h5 HDF5 file */
+      arma::vec W(npts, arma::fill::zeros);
+      arma::vec X(npts, arma::fill::zeros);
+      arma::vec Y(npts, arma::fill::zeros);
+      arma::vec Z(npts, arma::fill::zeros);
+
+      h5utl->read_grids(W, X, Y, Z);
+//      W.print();
+      set_w(W);
+      set_x(X);
+      set_y(Y);
+      set_z(Z);
 
       arma::mat d1a(nmo, nmo, arma::fill::zeros);
       arma::mat d1b(nmo, nmo, arma::fill::zeros);
@@ -690,9 +710,15 @@ namespace mcpdft {
  
    bool MCPDFT::is_gga() const { return is_gga_; }
    size_t MCPDFT::get_npts() const { return npts_; }
-   int    MCPDFT::get_nbfs() const { return nbfs_; }
-   int MCPDFT::get_nao() const { return nao_; }
-   int MCPDFT::get_nmo() const { return nmo_; }
+   size_t MCPDFT::get_nbfs() const { return nbfs_; }
+   size_t MCPDFT::get_nao() const { return nao_; }
+   size_t MCPDFT::get_nmo() const { return nmo_; }
+   size_t MCPDFT::get_nactele() const { return nactele_; }
+   size_t MCPDFT::get_nactorb() const { return nactorb_; }
+   size_t MCPDFT::get_ncore() const { return ncore_; }
+   size_t MCPDFT::get_nfrz() const { return nfrz_; }
+   size_t MCPDFT::get_nocc() const { return nocc_; }
+   size_t MCPDFT::get_nvir() const { return nvir_; }
    arma::vec MCPDFT::get_w() const { return w_; }
    arma::vec MCPDFT::get_x() const { return x_; }
    arma::vec MCPDFT::get_y() const { return y_; }
@@ -729,9 +755,15 @@ namespace mcpdft {
    arma::vec MCPDFT::get_tr_sigma_bb() const { return tr_sigma_bb_; }
 
    void MCPDFT::set_npts(const size_t npts) { npts_ = npts; }
-   void MCPDFT::set_nbfs(const int nbfs)    { nbfs_ = nbfs; }
-   void MCPDFT::set_nao(const int nao) { nao_ = nao; }
-   void MCPDFT::set_nmo(const int nmo) { nmo_ = nmo; }
+   void MCPDFT::set_nbfs(const size_t nbfs)    { nbfs_ = nbfs; }
+   void MCPDFT::set_nao(const size_t nao) { nao_ = nao; }
+   void MCPDFT::set_nmo(const size_t nmo) { nmo_ = nmo; }
+   void MCPDFT::set_nactele(const size_t nactele) { nactele_ = nactele; }
+   void MCPDFT::set_nactorb(const size_t nactorb) { nactorb_ = nactorb; }
+   void MCPDFT::set_ncore(const size_t ncore) { ncore_ = ncore; }
+   void MCPDFT::set_nfrz(const size_t nfrz) { nfrz_ = nfrz; }
+   void MCPDFT::set_nocc(const size_t nocc) { nocc_ = nocc; }
+   void MCPDFT::set_nvir(const size_t nvir) { nvir_ = nvir; }
    void MCPDFT::set_w(const arma::vec &w) { w_ = w; }
    void MCPDFT::set_x(const arma::vec &x) { x_ = x; }
    void MCPDFT::set_y(const arma::vec &y) { y_ = y; }

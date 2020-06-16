@@ -12,6 +12,7 @@
 #define H5D_N_OCC_ACT "/N/N_OCC_ACT" 
 #define H5D_N_VIR_ACT "/N/N_VIR_ACT" 
 #define H5D_N_MO_ACT "/N/N_MO_ACT" 
+#define H5D_N_PTS "/N/N_PTS" 
 
 #define H5D_C "/C"
 

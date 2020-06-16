@@ -67,9 +67,15 @@ class MCPDFT {
       //=============== accessors ===============//
       bool is_gga() const;
       size_t get_npts() const;
-      int    get_nbfs() const;
-      int    get_nao() const;
-      int    get_nmo() const;
+      size_t get_nbfs() const;
+      size_t get_nao() const;
+      size_t get_nmo() const;
+      size_t get_nactele() const;
+      size_t get_nactorb() const;
+      size_t get_ncore() const;
+      size_t get_nfrz() const; 
+      size_t get_nocc() const;
+      size_t get_nvir() const;
       arma::vec get_w() const;
       arma::vec get_x() const;
       arma::vec get_y() const;
@@ -112,9 +118,15 @@ class MCPDFT {
       arma::vec get_tr_sigma_bb() const;
 
       void set_npts(const size_t npts);
-      void set_nbfs(const int nbfs);
-      void set_nao(const int nao);
-      void set_nmo(const int nmo);
+      void set_nbfs(const size_t nbfs);
+      void set_nao(const size_t nao);
+      void set_nmo(const size_t nmo);
+      void set_nactele(const size_t nactele);
+      void set_nactorb(const size_t nactorb);
+      void set_ncore(const size_t ncore);
+      void set_nfrz(const size_t nfrz);
+      void set_nocc(const size_t nocc);
+      void set_nvir(const size_t nvir);
       void set_w(const arma::vec &w);
       void set_x(const arma::vec &x);
       void set_y(const arma::vec &y);
@@ -198,22 +210,22 @@ class MCPDFT {
       size_t nmo_;
 
       /// number of active electrons
-      size_t nactele;
+      size_t nactele_;
 
       /// number of active orbitals
-      size_t nactorb;
+      size_t nactorb_;
 
       /// number of core orbitals
-      size_t ncore;
+      size_t ncore_;
 
       /// number of frozen orbitals
-      size_t nfrz;
+      size_t nfrz_;
 
       /// number of occupied (inactive) orbotals
-      size_t nocc;
+      size_t nocc_;
 
       /// number of virtual (secondary or unoccupied) orbitals
-      size_t nvir;
+      size_t nvir_;
 
       /// vector of weights for quadrature grid points
       arma::vec w_;
@@ -242,13 +254,13 @@ class MCPDFT {
       /// matrix of orbital z-derivative values calculated on the grid points phi(npts, nbfs)
       arma::mat phi_z_;
 
-      /// the reference electronic energy (read from file)
+      /// the reference electronic energy
       double eref_;
 
-      /// the classical electronic energy (read from file)
+      /// the classical electronic energy 
       double eclass_;
 
-      /// AO->MO transformation matrix C (read from file)
+      /// AO->MO transformation matrix C
       arma::mat cmat_;
 
       /// alpha density vector rho_a(r)
