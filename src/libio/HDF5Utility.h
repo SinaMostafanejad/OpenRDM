@@ -13,7 +13,7 @@ class HDF5Utility {
       /// destructor
       ~HDF5Utility();
 
-      /// read the number of basis functions (AOs, MOs, NO, etc.)
+      /// read the number of grid point numbers and basis functions (AOs, MOs, NO, etc.)
       void read_nbfs(size_t &nao,
 		     size_t &nmo,
 		     size_t &npts);
@@ -34,6 +34,13 @@ class HDF5Utility {
 		      arma::vec &X,
                       arma::vec &Y,
                       arma::vec &Z);
+
+      /// read AOs/MOs and their gratients
+      void read_superphi(arma::mat &phi,
+		         arma::mat &phi_x,
+			 arma::mat &phi_y,
+			 arma::mat &phi_z,
+			 bool is_ao = true);
 };
 
 }

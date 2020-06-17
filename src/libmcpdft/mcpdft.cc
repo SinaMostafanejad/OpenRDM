@@ -36,7 +36,7 @@ namespace mcpdft {
    void MCPDFT::common_init() {
       HDF5Utility* h5utl = new HDF5Utility();
 
-      /* reading naos and nmos from data.h5 HDF5 file */	   
+      /* reading naos, nmos and npts from data.h5 HDF5 file */	   
       size_t nao{0}, nmo{0}, npts{0};
       h5utl->read_nbfs(nao,nmo,npts);
       std::printf("NAO, NMO, NPTS = %ld, %ld, %ld\n",nao,nmo,npts);
@@ -76,6 +76,21 @@ namespace mcpdft {
       set_x(X);
       set_y(Y);
       set_z(Z);
+
+      /* reading AOs/MOs matrices calculated on grid points from data.h5 HDF5 file */
+      // fixing the is_ao to false for now.
+      bool is_ao{false};
+      arma::mat phi(npts, nmo, arma::fill::zeros);
+      arma::mat phi_x(npts, nmo, arma::fill::zeros);
+      arma::mat phi_y(npts, nmo, arma::fill::zeros);
+      arma::mat phi_z(npts, nmo, arma::fill::zeros);
+      h5utl->read_superphi(phi,
+		           phi_x,
+			   phi_y,
+			   phi_z,
+			   is_ao);
+//      phi.print();
+
 
       arma::mat d1a(nmo, nmo, arma::fill::zeros);
       arma::mat d1b(nmo, nmo, arma::fill::zeros);

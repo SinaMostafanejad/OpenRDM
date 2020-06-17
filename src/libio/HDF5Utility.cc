@@ -168,4 +168,54 @@ namespace mcpdft {
       status = H5Fclose(file_id);
    }
 
+   void HDF5Utility::read_superphi(arma::mat &phi,
+                                   arma::mat &phi_x,
+		                   arma::mat &phi_y,
+		                   arma::mat &phi_z,
+		                   bool is_ao){
+      
+      /* file indentifiers and handles */
+      hid_t file_id;
+      hid_t phi_dst_id, phi_x_dst_id, phi_y_dst_id, phi_z_dst_id;
+      herr_t status;
+
+      /* open the existing HDF5 file in the read-only mode */
+      file_id = H5Fopen(H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
+
+      /* open the existing HDF5 dataset in the read-only mode */
+      if (is_ao) {
+         phi_dst_id   = H5Dopen2(file_id, H5D_PHI_AO, H5P_DEFAULT);
+         phi_x_dst_id = H5Dopen2(file_id, H5D_PHI_AO_X, H5P_DEFAULT);
+         phi_y_dst_id = H5Dopen2(file_id, H5D_PHI_AO_Y, H5P_DEFAULT);
+         phi_z_dst_id = H5Dopen2(file_id, H5D_PHI_AO_Z, H5P_DEFAULT);
+      }else{
+         phi_dst_id   = H5Dopen2(file_id, H5D_PHI_MO, H5P_DEFAULT);
+         phi_x_dst_id = H5Dopen2(file_id, H5D_PHI_MO_X, H5P_DEFAULT);
+         phi_y_dst_id = H5Dopen2(file_id, H5D_PHI_MO_Y, H5P_DEFAULT);
+         phi_z_dst_id = H5Dopen2(file_id, H5D_PHI_MO_Z, H5P_DEFAULT);
+      }
+
+      /* read the dataSet */
+      status = H5Dread(phi_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, phi.memptr());
+
+      status = H5Dread(phi_x_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, phi_x.memptr());
+
+      status = H5Dread(phi_y_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, phi_y.memptr());
+
+      status = H5Dread(phi_z_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, phi_z.memptr());
+
+      /* close datasets */
+      status = H5Dclose(phi_dst_id);
+      status = H5Dclose(phi_x_dst_id);
+      status = H5Dclose(phi_y_dst_id);
+      status = H5Dclose(phi_z_dst_id);
+
+      /* close the file */
+      status = H5Fclose(file_id);
+     
+   }
 }
