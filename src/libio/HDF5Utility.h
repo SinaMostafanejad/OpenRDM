@@ -26,8 +26,17 @@ class HDF5Utility {
 				  size_t &nocc, 
 				  size_t &nvir);
 
-      /// read AO2MO transformation matrix
+      /// read AO2MO transformation matrix C
       void read_AO2MO_Cmat(arma::mat &Cmat);
+
+      /// read classical Coulomb (Hartree) electron-electron interaction matrices Ja and Jb
+      void read_Hartree_Jmats(arma::mat &Ja,
+		              arma::mat &Jb,
+		              bool is_ao = true);
+
+      /// read core Hamiltonian matrix Hcore
+      void read_hcore(arma::mat &Hcore,
+		      bool is_ao = true);
 
       /// read grids w, x, y, z
       void read_grids(arma::vec &W,

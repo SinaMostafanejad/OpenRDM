@@ -39,7 +39,7 @@ namespace mcpdft {
       /* reading naos, nmos and npts from data.h5 HDF5 file */	   
       size_t nao{0}, nmo{0}, npts{0};
       h5utl->read_nbfs(nao,nmo,npts);
-      std::printf("NAO, NMO, NPTS = %ld, %ld, %ld\n",nao,nmo,npts);
+//      std::printf("NAO, NMO, NPTS = %ld, %ld, %ld\n",nao,nmo,npts);
       set_nao(nao);
       set_nmo(nmo);
       set_npts(npts);
@@ -64,6 +64,21 @@ namespace mcpdft {
 //      Cmat.print();
       set_cmat(Cmat);
 
+      /* reading core Hamiltonian matrix in AO/MO basis from data.h5 HDF5 file */
+      bool is_ao{false};
+      arma::mat Hcore(nmo, nmo, arma::fill::zeros);
+      h5utl->read_hcore(Hcore, is_ao);
+//      Hcore.print();
+      set_hcore(Hcore);
+
+      /* reading (Coulomb) Hartree interaction matrices in AO/MO basis from data.h5 HDF5 file */
+      arma::mat Ja(nmo, nmo, arma::fill::zeros);
+      arma::mat Jb(nmo, nmo, arma::fill::zeros);
+      h5utl->read_Hartree_Jmats(Ja, Jb, is_ao);
+//      Ja.print();
+      set_ja(Ja);
+      set_jb(Jb);
+
       /* reading Cartesian grids and weights from data.h5 HDF5 file */
       arma::vec W(npts, arma::fill::zeros);
       arma::vec X(npts, arma::fill::zeros);
@@ -79,7 +94,6 @@ namespace mcpdft {
 
       /* reading AOs/MOs matrices calculated on grid points from data.h5 HDF5 file */
       // fixing the is_ao to false for now.
-      bool is_ao{false};
       arma::mat phi(npts, nmo, arma::fill::zeros);
       arma::mat phi_x(npts, nmo, arma::fill::zeros);
       arma::mat phi_y(npts, nmo, arma::fill::zeros);
@@ -90,7 +104,10 @@ namespace mcpdft {
 			   phi_z,
 			   is_ao);
 //      phi.print();
-
+      set_phi(phi);
+      set_phi_x(phi_x);
+      set_phi_y(phi_y);
+      set_phi_z(phi_z);
 
       arma::mat d1a(nmo, nmo, arma::fill::zeros);
       arma::mat d1b(nmo, nmo, arma::fill::zeros);
@@ -745,6 +762,9 @@ namespace mcpdft {
    double MCPDFT::get_eref() const { return eref_; }
    double MCPDFT::get_eclass()  const { return eclass_; }
    arma::mat MCPDFT::get_cmat() const { return cmat_; }
+   arma::mat MCPDFT::get_hcore() const { return Hcore_; }
+   arma::mat MCPDFT::get_ja() const { return ja_; }
+   arma::mat MCPDFT::get_jb() const { return jb_; }
    arma::mat MCPDFT::get_D1a()  const { return D1a_ ; }
    arma::mat MCPDFT::get_D1b()  const { return D1b_ ; }
    arma::mat MCPDFT::get_D2ab()  const { return D2ab_ ; }
@@ -790,6 +810,9 @@ namespace mcpdft {
    void MCPDFT::set_eref(const double eref) { eref_ = eref; }
    void MCPDFT::set_eclass(const double eclass) { eclass_ = eclass; }
    void MCPDFT::set_cmat(const arma::mat &cmat) { cmat_ = cmat; }
+   void MCPDFT::set_hcore(const arma::mat &Hcore) { Hcore_ = Hcore; }
+   void MCPDFT::set_ja(const arma::mat &ja) { ja_ = ja; }
+   void MCPDFT::set_jb(const arma::mat &jb) { jb_ = jb; }
    void MCPDFT::set_D1a(const arma::mat &D1a) { D1a_ = D1a; }
    void MCPDFT::set_D1b(const arma::mat &D1b) { D1b_ = D1b; }
    void MCPDFT::set_D2ab(const arma::mat &D2ab) { D2ab_ = D2ab; }

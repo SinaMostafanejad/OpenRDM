@@ -87,6 +87,9 @@ class MCPDFT {
       double get_eref() const;
       double get_eclass() const;
       arma::mat get_cmat() const;
+      arma::mat get_hcore() const;
+      arma::mat get_ja() const;
+      arma::mat get_jb() const;
       arma::mat get_D1a() const;
       arma::mat get_D1b() const;
       arma::mat get_D2ab() const;
@@ -138,6 +141,9 @@ class MCPDFT {
       void set_eref(const double eref);
       void set_eclass(const double eclass);
       void set_cmat(const arma::mat &cmat);
+      void set_hcore(const arma::mat &HCore);
+      void set_ja(const arma::mat &ja);
+      void set_jb(const arma::mat &jb);
       void set_D1a(const arma::mat &D1a);
       void set_D1b(const arma::mat &D1b);
       void set_D2ab(const arma::mat &D2ab);
@@ -262,6 +268,15 @@ class MCPDFT {
 
       /// AO->MO transformation matrix C
       arma::mat cmat_;
+
+      /// core Hamiltonian matrix
+      arma::mat Hcore_;
+
+      /// classical Coulomb (Hartree) alpha elerctron-electron interaction matrix J
+      arma::mat ja_;
+
+      /// classical Coulomb (Hartree) beta elerctron-electron interaction matrix J
+      arma::mat jb_;
 
       /// alpha density vector rho_a(r)
       arma::vec rho_a_;

@@ -123,6 +123,69 @@ namespace mcpdft {
       status = H5Fclose(file_id);
    }
 
+   void HDF5Utility::read_Hartree_Jmats(arma::mat &Ja,
+		                        arma::mat &Jb,
+				        bool is_ao) {
+      /* file indentifiers and handles */
+      hid_t file_id;
+      hid_t ja_dst_id, jb_dst_id;
+      herr_t status;
+
+      /* open the existing HDF5 file in the read-only mode */
+      file_id = H5Fopen(H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
+
+      /* open the existing HDF5 dataset in the read-only mode */
+      if (is_ao) {
+         ja_dst_id = H5Dopen2(file_id, H5D_JA_AO, H5P_DEFAULT);
+         jb_dst_id = H5Dopen2(file_id, H5D_JA_AO, H5P_DEFAULT);
+      }else{
+         ja_dst_id = H5Dopen2(file_id, H5D_JA_MO, H5P_DEFAULT);
+         jb_dst_id = H5Dopen2(file_id, H5D_JA_MO, H5P_DEFAULT);
+      }
+
+      /* read the dataSet */
+      status = H5Dread(ja_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, Ja.memptr());
+
+      status = H5Dread(jb_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, Jb.memptr());
+
+      /* close datasets */
+      status = H5Dclose(ja_dst_id);
+      status = H5Dclose(jb_dst_id);
+
+      /* close the file */
+      status = H5Fclose(file_id);
+   }
+
+   void HDF5Utility::read_hcore(arma::mat &Hcore,
+				bool is_ao) {
+      /* file indentifiers and handles */
+      hid_t file_id;
+      hid_t hcore_dst_id;
+      herr_t status;
+
+      /* open the existing HDF5 file in the read-only mode */
+      file_id = H5Fopen(H5FILE, H5F_ACC_RDONLY, H5P_DEFAULT);
+
+      /* open the existing HDF5 dataset in the read-only mode */
+      if (is_ao) {
+         hcore_dst_id = H5Dopen2(file_id, H5D_H_CORE_AO, H5P_DEFAULT);
+      }else{
+         hcore_dst_id = H5Dopen2(file_id, H5D_H_CORE_MO, H5P_DEFAULT);
+      }
+
+      /* read the dataSet */
+      status = H5Dread(hcore_dst_id, H5T_NATIVE_DOUBLE,
+                       H5S_ALL, H5S_ALL, H5P_DEFAULT, Hcore.memptr());
+
+      /* close datasets */
+      status = H5Dclose(hcore_dst_id);
+
+      /* close the file */
+      status = H5Fclose(file_id);
+   }
+
    void HDF5Utility::read_grids(arma::vec &W,
 		                arma::vec &X,
 				arma::vec &Y,
@@ -216,6 +279,6 @@ namespace mcpdft {
 
       /* close the file */
       status = H5Fclose(file_id);
-     
    }
+
 }
