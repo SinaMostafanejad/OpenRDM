@@ -24,7 +24,6 @@ namespace mcpdft {
 
    void HDF5ReadContiguous::read_opdm(arma::mat &D1a,
 		                      arma::mat &D1b) {
-      HDF5ErrorManager::hdf5_file_checker();
       assert( D1a.n_cols == D1a.n_rows );
       assert( D1b.n_cols == D1b.n_rows );
       size_t dim = D1a.n_cols;
@@ -98,7 +97,6 @@ namespace mcpdft {
    }
 
    void HDF5ReadContiguous::read_tpdm(arma::mat &D2ab) {
-      HDF5ErrorManager::hdf5_file_checker();
       assert( D2ab.n_cols == D2ab.n_rows );
       size_t dim = D2ab.n_cols;
 

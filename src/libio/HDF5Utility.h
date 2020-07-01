@@ -50,6 +50,7 @@ class HDF5Utility {
 			 arma::mat &phi_y,
 			 arma::mat &phi_z,
 			 bool is_ao = true);
+
 };
 
 }

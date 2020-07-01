@@ -580,7 +580,7 @@ class MCPDFT:
       #print("\n D2aa:\n %s" % casdm2aa)
       #print("\n D2ab:\n %s" % casdm2ab)
       #print("\n D2bb:\n %s" % casdm2bb)
-      #print("\n CAS D2:\n %s" % casdm2)
+      print("\n CAS D2:\n %s" % casdm2)
       #print("\n FULL D2:\n %s" % dm2)
       #print(casdm2 == dm2)
       #--------------------------------------------- nuclear repulsion 
@@ -645,16 +645,26 @@ class MCPDFT:
       f["/D/D1/ACT_D1_MO"]  = casdm1 
 
       if self.ref_method == 'MCSCF':
-         f["/D/D2/FULL_D2AA_MO"] = dm2aa
-         f["/D/D2/FULL_D2AB_MO"] = dm2ab
-         f["/D/D2/FULL_D2BB_MO"] = dm2bb
+         dm2aa_r = dm2aa.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
+         dm2ab_r = dm2ab.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
+         dm2bb_r = dm2bb.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
 
-         f["/D/D2/ACT_D2AA_MO"] = casdm2aa
-         f["/D/D2/ACT_D2AB_MO"] = casdm2ab
-         f["/D/D2/ACT_D2BB_MO"] = casdm2bb
+         casdm2aa_r = casdm2aa.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+         casdm2ab_r = casdm2ab.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+         casdm2bb_r = casdm2bb.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+
+         f["/D/D2/FULL_D2AA_MO"] = dm2aa_r 
+         f["/D/D2/FULL_D2AB_MO"] = dm2ab_r
+         f["/D/D2/FULL_D2BB_MO"] = dm2bb_r
+
+         f["/D/D2/ACT_D2AA_MO"] = casdm2aa_r 
+         f["/D/D2/ACT_D2AB_MO"] = casdm2ab_r
+         f["/D/D2/ACT_D2BB_MO"] = casdm2bb_r
       
-      f["/D/D2/FULL_D2_MO"]  = dm2
-      f["/D/D2/ACT_D2_MO"]   = casdm2
+      dm2_r = dm2.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
+      casdm2_r = casdm2.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+      f["/D/D2/FULL_D2_MO"]  = dm2_r
+      f["/D/D2/ACT_D2_MO"]   = casdm2_r
 
       f["/GRIDS/W"] = weights
       f["/GRIDS/X"] = coords[:,0]
