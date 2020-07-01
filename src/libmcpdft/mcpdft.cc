@@ -127,9 +127,9 @@ namespace mcpdft {
 
    void MCPDFT::build_rho() {
       build_density_functions();
-//      if ( is_gga_ ) {
-//         build_density_gradients();
-//      }
+      if ( is_gga_ ) {
+         build_density_gradients();
+      }
    }
 
 #if 0
@@ -218,36 +218,30 @@ namespace mcpdft {
       double tmp_d1a{0.0}, tmp_d1b{0.0};
 
       #ifdef WITH_OPENMP
-         int nthrds{0};
          printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
          printf("                   *** Warning ***\n");
          printf("   Calculating the density (gradients) using OpenMP");
          printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-         nthrds = omp_get_max_threads();
-         nthrds /= 2;
-         omp_set_num_threads(nthrds);
       #endif
 
       #pragma omp parallel default(shared) \
-                           private(p, mu, nu)
+                           private(p, mu, nu, \
+			           tmp_d1a, tmp_d1b)
       {  
-         #pragma omp for schedule(static)
-            for(int mu = 0; mu < nbfs; mu++) {
-               for(int nu = 0; nu < nbfs; nu++) {
-	          tmp_d1a = D1a(mu, nu);
-	          tmp_d1b = D1b(mu, nu);
-		  if (fabs(tmp_d1a) < tol && fabs(tmp_d1b) < tol )
-	             continue;
-                  #pragma omp parallel for schedule(static) \
-		                           shared(mu, nu, phi, \
-				                  rhoa, rhob, rho)
-                     for(int p = 0; p < npts; p++) {
-                        rhoa(p) += tmp_d1a * phi(mu, p) * phi(nu, p);
-                        rhob(p) += tmp_d1b * phi(mu, p) * phi(nu, p);
-                        rho(p) += rhoa(p) + rhob(p);
-	             }
-               }
+         for(int mu = 0; mu < nbfs; mu++) {
+            for(int nu = 0; nu < nbfs; nu++) {
+	       tmp_d1a = D1a(mu, nu);
+	       tmp_d1b = D1b(mu, nu);
+	       if (fabs(tmp_d1a) < tol && fabs(tmp_d1b) < tol )
+	          continue;
+               #pragma omp for schedule(static)
+                  for(int p = 0; p < npts; p++) {
+                     rhoa(p) += tmp_d1a * phi(mu, p) * phi(nu, p);
+                     rhob(p) += tmp_d1b * phi(mu, p) * phi(nu, p);
+                     rho(p) += rhoa(p) + rhob(p);
+	          }
             }
+         }
 
          #pragma omp for schedule(static) \
                          reduction(+:dum_a, dum_b, dum_tot) \
@@ -269,8 +263,9 @@ namespace mcpdft {
       set_rho(rho);
    }
 
+#if 0
    void MCPDFT::build_density_gradients() {
-      int nbfs = get_nbfs();
+      int nbfs = get_nmo();
       size_t npts = get_npts();
       arma::mat phi(get_phi());
       arma::mat D1a(get_D1a());
@@ -310,12 +305,12 @@ namespace mcpdft {
                                           collapse(2)
                     for (int sigma = 0; sigma < nbfs; sigma++) {
                         for (int nu = 0; nu < nbfs; nu++) {
-                            duma_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1a(sigma, nu);
-                            dumb_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1b(sigma, nu);
-                            duma_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1a(sigma, nu);
-                            dumb_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1b(sigma, nu);
-                            duma_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1a(sigma, nu);
-                            dumb_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1b(sigma, nu);
+                            duma_x += ( phi_x(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_x(nu, p) ) * D1a(sigma, nu);
+                            dumb_x += ( phi_x(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_x(nu, p) ) * D1b(sigma, nu);
+                            duma_y += ( phi_y(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_y(nu, p) ) * D1a(sigma, nu);
+                            dumb_y += ( phi_y(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_y(nu, p) ) * D1b(sigma, nu);
+                            duma_z += ( phi_z(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_z(nu, p) ) * D1a(sigma, nu);
+                            dumb_z += ( phi_z(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_z(nu, p) ) * D1b(sigma, nu);
                         }
                     }
                     rho_a_x(p) = duma_x;
@@ -328,6 +323,65 @@ namespace mcpdft {
                     sigma_bb(p) = ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
                     sigma_ab(p) = ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
              }
+      }
+      rho_a_x.print();
+      set_rhoa_x(rho_a_x);
+      set_rhob_x(rho_b_x);
+      set_rhoa_y(rho_a_y);
+      set_rhob_y(rho_b_y);
+      set_rhoa_z(rho_a_z);
+      set_rhob_z(rho_b_z);
+      set_sigma_aa(sigma_aa);
+      set_sigma_ab(sigma_ab);
+      set_sigma_bb(sigma_bb);
+   }
+#endif
+
+   void MCPDFT::build_density_gradients() {
+      double tol = 1.0e-20;
+      int nbfs = get_nmo();
+      size_t npts = get_npts();
+      arma::mat phi(get_phi());
+      arma::mat D1a(get_D1a());
+      arma::mat D1b(get_D1b());
+      int p{0}, nu{0}, sigma{0};
+      double tmp_d1a{0.0}, tmp_d1b{0.0};
+      arma::mat phi_x(get_phi_x());
+      arma::mat phi_y(get_phi_y());
+      arma::mat phi_z(get_phi_z());
+      arma::vec rho_a_x(npts, arma::fill::zeros);
+      arma::vec rho_b_x(npts, arma::fill::zeros);
+      arma::vec rho_a_y(npts, arma::fill::zeros);
+      arma::vec rho_b_y(npts, arma::fill::zeros);
+      arma::vec rho_a_z(npts, arma::fill::zeros);
+      arma::vec rho_b_z(npts, arma::fill::zeros);
+      arma::vec sigma_aa(npts, arma::fill::zeros);
+      arma::vec sigma_ab(npts, arma::fill::zeros);
+      arma::vec sigma_bb(npts, arma::fill::zeros);
+      #pragma omp parallel default(shared) \
+                           private(p, nu, sigma, \
+			           tmp_d1a, tmp_d1b)
+      {
+         for (int sigma = 0; sigma < nbfs; sigma++) {
+             for (int nu = 0; nu < nbfs; nu++) {
+	        tmp_d1a = D1a(sigma, nu);
+	        tmp_d1b = D1b(sigma, nu);
+	        if (fabs(tmp_d1a) < tol && fabs(tmp_d1b) < tol )
+	           continue;
+                #pragma omp for schedule(static) 
+                   for (int p = 0; p < npts; p++) {
+                      rho_a_x(p) += ( phi_x(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_x(nu, p) ) * tmp_d1a;
+                      rho_b_x(p) += ( phi_x(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_x(nu, p) ) * tmp_d1b;
+                      rho_a_y(p) += ( phi_y(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_y(nu, p) ) * tmp_d1a;
+                      rho_b_y(p) += ( phi_y(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_y(nu, p) ) * tmp_d1b;
+                      rho_a_z(p) += ( phi_z(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_z(nu, p) ) * tmp_d1a;
+                      rho_b_z(p) += ( phi_z(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_z(nu, p) ) * tmp_d1b;
+                      sigma_aa(p) += ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
+                      sigma_bb(p) += ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
+                      sigma_ab(p) += ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
+                   }
+            }
+         }
       }
       set_rhoa_x(rho_a_x);
       set_rhob_x(rho_b_x);
