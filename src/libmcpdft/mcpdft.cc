@@ -94,10 +94,10 @@ namespace mcpdft {
 
       /* reading AOs/MOs matrices calculated on grid points from data.h5 HDF5 file */
       // fixing the is_ao to false for now.
-      arma::mat phi(npts, nmo, arma::fill::zeros);
-      arma::mat phi_x(npts, nmo, arma::fill::zeros);
-      arma::mat phi_y(npts, nmo, arma::fill::zeros);
-      arma::mat phi_z(npts, nmo, arma::fill::zeros);
+      arma::mat phi(nmo, npts, arma::fill::zeros);
+      arma::mat phi_x(nmo, npts,  arma::fill::zeros);
+      arma::mat phi_y(nmo, npts,  arma::fill::zeros);
+      arma::mat phi_z(nmo, npts,  arma::fill::zeros);
       h5utl->read_superphi(phi,
 		           phi_x,
 			   phi_y,
@@ -113,23 +113,95 @@ namespace mcpdft {
       arma::mat d1b(nmo, nmo, arma::fill::zeros);
       arma::mat d2ab(nmo*nmo, nmo*nmo, arma::fill::zeros);
 
-      // HDF5Client* h5client = new HDF5Client();
-      // HDF5Client::factory_mode mode(HDF5Client::factory_mode::READ);
-      // h5client->factory_client(H5D_CONTIGUOUS,mode,d1a,d1b,d2ab);
-      // delete h5client;
+      HDF5Client* h5client = new HDF5Client();
+      HDF5Client::factory_mode mode(HDF5Client::factory_mode::READ);
+      h5client->factory_client(H5D_CONTIGUOUS,mode,d1a,d1b,d2ab);
+      delete h5client;
+
+      set_D1a(d1a);
+      set_D1b(d1b);
+      set_D2ab(d2ab);
 
       delete h5utl;
    }
 
    void MCPDFT::build_rho() {
       build_density_functions();
-      if ( is_gga_ ) {
-         build_density_gradients();
-      }
+//      if ( is_gga_ ) {
+//         build_density_gradients();
+//      }
    }
 
+#if 0
+    void MCPDFT::build_density_functions() {
+       int nbfs = get_nbfs();
+       size_t npts = get_npts();
+       arma::mat phi(get_phi());
+       arma::mat D1a(get_D1a());
+       arma::mat D1b(get_D1b());
+       arma::vec W(get_w());
+       arma::vec rhoa(npts, arma::fill::zeros);
+       arma::vec rhob(npts, arma::fill::zeros);
+       arma::vec rho(npts, arma::fill::zeros);
+       double dum_a = 0.0;
+       double dum_b = 0.0;
+       double dum_tot = 0.0;
+       size_t chunk_size = 0;
+       int p{0}, mu{0}, nu{0};
+       #ifdef WITH_OPENMP
+          int nthrds{0};
+          printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+          printf("                   *** Warning ***\n");
+          printf("   Calculating the density (gradients) using OpenMP");
+          printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+          nthrds = omp_get_max_threads();
+          nthrds /= 2;
+          omp_set_num_threads(nthrds);
+       #endif
+ 
+       #pragma omp parallel default(shared) \
+                            private(p, mu, nu)
+       {  
+          #pragma omp for schedule(static) \
+                          reduction(+:dum_a, dum_b, dum_tot) \
+ 	                 nowait
+             for(p = 0; p < npts; p++) {
+                double tempa = 0.0;
+                double tempb = 0.0;
+                #pragma omp parallel for schedule(static) \
+                                         reduction(+:tempa,tempb) \
+ 	                                num_threads(2) \
+                                         collapse(2)
+                   for(mu = 0; mu < nbfs; mu++) {
+                      for(int nu = 0; nu < nbfs; nu++) {
+                         tempa += D1a(mu, nu) * phi(p, mu) * phi(p, nu);
+                         tempb += D1b(mu, nu) * phi(p, mu) * phi(p, nu);
+                      }
+                   }
+                   rhoa(p) = tempa;
+                   rhob(p) = tempb;
+                   rho(p) = rhoa(p) + rhob(p);
+ 
+                   dum_a += rhoa(p) * W(p);
+                   dum_b += rhob(p) * W(p);
+                   dum_tot += ( rhoa(p) + rhob(p) ) * W(p) ;
+             } /* end of omp parallel for loop */
+       } /* end of omp parallel region */
+       set_rhoa(rhoa);
+       set_rhob(rhob);
+       set_rho(rho);
+ 
+       printf("\n");
+       printf("  Integrated total density = %20.12lf\n",dum_tot);
+       printf("  Integrated alpha density = %20.12lf\n",dum_a);
+       printf("  Integrated beta density  = %20.12lf\n",dum_b);
+       printf("\n");
+    }
+#endif
+
    void MCPDFT::build_density_functions() {
-      int nbfs = get_nbfs();
+      double tol = 1.0e-20;
+      int nbfs = get_nmo();
       size_t npts = get_npts();
       arma::mat phi(get_phi());
       arma::mat D1a(get_D1a());
@@ -143,6 +215,8 @@ namespace mcpdft {
       double dum_tot = 0.0;
       size_t chunk_size = 0;
       int p{0}, mu{0}, nu{0};
+      double tmp_d1a{0.0}, tmp_d1b{0.0};
+
       #ifdef WITH_OPENMP
          int nthrds{0};
          printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
@@ -157,40 +231,42 @@ namespace mcpdft {
       #pragma omp parallel default(shared) \
                            private(p, mu, nu)
       {  
+         #pragma omp for schedule(static)
+            for(int mu = 0; mu < nbfs; mu++) {
+               for(int nu = 0; nu < nbfs; nu++) {
+	          tmp_d1a = D1a(mu, nu);
+	          tmp_d1b = D1b(mu, nu);
+		  if (fabs(tmp_d1a) < tol && fabs(tmp_d1b) < tol )
+	             continue;
+                  #pragma omp parallel for schedule(static) \
+		                           shared(mu, nu, phi, \
+				                  rhoa, rhob, rho)
+                     for(int p = 0; p < npts; p++) {
+                        rhoa(p) += tmp_d1a * phi(mu, p) * phi(nu, p);
+                        rhob(p) += tmp_d1b * phi(mu, p) * phi(nu, p);
+                        rho(p) += rhoa(p) + rhob(p);
+	             }
+               }
+            }
+
          #pragma omp for schedule(static) \
                          reduction(+:dum_a, dum_b, dum_tot) \
 	                 nowait
-            for(p = 0; p < npts; p++) {
-               double tempa = 0.0;
-               double tempb = 0.0;
-               #pragma omp parallel for schedule(static) \
-                                        reduction(+:tempa,tempb) \
-	                                num_threads(2) \
-                                        collapse(2)
-                  for(mu = 0; mu < nbfs; mu++) {
-                     for(int nu = 0; nu < nbfs; nu++) {
-                        tempa += D1a(mu, nu) * phi(p, mu) * phi(p, nu);
-                        tempb += D1b(mu, nu) * phi(p, mu) * phi(p, nu);
-                     }
-                  }
-                  rhoa(p) = tempa;
-                  rhob(p) = tempb;
-                  rho(p) = rhoa(p) + rhob(p);
-
+            for(int p = 0; p < npts; p++) {
                   dum_a += rhoa(p) * W(p);
                   dum_b += rhob(p) * W(p);
                   dum_tot += ( rhoa(p) + rhob(p) ) * W(p) ;
             } /* end of omp parallel for loop */
       } /* end of omp parallel region */
-      set_rhoa(rhoa);
-      set_rhob(rhob);
-      set_rho(rho);
-
       printf("\n");
       printf("  Integrated total density = %20.12lf\n",dum_tot);
       printf("  Integrated alpha density = %20.12lf\n",dum_a);
       printf("  Integrated beta density  = %20.12lf\n",dum_b);
       printf("\n");
+
+      set_rhoa(rhoa);
+      set_rhob(rhob);
+      set_rho(rho);
    }
 
    void MCPDFT::build_density_gradients() {
