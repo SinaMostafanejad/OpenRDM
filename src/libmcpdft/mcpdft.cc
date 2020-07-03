@@ -396,15 +396,16 @@ namespace mcpdft {
 
    void MCPDFT::build_pi(const arma::mat &D2ab) {
       build_ontop_pair_density(D2ab);
-      if ( is_gga_ ) {
-         build_ontop_pair_density_gradients(D2ab);
-      }
+//      if ( is_gga_ ) {
+//         build_ontop_pair_density_gradients(D2ab);
+//      }
    }
 
+#if 0
    void MCPDFT::build_ontop_pair_density(const arma::mat &D2ab) {
-      int nbfs = get_nbfs();
+      int nbfs = get_nmo();
       size_t npts = get_npts();
-      arma::vec temp(npts);
+      arma::vec temp(npts, arma::fill::zeros);
       arma::mat phi(get_phi());
       int p{0},
 	  mu{0}, nu{0},
@@ -420,7 +421,7 @@ namespace mcpdft {
                  for (int nu = 0; nu < nbfs; nu++) {
                      for (int lambda = 0; lambda < nbfs; lambda++) {
                          for (int sigma = 0; sigma < nbfs; sigma++) {
-                             dum += phi(p, mu) * phi(p, nu) * phi(p, lambda) * phi(p, sigma) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                             dum += phi(mu, p) * phi(nu, p) * phi(lambda, p) * phi(sigma, p) * D2ab(lambda*nbfs+sigma, mu*nbfs+nu);
                          }
                      }
                  }
@@ -428,8 +429,50 @@ namespace mcpdft {
              temp(p) = dum;
       }
       set_pi(temp);
+      temp.print();
+      double val = arma::sum(temp);
+      std::printf("sum of all elements: %-10.12lf\n", val);
    }
-
+#endif
+//#if 0
+   void MCPDFT::build_ontop_pair_density(const arma::mat &D2ab) {
+      double tol = 1.0e-20;
+      int nbfs = get_nmo();
+      size_t npts = get_npts();
+      arma::vec temp(npts, arma::fill::zeros);
+      arma::mat phi(get_phi());
+      int p{0},
+	  mu{0}, nu{0},
+	  lambda{0}, sigma{0};
+      double tmp_d2ab{0.0};
+      #pragma omp parallel default(shared) \
+                     private(p, mu, nu, lambda, sigma)
+      {
+         // pi(r,r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
+         for (int mu = 0; mu < nbfs; mu++) {
+             for (int nu = 0; nu < nbfs; nu++) {
+                 for (int lambda = 0; lambda < nbfs; lambda++) {
+                     for (int sigma = 0; sigma < nbfs; sigma++) {
+			/* careful since HDF5_READ transposes the matrix
+			   it should not matter as long as it is symmetric */
+                        tmp_d2ab = D2ab(lambda*nbfs+sigma, mu*nbfs+nu);
+ 			if (fabs(tmp_d2ab) < tol)
+                           continue;
+                        #pragma omp for schedule(static)
+                           for (int p = 0; p < npts; p++) {
+                              temp(p) += phi(mu, p) * phi(nu, p) * phi(lambda, p) * phi(sigma, p) * tmp_d2ab;
+            	           }
+                     }
+                 }
+             }
+         } /* end of omp parallel for loop */
+      }
+      set_pi(temp);
+//      temp.print();
+//      double val = arma::sum(temp);
+//      std::printf("sum of all elements: %-10.12lf\n", val);
+   }
+//#endif
    void MCPDFT::build_ontop_pair_density_gradients(const arma::mat &D2ab) {
       int nbfs = get_nbfs();
       size_t npts = get_npts();

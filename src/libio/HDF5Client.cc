@@ -11,7 +11,7 @@ namespace mcpdft {
                                    factory_mode mode,
 				   arma::mat &D1a,
                                    arma::mat &D1b,
-                                   arma::mat D2ab) {
+                                   arma::mat &D2ab) {
       IOFactory* iof;
       IRead*  ird;
       IWrite* iwt;
