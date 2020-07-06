@@ -137,10 +137,10 @@ namespace mcpdft {
       /* open the existing HDF5 dataset in the read-only mode */
       if (is_ao) {
          ja_dst_id = H5Dopen2(file_id, H5D_JA_AO, H5P_DEFAULT);
-         jb_dst_id = H5Dopen2(file_id, H5D_JA_AO, H5P_DEFAULT);
+         jb_dst_id = H5Dopen2(file_id, H5D_JB_AO, H5P_DEFAULT);
       }else{
          ja_dst_id = H5Dopen2(file_id, H5D_JA_MO, H5P_DEFAULT);
-         jb_dst_id = H5Dopen2(file_id, H5D_JA_MO, H5P_DEFAULT);
+         jb_dst_id = H5Dopen2(file_id, H5D_JB_MO, H5P_DEFAULT);
       }
 
       /* read the dataSet */
