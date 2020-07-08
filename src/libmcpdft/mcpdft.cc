@@ -69,6 +69,11 @@ namespace mcpdft {
 //      Cmat.print();
       set_cmat(Cmat);
 
+      /* reading classical nuclear repulsion energy from data.h5 HDF5 file */
+      double tmp_enuc{0.0};
+      h5utl->read_enuc(tmp_enuc);
+      set_enuc(tmp_enuc);
+
       /* reading core Hamiltonian matrix in AO/MO basis from data.h5 HDF5 file */
       bool is_ao{false};
       arma::mat Hcore(nmo, nmo, arma::fill::zeros);
@@ -998,6 +1003,38 @@ namespace mcpdft {
       // D2ab.print("D2ab = ");
       set_D2ab(D2ab);
    }
+
+   double MCPDFT::Hartree_energy(const arma::mat &D1a,
+		                 const arma::mat &D1b,
+		                 const arma::mat &Ja,
+		                 const arma::mat &Jb) {
+      double tmp{0.0};
+      arma::mat dum(D1a);
+
+      dum = arma::cdot(D1a,Ja);
+      tmp  = arma::trace(dum);
+
+      dum = arma::cdot(D1a,Jb);
+      tmp += arma::trace(dum);
+
+      dum = arma::cdot(D1b,Ja);
+      tmp += arma::trace(dum);
+
+      dum = arma::cdot(D1b,Jb);
+      tmp += arma::trace(dum);
+
+      tmp *= 0.5;
+      return tmp;
+   }
+   
+   double MCPDFT::core_energy(const arma::mat &D1,
+		              const arma::mat &Hcore) {
+      double tmp{0.0};
+      arma::mat dum(D1);
+      dum = arma::cdot(D1,Hcore);
+      tmp = arma::trace(dum);
+      return tmp;
+   }
  
    bool MCPDFT::is_gga() const { return is_gga_; }
    size_t MCPDFT::get_npts() const { return npts_; }
@@ -1018,6 +1055,7 @@ namespace mcpdft {
    arma::mat MCPDFT::get_phi_x() const { return phi_x_; }
    arma::mat MCPDFT::get_phi_y() const { return phi_y_; }
    arma::mat MCPDFT::get_phi_z() const { return phi_z_; }
+   double MCPDFT::get_enuc() const { return enuc_; }
    double MCPDFT::get_eref() const { return eref_; }
    double MCPDFT::get_eclass()  const { return eclass_; }
    arma::mat MCPDFT::get_cmat() const { return cmat_; }
@@ -1066,6 +1104,7 @@ namespace mcpdft {
    void MCPDFT::set_phi_x(const arma::mat &phi_x) { phi_x_ = phi_x; }
    void MCPDFT::set_phi_y(const arma::mat &phi_y) { phi_y_ = phi_y; }
    void MCPDFT::set_phi_z(const arma::mat &phi_z) { phi_z_ = phi_z; }
+   void MCPDFT::set_enuc(const double enuc) { enuc_ = enuc; }
    void MCPDFT::set_eref(const double eref) { eref_ = eref; }
    void MCPDFT::set_eclass(const double eclass) { eclass_ = eclass; }
    void MCPDFT::set_cmat(const arma::mat &cmat) { cmat_ = cmat; }

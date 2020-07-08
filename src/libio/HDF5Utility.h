@@ -29,6 +29,9 @@ class HDF5Utility {
       /// read AO2MO transformation matrix C
       void read_AO2MO_Cmat(arma::mat &Cmat);
 
+      /// read classical nuclear repulsion energy
+      void read_enuc(double &enuc);
+
       /// read classical Coulomb (Hartree) electron-electron interaction matrices Ja and Jb
       void read_Hartree_Jmats(arma::mat &Ja,
 		              arma::mat &Jb,

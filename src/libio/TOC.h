@@ -19,6 +19,7 @@
 #define H5D_H_CORE_AO "/H/H_CORE_AO"
 #define H5D_H_CORE_MO "/H/H_CORE_MO"
 
+#define H5D_E_NUC "/E/E_NUC"
 #define H5D_E_CORE "/E/E_CORE"
 #define H5D_E_HARTREE "/E/E_HARTREE"
 

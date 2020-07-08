@@ -64,6 +64,16 @@ class MCPDFT {
       /// fully translate the density gradients
       void fully_translate_density_gradients();
 
+      /// calculate the classical Hartree (Coulomb) energy 
+      double Hartree_energy(const arma::mat &D1a,
+   		            const arma::mat &D1b,
+   		            const arma::mat &Ja,
+   		            const arma::mat &Jb);
+
+      /// calculate the core (kinetic + nuclear attraction) energy 
+      double core_energy(const arma::mat &D1,
+   	                 const arma::mat &Hcore);
+
       //=============== accessors ===============//
       bool is_gga() const;
       size_t get_npts() const;
@@ -84,6 +94,7 @@ class MCPDFT {
       arma::mat get_phi_x() const;
       arma::mat get_phi_y() const;
       arma::mat get_phi_z() const;
+      double get_enuc() const;
       double get_eref() const;
       double get_eclass() const;
       arma::mat get_cmat() const;
@@ -138,6 +149,7 @@ class MCPDFT {
       void set_phi_x(const arma::mat &phi_x);
       void set_phi_y(const arma::mat &phi_y);
       void set_phi_z(const arma::mat &phi_z);
+      void set_enuc(const double enuc);
       void set_eref(const double eref);
       void set_eclass(const double eclass);
       void set_cmat(const arma::mat &cmat);
@@ -259,6 +271,9 @@ class MCPDFT {
 
       /// matrix of orbital z-derivative values calculated on the grid points phi(npts, nbfs)
       arma::mat phi_z_;
+
+      /// the classical nuclear repulsion energy
+      double enuc_;
 
       /// the reference electronic energy
       double eref_;

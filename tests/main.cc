@@ -14,11 +14,19 @@ int main(int argc, char *argv[]) {
 
     // MCPDFT* mc = new MCPDFT(test_case);
     MCPDFT *mc;
-    mc = new MCPDFT(argv[1]);
+    // mc = new MCPDFT(argv[1]);
+    mc = new MCPDFT();
 
     // getting the value of the reference energy
-    double eref = mc->get_eref();
-    // printf("eref = %-20.15lf\n",eref);
+    std::string functional(argv[2]);
+    double eref{0.0};
+    if (functional == "SVWN") {
+       eref = -1.159147985303; 
+    }else{
+       eref = -1.156522359214;
+    }
+    //double eref = mc->get_eref();
+    //printf("eref = %-20.15lf\n",eref);
 
     /* building alpha and beta 1-electron reduced
      * density matrices (1RDMs)
@@ -30,11 +38,10 @@ int main(int argc, char *argv[]) {
     /* building the alpha-beta block of the 2-electron reduced
      * density matrix (2RDM)
      */
-    mc->build_tpdm();
+    // mc->build_tpdm();
     arma::mat D2ab(mc->get_D2ab());
 
     // calculating the MCPDFT energy correction
-    std::string functional(argv[2]);
     double e =  mcpdft_energy(mc,functional,D1a,D1b,D2ab);
 
     printf("=================================================\n");

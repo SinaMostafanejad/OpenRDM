@@ -29,13 +29,29 @@ namespace mcpdft {
       LibMem *libmem;
       libmem = new LibMem();
       libmem->query_system_memory(&info);
+      delete libmem;
 
       double tot_energy = 0.0;
 
       // getting the value of the classical energy
       //double eclass = mc->get_eclass();
-      double eclass = -2.47443074 + 1.34513977 + 0.70556961;
-      // printf("eclass = %-20.15lf\n",eclass);
+      // double eclass = -2.47443074 + 1.34513977 + 0.70556961;
+
+      /* calculate core (kinetic + nuclear attraction) energy */
+      arma::mat Hcore(mc->get_hcore());
+      arma::mat D1(D1a+D1b);
+      double ecore = mc->core_energy(D1,Hcore);
+      //printf("ecore = %-20.15lf\n",ecore);
+
+      /* get nuclear repulsion energy */
+      double enuc = mc->get_enuc();
+      //printf("enuc = %-20.15lf\n",enuc);
+
+      /* classical Hartree electronic repulsion energy */
+      arma::mat Ja(mc->get_ja());
+      arma::mat Jb(mc->get_jb());
+      double eHartree = mc->Hartree_energy(D1a,D1b,Ja,Jb);
+      // printf("eHartree = %-20.15lf\n",eHartree);
 
       // building the one electron densities rho_a(r) and rho_b(r)
       mc->build_rho();
@@ -114,17 +130,21 @@ namespace mcpdft {
       delete func;
 #endif
 
-      printf("------------------------------------------\n");
-      printf("   Classical energy = %-20.12lf\n", eclass);
-      printf("   Ex               = %-20.12lf\n", Ex);
-      printf("   Ec               = %-20.12lf\n", Ec);
-      printf("------------------------------------------\n\n");
-
-      tot_energy += eclass;
+      tot_energy += enuc;
+      tot_energy += ecore;
+      tot_energy += eHartree;
       tot_energy += Ex;
       tot_energy += Ec;
 
-      delete libmem;
+      printf("-----------------------------------------------------\n");
+      printf("   Nuclear repulsion energy = %20.12lf\n", enuc);
+      printf("   Core energy              = %20.12lf\n", ecore);
+      printf("   Classical Hartree energy = %20.12lf\n", eHartree);
+      printf("   Ex                       = %20.12lf\n", Ex);
+      printf("   Ec                       = %20.12lf\n", Ec);
+      printf("-----------------------------------------------------\n");
+      printf("   MCPDFT energy            = %20.12lf\n", tot_energy);
+      printf("-----------------------------------------------------\n\n");
 
       return tot_energy;
    }
