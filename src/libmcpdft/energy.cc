@@ -5,16 +5,7 @@
 #include "libMem.h"
 #include "openrdmConfig.h"
 #include <string>
-//#include "HDF5_Read_Contiguous.h"
-//#include "HDF5_Write_Contiguous.h"
-//#include "HDF5_Read_Compact.h"
-//#include "HDF5_Write_Compact.h"
-//#include "HDF5_Read_Chunked.h"
-//#include "HDF5_Write_Chunked.h"
-//#include "HDF5ContiguousFactory.h"
-//#include "HDF5CompactFactory.h"
-//#include "HDF5ChunkedFactory.h"
-//#include "HDF5Client.h"
+
 #ifdef WITH_LIBXC
    #include <xc.h>
 #else
@@ -42,7 +33,8 @@ namespace mcpdft {
       double tot_energy = 0.0;
 
       // getting the value of the classical energy
-      double eclass = mc->get_eclass();
+      //double eclass = mc->get_eclass();
+      double eclass = -2.47443074 + 1.34513977 + 0.70556961;
       // printf("eclass = %-20.15lf\n",eclass);
 
       // building the one electron densities rho_a(r) and rho_b(r)
@@ -121,59 +113,6 @@ namespace mcpdft {
 
       delete func;
 #endif
-
-      // size_t nbfs = mc->get_nbfs();
-      // size_t nbfs2 = nbfs * nbfs;
-
-      // arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
-      // arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
-      // arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
-      
-#if 0
-      HDF5Client* h5client = new HDF5Client();
-
-      HDF5Client::factory_mode mode(HDF5Client::factory_mode::WRITE);
-      h5client->factory_client(H5D_COMPACT,mode,D1a,D1b,D2ab);
-
-      mode = HDF5Client::factory_mode::READ;
-      h5client->factory_client(H5D_COMPACT,mode,D1a,D1b,D2ab);
-
-      delete h5client;
-
-#endif
-
-      // IOFactory* iof;
-      // IRead* ird;
-      // IWrite* iwt;
-
-//    //   iof = new HDF5ContiguousFactory;
-//    //   iof = new HDF5CompactFactory;
-      // iof = new HDF5ChunkedFactory;
-      // iwt = iof->create_IWrite();
-      // iwt->write_rdms(D1a,D1b,D2ab);
-      // ird = iof->create_IRead();
-      // ird->read_rdms(d1a,d1b,d2ab);
-      // delete iof;
-      // IWrite* h5w = iof->create_IWrite();
-      // h5w->write_opdm(D1a,D1b);
-      // DiskRW dskrw;
-      // dskrw.write_opdm(D1a,D1b);
-      // dskrw.write_tpdm(D2ab);
-      // size_t nbfs = mc->get_nbfs();
-      // size_t nbfs2 = nbfs * nbfs;
-      // try{
-      //    arma::mat d1a(nbfs, nbfs, arma::fill::zeros);
-      //    arma::mat d1b(nbfs, nbfs, arma::fill::zeros);
-      //    arma::mat d2ab(nbfs2, nbfs2, arma::fill::zeros);
-      //    dskrw.read_opdm(d1a,d1b);
-      //    // d1a.print("D1a =");
-      //    // d1b.print("D1b =");
-      //    dskrw.read_tpdm(d2ab);
-      //    // d2ab.print("D2ab =");
-      // } catch(const char* err_msg) {
-      //    printf("%s\n",err_msg);
-      // }
-
 
       printf("------------------------------------------\n");
       printf("   Classical energy = %-20.12lf\n", eclass);

@@ -34,6 +34,10 @@ namespace mcpdft {
    }
 
    void MCPDFT::common_init() {
+      print_banner();
+      /* TODO: make some setter and getter for this to work at the moment
+         until the parser gets implemented. */
+      is_gga_ = true;
       HDF5Utility* h5utl = new HDF5Utility();
 
       /* reading naos, nmos and npts from data.h5 HDF5 file */	   
@@ -151,8 +155,8 @@ namespace mcpdft {
       }
    }
 
-//#if 0
     void MCPDFT::build_density_functions() {
+       double tol = 1.0e-20;
        int nbfs = get_nmo();
        size_t npts = get_npts();
        arma::mat phi(get_phi());
@@ -167,56 +171,53 @@ namespace mcpdft {
        double dum_tot = 0.0;
        size_t chunk_size = 0;
        int p{0}, mu{0}, nu{0};
+       double tmp_d1a{0.0}, tmp_d1b{0.0};
        #ifdef WITH_OPENMP
-          int nthrds{0};
+//          int nthrds{0};
           printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
           printf("                   *** Warning ***\n");
           printf("   Calculating the density (gradients) using OpenMP");
           printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-          nthrds = omp_get_max_threads();
-          nthrds /= 2;
-          omp_set_num_threads(nthrds);
+//          nthrds = omp_get_max_threads();
+//          nthrds /= 2;
+//          omp_set_num_threads(nthrds);
        #endif
  
        #pragma omp parallel default(shared) \
-                            private(p, mu, nu)
+                            private(p, mu, nu,\
+				    tmp_d1a, tmp_d1b)
        {  
-          #pragma omp for schedule(static) \
-                          reduction(+:dum_a, dum_b, dum_tot) \
- 	                 nowait
-             for(p = 0; p < npts; p++) {
-                double tempa = 0.0;
-                double tempb = 0.0;
-                #pragma omp parallel for schedule(static) \
-                                         reduction(+:tempa,tempb) \
- 	                                num_threads(2) \
-                                         collapse(2)
-                   for(mu = 0; mu < nbfs; mu++) {
-                      for(int nu = 0; nu < nbfs; nu++) {
-                         tempa += D1a(mu, nu) * phi(p, mu) * phi(p, nu);
-                         tempb += D1b(mu, nu) * phi(p, mu) * phi(p, nu);
-                      }
-                   }
-                   rhoa(p) = tempa;
-                   rhob(p) = tempb;
-                   rho(p) = rhoa(p) + rhob(p);
- 
-                   dum_a += rhoa(p) * W(p);
-                   dum_b += rhob(p) * W(p);
-                   dum_tot += ( rhoa(p) + rhob(p) ) * W(p) ;
-             } /* end of omp parallel for loop */
+          for(int mu = 0; mu < nbfs; mu++) {
+             for(int nu = 0; nu < nbfs; nu++) {
+	        tmp_d1a = D1a(mu, nu);
+	        tmp_d1b = D1b(mu, nu);
+	        if (fabs(tmp_d1a) < tol && fabs(tmp_d1b) < tol )
+	           continue;
+                #pragma omp for schedule(static)
+                   for(int p = 0; p < npts; p++) {
+                      rhoa(p) += tmp_d1a * phi(p, mu) * phi(p, nu);
+                      rhob(p) += tmp_d1b * phi(p, mu) * phi(p, nu);
+	           }
+             }
+          }
        } /* end of omp parallel region */
        set_rhoa(rhoa);
        set_rhob(rhob);
+
+       for(p = 0; p < npts; p++) {
+          rho(p) = rhoa(p) + rhob(p);
+       } 
        set_rho(rho);
- 
+
+       dum_a = arma::dot(rhoa, W);
+       dum_b = arma::dot(rhob, W);
+       dum_tot = arma::dot(rho, W);
        printf("\n");
-       printf("  Integrated total density = %20.12lf\n",dum_tot);
        printf("  Integrated alpha density = %20.12lf\n",dum_a);
        printf("  Integrated beta density  = %20.12lf\n",dum_b);
+       printf("  Integrated total density = %20.12lf\n",dum_tot);
        printf("\n");
     }
-//#endif
 
 #if 0
    void MCPDFT::build_density_functions() {
@@ -285,14 +286,16 @@ namespace mcpdft {
       printf("\n");
    }
 #endif
-//#if 0
+
    void MCPDFT::build_density_gradients() {
+      double tol = 1.0e-20;
       int nbfs = get_nmo();
       size_t npts = get_npts();
       arma::mat phi(get_phi());
       arma::mat D1a(get_D1a());
       arma::mat D1b(get_D1b());
       int p{0}, nu{0}, sigma{0};
+      double tmp_d1a{0.0}, tmp_d1b{0.0};
       arma::mat phi_x(get_phi_x());
       arma::mat phi_y(get_phi_y());
       arma::mat phi_z(get_phi_z());
@@ -306,45 +309,26 @@ namespace mcpdft {
       arma::vec sigma_ab(npts, arma::fill::zeros);
       arma::vec sigma_bb(npts, arma::fill::zeros);
       #pragma omp parallel default(shared) \
-                           private(p, nu, sigma)
+                           private(p, nu, sigma,\
+		                   tmp_d1a, tmp_d1b)
       {
-         #pragma omp for schedule(static)
-             for (int p = 0; p < npts; p++) {
-                 double duma_x = 0.0;
-                 double dumb_x = 0.0;
-                 double duma_y = 0.0;
-                 double dumb_y = 0.0;
-                 double duma_z = 0.0;
-                 double dumb_z = 0.0;
-                 #pragma omp parallel for schedule(static) \
-                   	                  reduction(+:duma_x, duma_y, duma_z,\
-                   		                      dumb_x, dumb_y, dumb_z)\
-                                          shared(p, nbfs, \
-    				                 sigma_aa, sigma_bb, sigma_ab, \
-    				                 rho_a_x, rho_a_y, rho_a_z, \
-    				                 rho_b_x, rho_b_y, rho_b_z) \
-    			                  num_threads(2) \
-                                          collapse(2)
                     for (int sigma = 0; sigma < nbfs; sigma++) {
                         for (int nu = 0; nu < nbfs; nu++) {
-                            duma_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1a(sigma, nu);
-                            dumb_x += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * D1b(sigma, nu);
-                            duma_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1a(sigma, nu);
-                            dumb_y += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * D1b(sigma, nu);
-                            duma_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1a(sigma, nu);
-                            dumb_z += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * D1b(sigma, nu);
+	                   tmp_d1a = D1a(sigma, nu);
+	                   tmp_d1b = D1b(sigma, nu);
+	                   if (fabs(tmp_d1a) < tol && fabs(tmp_d1b) < tol )
+	                      continue;
+                           #pragma omp for schedule(static) 
+                              for (int p = 0; p < npts; p++) {
+                                 rho_a_x(p) += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * tmp_d1a;
+                                 rho_b_x(p) += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * tmp_d1b;
+                                 rho_a_y(p) += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * tmp_d1a;
+                                 rho_b_y(p) += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * tmp_d1b;
+                                 rho_a_z(p) += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * tmp_d1a;
+                                 rho_b_z(p) += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * tmp_d1b;
+			      }
                         }
                     }
-                    rho_a_x(p) = duma_x;
-                    rho_b_x(p) = dumb_x;
-                    rho_a_y(p) = duma_y;
-                    rho_b_y(p) = dumb_y;
-                    rho_a_z(p) = duma_z;
-                    rho_b_z(p) = dumb_z;
-                    sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
-                    sigma_bb(p) = ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
-                    sigma_ab(p) = ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
-             }
       }
       set_rhoa_x(rho_a_x);
       set_rhob_x(rho_b_x);
@@ -352,11 +336,17 @@ namespace mcpdft {
       set_rhob_y(rho_b_y);
       set_rhoa_z(rho_a_z);
       set_rhob_z(rho_b_z);
+
+      for (int p = 0; p < npts; p++) {
+         sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
+         sigma_bb(p) = ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
+         sigma_ab(p) = ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
+      }
       set_sigma_aa(sigma_aa);
       set_sigma_ab(sigma_ab);
       set_sigma_bb(sigma_bb);
    }
-//#endif
+
 #if 0
    void MCPDFT::build_density_gradients() {
       double tol = 1.0e-20;
@@ -430,6 +420,7 @@ namespace mcpdft {
    }
 
    void MCPDFT::build_ontop_pair_density(const arma::mat &D2ab) {
+      double tol = 1.0e-20;
       int nbfs = get_nmo();
       size_t npts = get_npts();
       arma::vec temp(npts, arma::fill::zeros);
@@ -437,24 +428,27 @@ namespace mcpdft {
       int p{0},
 	  mu{0}, nu{0},
 	  lambda{0}, sigma{0};
-      for (int p = 0; p < npts; p++) {
-          double dum = 0.0;
-          // pi(r,r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
-          #pragma omp parallel for default(shared) \
-          	                       private(mu,nu,lambda,sigma) \
-          	                       reduction(+:dum) \
-          	                       collapse(4)
-             for (int mu = 0; mu < nbfs; mu++) {
-                 for (int nu = 0; nu < nbfs; nu++) {
-                     for (int lambda = 0; lambda < nbfs; lambda++) {
-                         for (int sigma = 0; sigma < nbfs; sigma++) {
-                             dum += phi(p, mu) * phi(p, nu) * phi(p, lambda) * phi(p, sigma) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
-                         }
-                     }
-                 }
-             } /* end of omp parallel for loop */
-             temp(p) = dum;
-      }
+      double tmp_d2ab{0.0};
+      // pi(r,r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
+      #pragma omp parallel default(shared) \
+                           private(mu,nu,lambda,sigma, tmp_d2ab)
+      {
+         for (int mu = 0; mu < nbfs; mu++) {
+            for (int nu = 0; nu < nbfs; nu++) {
+               for (int lambda = 0; lambda < nbfs; lambda++) {
+                  for (int sigma = 0; sigma < nbfs; sigma++) {
+                     tmp_d2ab = D2ab(lambda*nbfs+sigma, mu*nbfs+nu);
+            	     if (fabs(tmp_d2ab) < tol)
+                        continue;
+                        #pragma omp for schedule(static) 
+                           for (int p = 0; p < npts; p++) {
+                              temp(p) += phi(p, mu) * phi(p, nu) * phi(p, lambda) * phi(p, sigma) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+            	           }
+                  }
+	       }
+            }
+         }
+      } /* end of omp parallel for loop */
       set_pi(temp);
    }
 
@@ -499,11 +493,13 @@ namespace mcpdft {
 #endif
 
    void MCPDFT::build_ontop_pair_density_gradients(const arma::mat &D2ab) {
+      double tol = 1.0e-20;
       int nbfs = get_nmo();
       size_t npts = get_npts();
       int p{0},
 	  mu{0}, nu{0},
 	  lambda{0}, sigma{0};
+      double tmp_d2ab{0.0};
       arma::mat phi(get_phi());
       arma::mat phi_x(get_phi_x());
       arma::mat phi_y(get_phi_y());
@@ -512,44 +508,37 @@ namespace mcpdft {
       arma::vec pi_y(npts, arma::fill::zeros);
       arma::vec pi_z(npts, arma::fill::zeros);
       #pragma omp parallel default(shared) \
-                           private(p, mu, nu, lambda, sigma)
+                           private(p, mu, nu, lambda, sigma, tmp_d2ab)
       {
-         #pragma omp for schedule(static)
-            for (int p = 0; p < npts; p++) {
-                double dum_x = 0.0;
-                double dum_y = 0.0;
-                double dum_z = 0.0;
-                // pi(r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
-                #pragma omp parallel for schedule(static) \
-                  	                 reduction(+:dum_x, dum_y, dum_z) \
-    		                         num_threads(2) \
-                                         collapse(4)
-                for (int mu = 0; mu < nbfs; mu++) {
-                    for (int nu = 0; nu < nbfs; nu++) {
-                        for (int lambda = 0; lambda < nbfs; lambda++) {
-                            for (int sigma = 0; sigma < nbfs; sigma++) {
-                                dum_x += ( phi_x(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+         // pi(r) = D(mu,nu; lambda,sigma) * phi(r,mu) * phi(r,nu) * phi(r,lambda) * phi(r,sigma)
+         for (int mu = 0; mu < nbfs; mu++) {
+             for (int nu = 0; nu < nbfs; nu++) {
+                 for (int lambda = 0; lambda < nbfs; lambda++) {
+                     for (int sigma = 0; sigma < nbfs; sigma++) {
+                        tmp_d2ab = D2ab(lambda*nbfs+sigma, mu*nbfs+nu);
+                        if (fabs(tmp_d2ab) < tol)
+                           continue;
+                        #pragma omp for schedule(static)
+                           for (int p = 0; p < npts; p++) {
+                              pi_x(p) += ( phi_x(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
                                            phi(p, mu) * phi_x(p, lambda) * phi(p, sigma) * phi(p, nu) +
                                            phi(p, mu) * phi(p, lambda) * phi_x(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_x(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_x(p, nu) ) * tmp_d2ab;
 
-                                dum_y += ( phi_y(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                              pi_y(p) += ( phi_y(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
                                            phi(p, mu) * phi_y(p, lambda) * phi(p, sigma) * phi(p, nu) +
                                            phi(p, mu) * phi(p, lambda) * phi_y(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_y(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_y(p, nu) ) * tmp_d2ab;
 
-                                dum_z += ( phi_z(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
+                              pi_z(p) += ( phi_z(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
                                            phi(p, mu) * phi_z(p, lambda) * phi(p, sigma) * phi(p, nu) +
                                            phi(p, mu) * phi(p, lambda) * phi_z(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_z(p, nu) ) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
-                            }
-                        }
-                    }
-                }
-                pi_x(p) = dum_x;
-                pi_y(p) = dum_y;
-                pi_z(p) = dum_z;
-            }
+                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_z(p, nu) ) * tmp_d2ab;
+	 	          }
+                     }
+                 }
+             }
+         }
       }
       set_pi_x(pi_x);
       set_pi_z(pi_y);
@@ -620,14 +609,18 @@ namespace mcpdft {
    void MCPDFT::build_R() {
         double tol = 1.0e-20;
         size_t npts = get_npts();
-        arma::vec temp(npts);
         arma::vec pi(get_pi());
         arma::vec rho(get_rho());
+        arma::vec temp(npts, arma::fill::zeros);
+	double tmp_rho{0.0};
         #pragma parallel for schedule(static) \
 	                     private(p) \
                              shared(npts, pi, rho, temp)
            for (int p = 0; p < npts; p++) {
-               temp(p) = 4.0 * pi(p) / ( rho(p) * rho(p) );
+              tmp_rho = rho(p);
+              if ( tmp_rho < tol)
+                 continue;
+              temp(p) = 4.0 * pi(p) / ( tmp_rho * tmp_rho );
            }
         set_R(temp);
    }
@@ -669,6 +662,7 @@ namespace mcpdft {
       arma::vec W(get_w());
       arma::vec tr_rhoa(npts, arma::fill::zeros);
       arma::vec tr_rhob(npts, arma::fill::zeros);
+      arma::vec tr_rho(npts, arma::fill::zeros);
       double rho = 0.0;
       double pi = 0.0;
       double zeta = 0.0;
@@ -698,14 +692,17 @@ namespace mcpdft {
          }
       set_tr_rhoa(tr_rhoa);
       set_tr_rhob(tr_rhob);
+      
+      tr_rho = tr_rhoa + tr_rhob;
+      set_tr_rho(tr_rho);
 
       double dum_a = arma::dot(tr_rhoa, W);
       double dum_b = arma::dot(tr_rhob, W);
-      double dum_tot = dum_a + dum_b;
+      double dum_tot = arma::dot(tr_rho, W);
       printf("\n");
-      printf("  Integrated translated total density = %20.12lf\n",dum_tot);
       printf("  Integrated translated alpha density = %20.12lf\n",dum_a);
       printf("  Integrated translated beta density  = %20.12lf\n",dum_b);
+      printf("  Integrated translated total density = %20.12lf\n",dum_tot);
       printf("\n");
    }
  
@@ -795,7 +792,6 @@ namespace mcpdft {
         double const A = -475.60656009;
         double const B = -379.47331922;
         double const C = -85.38149682;
-
         size_t npts = get_npts();
         arma::vec rho_vec(get_rho());
         arma::vec pi_vec(get_pi());
@@ -804,7 +800,6 @@ namespace mcpdft {
         arma::vec tr_rhoa(npts, arma::fill::zeros);
         arma::vec tr_rhob(npts, arma::fill::zeros);
         arma::vec tr_rho(npts, arma::fill::zeros);
-
         double rho = 0.0;
         double pi = 0.0;
         double zeta = 0.0;
@@ -839,9 +834,12 @@ namespace mcpdft {
         set_tr_rhoa(tr_rhoa);
         set_tr_rhob(tr_rhob);
 
+        tr_rho = tr_rhoa + tr_rhob;
+        set_tr_rho(tr_rho);
+
         double temp_a = arma::dot(tr_rhoa, W);
         double temp_b = arma::dot(tr_rhob, W);
-        double temp_tot = temp_a + temp_b;
+        double temp_tot = arma::dot(tr_rho, W);
         printf("\n");
         printf("      Integrated fully translated total density = %20.12lf\n",temp_tot);
         printf("      Integrated fully translated alpha density = %20.12lf\n",temp_a);
@@ -851,22 +849,16 @@ namespace mcpdft {
 
    void MCPDFT::fully_translate_density_gradients(){
         double tol = 1.0e-20;
-        size_t npts = get_npts();
-
-        arma::vec rho_vec(get_rho());
-        arma::vec pi_vec(get_pi());
-        arma::vec R_vec(get_R());
-        arma::vec W(get_w());
-        arma::vec tr_rhoa(npts);
-        arma::vec tr_rhob(npts);
-        arma::vec tr_rho(npts);
-
         double const R0 = 0.9;
         double const R1 = 1.15;
         double const A = -475.60656009;
         double const B = -379.47331922;
         double const C = -85.38149682;
-
+        size_t npts = get_npts();
+        arma::vec rho_vec(get_rho());
+        arma::vec pi_vec(get_pi());
+        arma::vec R_vec(get_R());
+        arma::vec W(get_w());
         arma::vec tr_rho_a_x(npts,  arma::fill::zeros);
         arma::vec tr_rho_b_x(npts,  arma::fill::zeros);
         arma::vec tr_rho_a_y(npts,  arma::fill::zeros);
