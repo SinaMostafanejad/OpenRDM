@@ -119,14 +119,14 @@ namespace mcpdft {
 //      phi_x.t().print("PHI_X = ");
 //      phi_y.t().print("PHI_Y = ");
 //      phi_z.t().print("PHI_Z = ");
-//      set_phi(phi);
-//      set_phi_x(phi_x);
-//      set_phi_y(phi_y);
-//      set_phi_z(phi_z);
-      set_phi(phi.t());
-      set_phi_x(phi_x.t());
-      set_phi_y(phi_y.t());
-      set_phi_z(phi_z.t());
+      set_phi(phi);
+      set_phi_x(phi_x);
+      set_phi_y(phi_y);
+      set_phi_z(phi_z);
+//      set_phi(phi.t());
+//      set_phi_x(phi_x.t());
+//      set_phi_y(phi_y.t());
+//      set_phi_z(phi_z.t());
 
       arma::mat d1a(nmo, nmo, arma::fill::zeros);
       arma::mat d1b(nmo, nmo, arma::fill::zeros);
@@ -173,14 +173,10 @@ namespace mcpdft {
        int p{0}, mu{0}, nu{0};
        double tmp_d1a{0.0}, tmp_d1b{0.0};
        #ifdef WITH_OPENMP
-//          int nthrds{0};
           printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
           printf("                   *** Warning ***\n");
           printf("   Calculating the density (gradients) using OpenMP");
           printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-//          nthrds = omp_get_max_threads();
-//          nthrds /= 2;
-//          omp_set_num_threads(nthrds);
        #endif
  
        #pragma omp parallel default(shared) \
@@ -195,8 +191,8 @@ namespace mcpdft {
 	           continue;
                 #pragma omp for schedule(static)
                    for(int p = 0; p < npts; p++) {
-                      rhoa(p) += tmp_d1a * phi(p, mu) * phi(p, nu);
-                      rhob(p) += tmp_d1b * phi(p, mu) * phi(p, nu);
+                      rhoa(p) += tmp_d1a * phi(mu, p) * phi(nu, p);
+                      rhob(p) += tmp_d1b * phi(mu, p) * phi(nu, p);
 	           }
              }
           }
@@ -320,12 +316,12 @@ namespace mcpdft {
 	                      continue;
                            #pragma omp for schedule(static) 
                               for (int p = 0; p < npts; p++) {
-                                 rho_a_x(p) += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * tmp_d1a;
-                                 rho_b_x(p) += ( phi_x(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_x(p, nu) ) * tmp_d1b;
-                                 rho_a_y(p) += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * tmp_d1a;
-                                 rho_b_y(p) += ( phi_y(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_y(p, nu) ) * tmp_d1b;
-                                 rho_a_z(p) += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * tmp_d1a;
-                                 rho_b_z(p) += ( phi_z(p, sigma) * phi(p, nu) + phi(p, sigma) * phi_z(p, nu) ) * tmp_d1b;
+                                 rho_a_x(p) += ( phi_x(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_x(nu, p) ) * tmp_d1a;
+                                 rho_b_x(p) += ( phi_x(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_x(nu, p) ) * tmp_d1b;
+                                 rho_a_y(p) += ( phi_y(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_y(nu, p) ) * tmp_d1a;
+                                 rho_b_y(p) += ( phi_y(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_y(nu, p) ) * tmp_d1b;
+                                 rho_a_z(p) += ( phi_z(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_z(nu, p) ) * tmp_d1a;
+                                 rho_b_z(p) += ( phi_z(sigma, p) * phi(nu, p) + phi(sigma, p) * phi_z(nu, p) ) * tmp_d1b;
 			      }
                         }
                     }
@@ -442,7 +438,7 @@ namespace mcpdft {
                         continue;
                         #pragma omp for schedule(static) 
                            for (int p = 0; p < npts; p++) {
-                              temp(p) += phi(p, mu) * phi(p, nu) * phi(p, lambda) * phi(p, sigma) * D2ab(nu*nbfs+mu, sigma*nbfs+lambda);
+                              temp(p) += phi(mu, p) * phi(nu, p) * phi(lambda, p) * phi(sigma, p) * tmp_d2ab;
             	           }
                   }
 	       }
@@ -520,20 +516,20 @@ namespace mcpdft {
                            continue;
                         #pragma omp for schedule(static)
                            for (int p = 0; p < npts; p++) {
-                              pi_x(p) += ( phi_x(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi_x(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi(p, lambda) * phi_x(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_x(p, nu) ) * tmp_d2ab;
+                              pi_x(p) += ( phi_x(mu, p) * phi(lambda, p)   * phi(sigma, p)    * phi(nu, p) +
+                                           phi(mu, p)   * phi_x(lambda, p) * phi(sigma, p)    * phi(nu, p) +
+                                           phi(mu, p)   * phi(lambda, p)   * phi_x(sigma, p)  * phi(nu, p) +
+                                           phi(mu, p)   * phi(lambda, p)   * phi(sigma, p)    * phi_x(nu, p) ) * tmp_d2ab;
 
-                              pi_y(p) += ( phi_y(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi_y(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi(p, lambda) * phi_y(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_y(p, nu) ) * tmp_d2ab;
+                              pi_y(p) += ( phi_y(mu, p) * phi(lambda, p)   * phi(sigma, p)    * phi(nu, p) +
+                                           phi(mu, p)   * phi_y(lambda, p) * phi(sigma, p)    * phi(nu, p) +
+                                           phi(mu, p)   * phi(lambda, p)   * phi_y(sigma, p)  * phi(nu, p) +
+                                           phi(mu, p)   * phi(lambda, p)   * phi(sigma, p)    * phi_y(nu, p) ) * tmp_d2ab;
 
-                              pi_z(p) += ( phi_z(p, mu) * phi(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi_z(p, lambda) * phi(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi(p, lambda) * phi_z(p, sigma) * phi(p, nu) +
-                                           phi(p, mu) * phi(p, lambda) * phi(p, sigma) * phi_z(p, nu) ) * tmp_d2ab;
+                              pi_z(p) += ( phi_z(mu, p) * phi(lambda, p)   * phi(sigma, p)    * phi(nu, p) +
+                                           phi(mu, p)   * phi_z(lambda, p) * phi(sigma, p)    * phi(nu, p) +
+                                           phi(mu, p)   * phi(lambda, p)   * phi_z(sigma, p)  * phi(nu, p) +
+                                           phi(mu, p)   * phi(lambda, p)   * phi(sigma, p)    * phi_z(nu, p) ) * tmp_d2ab;
 	 	          }
                      }
                  }
