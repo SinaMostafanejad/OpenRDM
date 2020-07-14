@@ -1291,7 +1291,9 @@ namespace mcpdft {
 
       printf("\n           Please cite the following article(s):\n\n");
 
-      printf("    # M. Mostafanejad and A. E. DePrince III\n");
-      printf("      J. Chem. Theory Comput. 15, 290-302 (2019).\n");
+      printf("   \# M. Mostafanejad and A. E. DePrince III\n");
+      printf("      J. Chem. Theory Comput. 15, 290-302 (2019).\n\n");
+      printf("   \# M. Mostafanejad, M. D. Liebenthal, and A. E. DePrince III\n");
+      printf("      J. Chem. Theory Comput. 16, 2274-2283 (2020).\n\n");
    }
 }
