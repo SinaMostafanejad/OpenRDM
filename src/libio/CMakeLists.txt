@@ -21,6 +21,7 @@ foreach(idx HDF5_Read_Contiguous.cc
 	    HDF5ErrorManager.cc
 	    HDF5ErrorManager.h
 	    HDF5Utility.cc
+	    HDF5_Read_Sparse.cc
 	    HDF5Utility.h)
 target_sources(openrdm
                PRIVATE

@@ -11,9 +11,12 @@ namespace mcpdft {
 
    HDF5Utility::~HDF5Utility() {}
 
-   void HDF5Utility::read_nbfs(size_t &nao,
-		               size_t &nmo,
-			       size_t &npts) {
+   void HDF5Utility::read_basics(size_t &nao,
+		                 size_t &nmo,
+			         size_t &npts,
+				 size_t &nnz,
+				 const bool is_sparse,
+				 const std::string &rdm_type) {
       /* file indentifiers and handles */
       hid_t file_id;
       hid_t nao_dst_id, nmo_dst_id, npts_dst_id;
@@ -41,6 +44,22 @@ namespace mcpdft {
       status = H5Dclose(nao_dst_id);
       status = H5Dclose(nmo_dst_id);
       status = H5Dclose(npts_dst_id);
+
+      /* Read the number of nonzero entries in sparse RDMs */
+      if(is_sparse) {
+         hid_t nnz_dst_id;
+	 if (rdm_type == "D1A") {
+            nnz_dst_id = H5Dopen2(file_id, H5D_SP_SYM_FULL_D1A_MO_NNZ, H5P_DEFAULT);
+	 }else if (rdm_type == "D1B") {
+            nnz_dst_id = H5Dopen2(file_id, H5D_SP_SYM_FULL_D1B_MO_NNZ, H5P_DEFAULT);
+         }else{
+            throw "\n Error: rdm_type should match \"D1A\" or \"D1B\".\n";
+         }
+         status = H5Dread(nnz_dst_id, H5T_NATIVE_INT,
+                          H5S_ALL, H5S_ALL, H5P_DEFAULT, &nnz);
+         status = H5Dclose(nnz_dst_id);
+      }
+
 
       /* Close the file */
       status = H5Fclose(file_id);
@@ -303,5 +322,6 @@ namespace mcpdft {
       /* close the file */
       status = H5Fclose(file_id);
    }
+
 
 }

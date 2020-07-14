@@ -26,13 +26,19 @@ class MCPDFT {
       void build_tpdm();
 
       /// build density functions and their gradients on the grid points
-      void build_rho();
+      void build_rho(const bool is_sparse = false);
 
       /// build spin and total density functions rhoa(r), rhob(r) and rho(r)
       void build_density_functions();
 
+      /// build spin and total density functions rhoa(r), rhob(r) and rho(r) using sparse density matrices
+      void build_sparse_density_functions();
+
       /// build density gradients rhoa_x(r), rhoa_y(r) ... on the grid points
       void build_density_gradients();
+
+      /// build density gradients rhoa_x(r), rhoa_y(r) ... on the grid points using sparse density matrices
+      void build_sparse_density_gradients();
 
       /// build on-top pair-density pi(r,r) and its gradinets pi_x(r,r) ... on the grids
       void build_pi(const arma::mat &D2ab);
@@ -75,7 +81,11 @@ class MCPDFT {
    	                 const arma::mat &Hcore);
 
       //=============== accessors ===============//
+      bool is_ao() const;
       bool is_gga() const;
+      bool is_sparse() const;
+      bool is_active() const;
+      size_t get_nnz() const;
       size_t get_npts() const;
       size_t get_nbfs() const;
       size_t get_nao() const;
@@ -131,6 +141,7 @@ class MCPDFT {
       arma::vec get_tr_sigma_ab() const;
       arma::vec get_tr_sigma_bb() const;
 
+      void set_nnz(const size_t nnz);
       void set_npts(const size_t npts);
       void set_nbfs(const size_t nbfs);
       void set_nao(const size_t nao);
@@ -203,8 +214,17 @@ class MCPDFT {
        //==========================================// end utility functions
 
    private:
+       /// A boolean variable to show if atomic obtials should be adopted as the basis
+       bool is_ao_;
+
        /// A boolean variable to show if a chose functional is GGA or not
        bool is_gga_;
+
+       /// A boolean variable to decide if the sparsity of RDMs should be adopted
+       bool is_sparse_;
+
+       /// A boolean variable to show if the active RDMs should be used (instead of full-space RDMs)
+       bool is_active_;
 
        /// 1-electron reduced-density matrix of alpha spin
        arma::mat D1a_;
@@ -214,6 +234,9 @@ class MCPDFT {
  
        /// 2-electron reduced-density matrix of alpha-beta spin
        arma::mat D2ab_;
+
+      /// number of non-zero entries in sparse RDMs
+      size_t nnz_;
 
       /// number of grid points
       size_t npts_;

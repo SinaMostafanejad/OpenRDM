@@ -283,15 +283,15 @@ class MCPDFT:
                nnz = nnz + 1
 
       if (is_active == False):
-         f["/SP_SYMM_D1/FULL_D1a_MO/NNZ"] = nnz
-         f["/SP_SYMM_D1/FULL_D1a_MO/VAL"] = val
-         f["/SP_SYMM_D1/FULL_D1a_MO/ROW_IDX"] = row_idx
-         f["/SP_SYMM_D1/FULL_D1a_MO/COL_IDX"] = col_idx
+         f["/SP_SYM_D1/FULL_D1a_MO/NNZ"] = nnz
+         f["/SP_SYM_D1/FULL_D1a_MO/VAL"] = val
+         f["/SP_SYM_D1/FULL_D1a_MO/ROW_IDX"] = row_idx
+         f["/SP_SYM_D1/FULL_D1a_MO/COL_IDX"] = col_idx
       else:
-         f["/SP_SYMM_D1/ACT_D1a_MO/NNZ"] = nnz
-         f["/SP_SYMM_D1/ACT_D1a_MO/VAL"] = val
-         f["/SP_SYMM_D1/ACT_D1a_MO/ROW_IDX"] = row_idx
-         f["/SP_SYMM_D1/ACT_D1a_MO/COL_IDX"] = col_idx
+         f["/SP_SYM_D1/ACT_D1a_MO/NNZ"] = nnz
+         f["/SP_SYM_D1/ACT_D1a_MO/VAL"] = val
+         f["/SP_SYM_D1/ACT_D1a_MO/ROW_IDX"] = row_idx
+         f["/SP_SYM_D1/ACT_D1a_MO/COL_IDX"] = col_idx
 
       dum = 0.0
       val.clear()
@@ -310,15 +310,15 @@ class MCPDFT:
                nnz = nnz + 1
 
       if (is_active == False):
-         f["/SP_SYMM_D1/FULL_D1b_MO/NNZ"] = nnz
-         f["/SP_SYMM_D1/FULL_D1b_MO/VAL"] = val
-         f["/SP_SYMM_D1/FULL_D1b_MO/ROW_IDX"] = row_idx
-         f["/SP_SYMM_D1/FULL_D1b_MO/COL_IDX"] = col_idx
+         f["/SP_SYM_D1/FULL_D1b_MO/NNZ"] = nnz
+         f["/SP_SYM_D1/FULL_D1b_MO/VAL"] = val
+         f["/SP_SYM_D1/FULL_D1b_MO/ROW_IDX"] = row_idx
+         f["/SP_SYM_D1/FULL_D1b_MO/COL_IDX"] = col_idx
       else:
-         f["/SP_SYMM_D1/ACT_D1b_MO/NNZ"] = nnz
-         f["/SP_SYMM_D1/ACT_D1b_MO/VAL"] = val
-         f["/SP_SYMM_D1/ACT_D1b_MO/ROW_IDX"] = row_idx
-         f["/SP_SYMM_D1/ACT_D1b_MO/COL_IDX"] = col_idx
+         f["/SP_SYM_D1/ACT_D1b_MO/NNZ"] = nnz
+         f["/SP_SYM_D1/ACT_D1b_MO/VAL"] = val
+         f["/SP_SYM_D1/ACT_D1b_MO/ROW_IDX"] = row_idx
+         f["/SP_SYM_D1/ACT_D1b_MO/COL_IDX"] = col_idx
 
    def write_rdm2s_d2sp_coo(self, dm2aa=None, dm2ab=None, dm2bb=None, is_active=False, f=None):
       dim1 = dm2aa.shape[0]
@@ -374,19 +374,19 @@ class MCPDFT:
                      nnz = nnz + 1
 
       if (is_active == False):
-         f["/SP_SYMM_D2/FULL_D2aa_MO/NNZ"] = nnz
-         f["/SP_SYMM_D2/FULL_D2aa_MO/VAL"] = val
-         f["/SP_SYMM_D2/FULL_D2aa_MO/DIM1_IDX"] = dim1_idx
-         f["/SP_SYMM_D2/FULL_D2aa_MO/DIM2_IDX"] = dim2_idx
-         f["/SP_SYMM_D2/FULL_D2aa_MO/DIM3_IDX"] = dim3_idx
-         f["/SP_SYMM_D2/FULL_D2aa_MO/DIM4_IDX"] = dim4_idx
+         f["/SP_SYM_D2/FULL_D2aa_MO/NNZ"] = nnz
+         f["/SP_SYM_D2/FULL_D2aa_MO/VAL"] = val
+         f["/SP_SYM_D2/FULL_D2aa_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYM_D2/FULL_D2aa_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYM_D2/FULL_D2aa_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYM_D2/FULL_D2aa_MO/DIM4_IDX"] = dim4_idx
       else:
-         f["/SP_SYMM_D2/ACT_D2aa_MO/NNZ"] = nnz
-         f["/SP_SYMM_D2/ACT_D2aa_MO/VAL"] = val
-         f["/SP_SYMM_D2/ACT_D2aa_MO/DIM1_IDX"] = dim1_idx
-         f["/SP_SYMM_D2/ACT_D2aa_MO/DIM2_IDX"] = dim2_idx
-         f["/SP_SYMM_D2/ACT_D2aa_MO/DIM3_IDX"] = dim3_idx
-         f["/SP_SYMM_D2/ACT_D2aa_MO/DIM4_IDX"] = dim4_idx
+         f["/SP_SYM_D2/ACT_D2aa_MO/NNZ"] = nnz
+         f["/SP_SYM_D2/ACT_D2aa_MO/VAL"] = val
+         f["/SP_SYM_D2/ACT_D2aa_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYM_D2/ACT_D2aa_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYM_D2/ACT_D2aa_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYM_D2/ACT_D2aa_MO/DIM4_IDX"] = dim4_idx
 
       dum = 0.0
       val.clear()
@@ -411,19 +411,19 @@ class MCPDFT:
                      nnz = nnz + 1
 
       if (is_active == False):
-         f["/SP_SYMM_D2/FULL_D2ab_MO/NNZ"] = nnz
-         f["/SP_SYMM_D2/FULL_D2ab_MO/VAL"] = val
-         f["/SP_SYMM_D2/FULL_D2ab_MO/DIM1_IDX"] = dim1_idx
-         f["/SP_SYMM_D2/FULL_D2ab_MO/DIM2_IDX"] = dim2_idx
-         f["/SP_SYMM_D2/FULL_D2ab_MO/DIM3_IDX"] = dim3_idx
-         f["/SP_SYMM_D2/FULL_D2ab_MO/DIM4_IDX"] = dim4_idx
+         f["/SP_SYM_D2/FULL_D2ab_MO/NNZ"] = nnz
+         f["/SP_SYM_D2/FULL_D2ab_MO/VAL"] = val
+         f["/SP_SYM_D2/FULL_D2ab_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYM_D2/FULL_D2ab_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYM_D2/FULL_D2ab_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYM_D2/FULL_D2ab_MO/DIM4_IDX"] = dim4_idx
       else:
-         f["/SP_SYMM_D2/ACT_D2ab_MO/NNZ"] = nnz
-         f["/SP_SYMM_D2/ACT_D2ab_MO/VAL"] = val
-         f["/SP_SYMM_D2/ACT_D2ab_MO/DIM1_IDX"] = dim1_idx
-         f["/SP_SYMM_D2/ACT_D2ab_MO/DIM2_IDX"] = dim2_idx
-         f["/SP_SYMM_D2/ACT_D2ab_MO/DIM3_IDX"] = dim3_idx
-         f["/SP_SYMM_D2/ACT_D2ab_MO/DIM4_IDX"] = dim4_idx
+         f["/SP_SYM_D2/ACT_D2ab_MO/NNZ"] = nnz
+         f["/SP_SYM_D2/ACT_D2ab_MO/VAL"] = val
+         f["/SP_SYM_D2/ACT_D2ab_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYM_D2/ACT_D2ab_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYM_D2/ACT_D2ab_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYM_D2/ACT_D2ab_MO/DIM4_IDX"] = dim4_idx
 
       dum = 0.0
       val.clear()
@@ -448,19 +448,19 @@ class MCPDFT:
                      nnz = nnz + 1
 
       if (is_active == False):
-         f["/SP_SYMM_D2/FULL_D2bb_MO/NNZ"] = nnz
-         f["/SP_SYMM_D2/FULL_D2bb_MO/VAL"] = val
-         f["/SP_SYMM_D2/FULL_D2bb_MO/DIM1_IDX"] = dim1_idx
-         f["/SP_SYMM_D2/FULL_D2bb_MO/DIM2_IDX"] = dim2_idx
-         f["/SP_SYMM_D2/FULL_D2bb_MO/DIM3_IDX"] = dim3_idx
-         f["/SP_SYMM_D2/FULL_D2bb_MO/DIM4_IDX"] = dim4_idx
+         f["/SP_SYM_D2/FULL_D2bb_MO/NNZ"] = nnz
+         f["/SP_SYM_D2/FULL_D2bb_MO/VAL"] = val
+         f["/SP_SYM_D2/FULL_D2bb_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYM_D2/FULL_D2bb_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYM_D2/FULL_D2bb_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYM_D2/FULL_D2bb_MO/DIM4_IDX"] = dim4_idx
       else:
-         f["/SP_SYMM_D2/ACT_D2bb_MO/NNZ"] = nnz
-         f["/SP_SYMM_D2/ACT_D2bb_MO/VAL"] = val
-         f["/SP_SYMM_D2/ACT_D2bb_MO/DIM1_IDX"] = dim1_idx
-         f["/SP_SYMM_D2/ACT_D2bb_MO/DIM2_IDX"] = dim2_idx
-         f["/SP_SYMM_D2/ACT_D2bb_MO/DIM3_IDX"] = dim3_idx
-         f["/SP_SYMM_D2/ACT_D2bb_MO/DIM4_IDX"] = dim4_idx
+         f["/SP_SYM_D2/ACT_D2bb_MO/NNZ"] = nnz
+         f["/SP_SYM_D2/ACT_D2bb_MO/VAL"] = val
+         f["/SP_SYM_D2/ACT_D2bb_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYM_D2/ACT_D2bb_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYM_D2/ACT_D2bb_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYM_D2/ACT_D2bb_MO/DIM4_IDX"] = dim4_idx
 
    def write_rdm12_d2sp_coo(self, dm1=None, dm2=None, is_active=False, f=None):
       row = dm1.shape[0]
@@ -509,15 +509,15 @@ class MCPDFT:
                nnz = nnz + 1
 
       if (is_active == False):
-         f["/SP_SYMM_D1/FULL_D1_MO/NNZ"] = nnz
-         f["/SP_SYMM_D1/FULL_D1_MO/VAL"] = val
-         f["/SP_SYMM_D1/FULL_D1_MO/ROW_IDX"] = row_idx
-         f["/SP_SYMM_D1/FULL_D1_MO/COL_IDX"] = col_idx
+         f["/SP_SYM_D1/FULL_D1_MO/NNZ"] = nnz
+         f["/SP_SYM_D1/FULL_D1_MO/VAL"] = val
+         f["/SP_SYM_D1/FULL_D1_MO/ROW_IDX"] = row_idx
+         f["/SP_SYM_D1/FULL_D1_MO/COL_IDX"] = col_idx
       else:
-         f["/SP_SYMM_D1/ACT_D1_MO/NNZ"] = nnz
-         f["/SP_SYMM_D1/ACT_D1_MO/VAL"] = val
-         f["/SP_SYMM_D1/ACT_D1_MO/ROW_IDX"] = row_idx
-         f["/SP_SYMM_D1/ACT_D1_MO/COL_IDX"] = col_idx
+         f["/SP_SYM_D1/ACT_D1_MO/NNZ"] = nnz
+         f["/SP_SYM_D1/ACT_D1_MO/VAL"] = val
+         f["/SP_SYM_D1/ACT_D1_MO/ROW_IDX"] = row_idx
+         f["/SP_SYM_D1/ACT_D1_MO/COL_IDX"] = col_idx
 
       dum = 0.0
       val.clear()
@@ -542,19 +542,19 @@ class MCPDFT:
                      nnz = nnz + 1
 
       if (is_active == False):
-         f["/SP_SYMM_D2/FULL_D2_MO/NNZ"] = nnz
-         f["/SP_SYMM_D2/FULL_D2_MO/VAL"] = val
-         f["/SP_SYMM_D2/FULL_D2_MO/DIM1_IDX"] = dim1_idx
-         f["/SP_SYMM_D2/FULL_D2_MO/DIM2_IDX"] = dim2_idx
-         f["/SP_SYMM_D2/FULL_D2_MO/DIM3_IDX"] = dim3_idx
-         f["/SP_SYMM_D2/FULL_D2_MO/DIM4_IDX"] = dim4_idx
+         f["/SP_SYM_D2/FULL_D2_MO/NNZ"] = nnz
+         f["/SP_SYM_D2/FULL_D2_MO/VAL"] = val
+         f["/SP_SYM_D2/FULL_D2_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYM_D2/FULL_D2_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYM_D2/FULL_D2_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYM_D2/FULL_D2_MO/DIM4_IDX"] = dim4_idx
       else:
-         f["/SP_SYMM_D2/ACT_D2_MO/NNZ"] = nnz
-         f["/SP_SYMM_D2/ACT_D2_MO/VAL"] = val
-         f["/SP_SYMM_D2/ACT_D2_MO/DIM1_IDX"] = dim1_idx
-         f["/SP_SYMM_D2/ACT_D2_MO/DIM2_IDX"] = dim2_idx
-         f["/SP_SYMM_D2/ACT_D2_MO/DIM3_IDX"] = dim3_idx
-         f["/SP_SYMM_D2/ACT_D2_MO/DIM4_IDX"] = dim4_idx
+         f["/SP_SYM_D2/ACT_D2_MO/NNZ"] = nnz
+         f["/SP_SYM_D2/ACT_D2_MO/VAL"] = val
+         f["/SP_SYM_D2/ACT_D2_MO/DIM1_IDX"] = dim1_idx
+         f["/SP_SYM_D2/ACT_D2_MO/DIM2_IDX"] = dim2_idx
+         f["/SP_SYM_D2/ACT_D2_MO/DIM3_IDX"] = dim3_idx
+         f["/SP_SYM_D2/ACT_D2_MO/DIM4_IDX"] = dim4_idx
 
    def kernel(self):
 
@@ -628,6 +628,7 @@ class MCPDFT:
       f["/H/H_CORE_AO"] = h 
       f["/H/H_CORE_MO"] = h_mo
 
+      f["/E/E_NUC"]     = E_nn 
       f["/E/E_CORE"]    = E_core 
       f["/E/E_HARTREE"] = E_j 
 

@@ -7,6 +7,7 @@
 
 #include "HDF5Client.h"
 #include "HDF5Utility.h"
+#include "TOC.h"
 
 #ifdef WITH_OPENMP // _OPENMP
    #include <omp.h>
@@ -37,16 +38,21 @@ namespace mcpdft {
       print_banner();
       /* TODO: make some setter and getter for this to work at the moment
          until the parser gets implemented. */
+      is_ao_ = false;
       is_gga_ = true;
+      is_sparse_ = true;
+      is_active_ = false;
+
       HDF5Utility* h5utl = new HDF5Utility();
 
       /* reading naos, nmos and npts from data.h5 HDF5 file */	   
-      size_t nao{0}, nmo{0}, npts{0};
-      h5utl->read_nbfs(nao,nmo,npts);
-//      std::printf("NAO, NMO, NPTS = %ld, %ld, %ld\n",nao,nmo,npts);
+      size_t nao{0}, nmo{0}, npts{0}, nnz{0};
+      h5utl->read_basics(nao, nmo, npts, nnz, is_sparse_, "D1A");
+//      std::printf("NAO, NMO, NPTS, NNZ = %ld, %ld, %ld %ld\n",nao,nmo,npts,nnz);
       set_nao(nao);
       set_nmo(nmo);
       set_npts(npts);
+      set_nnz(nnz);
 
       /* reading active space details from data.h5 HDF5 file */
       size_t nactele{0}, nactorb{0};
@@ -75,9 +81,8 @@ namespace mcpdft {
       set_enuc(tmp_enuc);
 
       /* reading core Hamiltonian matrix in AO/MO basis from data.h5 HDF5 file */
-      bool is_ao{false};
       arma::mat Hcore(nmo, nmo, arma::fill::zeros);
-      h5utl->read_hcore(Hcore, is_ao);
+      h5utl->read_hcore(Hcore, is_ao_);
       Hcore = Hcore.t();
 //      Hcore.print();
       set_hcore(Hcore);
@@ -85,7 +90,7 @@ namespace mcpdft {
       /* reading (Coulomb) Hartree interaction matrices in AO/MO basis from data.h5 HDF5 file */
       arma::mat Ja(nmo, nmo, arma::fill::zeros);
       arma::mat Jb(nmo, nmo, arma::fill::zeros);
-      h5utl->read_Hartree_Jmats(Ja, Jb, is_ao);
+      h5utl->read_Hartree_Jmats(Ja, Jb, is_ao_);
       Ja = Ja.t();
       Jb = Jb.t();
 //      Ja.print();
@@ -119,7 +124,7 @@ namespace mcpdft {
 		           phi_x,
 			   phi_y,
 			   phi_z,
-			   is_ao);
+			   is_ao_);
 //      phi.t().print("PHI = ");
 //      phi_x.t().print("PHI_X = ");
 //      phi_y.t().print("PHI_Y = ");
@@ -153,73 +158,131 @@ namespace mcpdft {
       delete h5utl;
    }
 
-   void MCPDFT::build_rho() {
-      build_density_functions();
-      if ( is_gga_ ) {
-         build_density_gradients();
+   void MCPDFT::build_rho(const bool is_sparse) {
+      if(is_sparse) { /* using dens RDMs*/
+         build_density_functions();
+         if ( is_gga_ ) {
+            build_density_gradients();
+         }
+      }else{ /* using sparse RDMs*/
+         build_sparse_density_functions();
+         if ( is_gga_ ) {
+            build_sparse_density_gradients();
+         }
       }
    }
 
-    void MCPDFT::build_density_functions() {
-       double tol = 1.0e-20;
-       int nbfs = get_nmo();
-       size_t npts = get_npts();
-       arma::mat phi(get_phi());
-       arma::mat D1a(get_D1a());
-       arma::mat D1b(get_D1b());
-       arma::vec W(get_w());
-       arma::vec rhoa(npts, arma::fill::zeros);
-       arma::vec rhob(npts, arma::fill::zeros);
-       arma::vec rho(npts, arma::fill::zeros);
-       double dum_a = 0.0;
-       double dum_b = 0.0;
-       double dum_tot = 0.0;
-       size_t chunk_size = 0;
-       int p{0}, mu{0}, nu{0};
-       double tmp_d1a{0.0}, tmp_d1b{0.0};
-       #ifdef WITH_OPENMP
-          printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-          printf("                   *** Warning ***\n");
-          printf("   Calculating the density (gradients) using OpenMP");
-          printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-       #endif
- 
-       #pragma omp parallel default(shared) \
-                            private(p, mu, nu,\
-				    tmp_d1a, tmp_d1b)
-       {  
-          for(int mu = 0; mu < nbfs; mu++) {
-             for(int nu = 0; nu < nbfs; nu++) {
-	        tmp_d1a = D1a(mu, nu);
-	        tmp_d1b = D1b(mu, nu);
-	        if (fabs(tmp_d1a) < tol && fabs(tmp_d1b) < tol )
-	           continue;
-                #pragma omp for schedule(static)
-                   for(int p = 0; p < npts; p++) {
-                      rhoa(p) += tmp_d1a * phi(mu, p) * phi(nu, p);
-                      rhob(p) += tmp_d1b * phi(mu, p) * phi(nu, p);
-	           }
-             }
-          }
-       } /* end of omp parallel region */
-       set_rhoa(rhoa);
-       set_rhob(rhob);
+   void MCPDFT::build_density_functions() {
+      double tol = 1.0e-20;
+      int nbfs = get_nmo();
+      size_t npts = get_npts();
+      arma::mat phi(get_phi());
+      arma::mat D1a(get_D1a());
+      arma::mat D1b(get_D1b());
+      arma::vec W(get_w());
+      arma::vec rhoa(npts, arma::fill::zeros);
+      arma::vec rhob(npts, arma::fill::zeros);
+      arma::vec rho(npts, arma::fill::zeros);
+      double dum_a = 0.0;
+      double dum_b = 0.0;
+      double dum_tot = 0.0;
+      size_t chunk_size = 0;
+      int p{0}, mu{0}, nu{0};
+      double tmp_d1a{0.0}, tmp_d1b{0.0};
+      #ifdef WITH_OPENMP
+         printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+         printf("                   *** Warning ***\n");
+         printf("   Calculating the density (gradients) using OpenMP");
+         printf("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+      #endif
 
-       for(p = 0; p < npts; p++) {
-          rho(p) = rhoa(p) + rhob(p);
-       } 
-       set_rho(rho);
+      #pragma omp parallel default(shared) \
+                           private(p, mu, nu,\
+       			    tmp_d1a, tmp_d1b)
+      {  
+         for(int mu = 0; mu < nbfs; mu++) {
+            for(int nu = 0; nu < nbfs; nu++) {
+               tmp_d1a = D1a(mu, nu);
+               tmp_d1b = D1b(mu, nu);
+               if (fabs(tmp_d1a) < tol && fabs(tmp_d1b) < tol )
+                  continue;
+               #pragma omp for schedule(static)
+                  for(int p = 0; p < npts; p++) {
+                     rhoa(p) += tmp_d1a * phi(mu, p) * phi(nu, p);
+                     rhob(p) += tmp_d1b * phi(mu, p) * phi(nu, p);
+                  }
+            }
+         }
+      } /* end of omp parallel region */
+      set_rhoa(rhoa);
+      set_rhob(rhob);
 
-       dum_a = arma::dot(rhoa, W);
-       dum_b = arma::dot(rhob, W);
-       dum_tot = arma::dot(rho, W);
-       printf("\n");
-       printf("  Integrated alpha density = %20.12lf\n",dum_a);
-       printf("  Integrated beta density  = %20.12lf\n",dum_b);
-       printf("  Integrated total density = %20.12lf\n",dum_tot);
-       printf("\n");
-    }
+      for(p = 0; p < npts; p++) {
+         rho(p) = rhoa(p) + rhob(p);
+      } 
+      set_rho(rho);
 
+      dum_a = arma::dot(rhoa, W);
+      dum_b = arma::dot(rhob, W);
+      dum_tot = arma::dot(rho, W);
+      printf("\n");
+      printf("  Integrated alpha density = %20.12lf\n",dum_a);
+      printf("  Integrated beta density  = %20.12lf\n",dum_b);
+      printf("  Integrated total density = %20.12lf\n",dum_tot);
+      printf("\n");
+   }
+
+   void MCPDFT::build_sparse_density_functions() {
+      size_t npts = get_npts();
+      arma::mat phi(get_phi());
+      arma::vec W(get_w());
+      arma::vec rhoa(npts, arma::fill::zeros);
+      arma::vec rhob(npts, arma::fill::zeros);
+      arma::vec rho(npts, arma::fill::zeros);
+      bool is_active = MCPDFT::is_active();
+      size_t nnz = get_nnz();
+      // std::printf("nnz = %6.lu",nnz);
+      arma::vec val_a(nnz, arma::fill::zeros);
+      arma::vec val_b(nnz, arma::fill::zeros);
+      arma::Col<int> row_idx_a(nnz, arma::fill::zeros);
+      arma::Col<int> row_idx_b(nnz, arma::fill::zeros);
+      arma::Col<int> col_idx_a(nnz, arma::fill::zeros);
+      arma::Col<int> col_idx_b(nnz, arma::fill::zeros);
+
+      HDF5Utility* h5utl = new HDF5Utility();
+      h5utl->read_sparse_coo_opdm(val_a, row_idx_a, col_idx_a, is_active, "D1A");
+      h5utl->read_sparse_coo_opdm(val_b, row_idx_b, col_idx_b, is_active, "D1B");
+      delete h5utl;
+
+      for (size_t n = 0; n < nnz; n++) {
+	 size_t i_a = row_idx_a(n);
+	 size_t i_b = row_idx_b(n);
+	 size_t j_a = col_idx_a(n);
+	 size_t j_b = col_idx_b(n);
+	 double tmp_val_a = val_a(n);
+	 double tmp_val_b = val_b(n);
+         for(size_t p = 0; p < npts; p++) {
+	    rhoa(p) += tmp_val_a * phi(i_a, p) * phi(j_a, p);
+	    rhob(p) += tmp_val_b * phi(i_b, p) * phi(j_b, p);
+	 }
+      }
+      set_rhoa(rhoa);
+      set_rhob(rhob);
+
+      for(size_t p = 0; p < npts; p++) {
+         rho(p) = rhoa(p) + rhob(p);
+      } 
+      set_rho(rho);
+
+      double dum_a = arma::dot(rhoa, W);
+      double dum_b = arma::dot(rhob, W);
+      double dum_tot = arma::dot(rho, W);
+      printf("\n");
+      printf("  Integrated alpha density = %20.12lf\n",dum_a);
+      printf("  Integrated beta density  = %20.12lf\n",dum_b);
+      printf("  Integrated total density = %20.12lf\n",dum_tot);
+      printf("\n");
+   } 
 #if 0
    void MCPDFT::build_density_functions() {
       double tol = 1.0e-20;
@@ -347,6 +410,69 @@ namespace mcpdft {
       set_sigma_ab(sigma_ab);
       set_sigma_bb(sigma_bb);
    }
+
+   void MCPDFT::build_sparse_density_gradients() {
+      size_t npts = get_npts();
+      arma::mat phi(get_phi());
+      arma::mat phi_x(get_phi_x());
+      arma::mat phi_y(get_phi_y());
+      arma::mat phi_z(get_phi_z());
+      arma::vec rho_a_x(npts, arma::fill::zeros);
+      arma::vec rho_b_x(npts, arma::fill::zeros);
+      arma::vec rho_a_y(npts, arma::fill::zeros);
+      arma::vec rho_b_y(npts, arma::fill::zeros);
+      arma::vec rho_a_z(npts, arma::fill::zeros);
+      arma::vec rho_b_z(npts, arma::fill::zeros);
+      arma::vec sigma_aa(npts, arma::fill::zeros);
+      arma::vec sigma_ab(npts, arma::fill::zeros);
+      arma::vec sigma_bb(npts, arma::fill::zeros);
+      bool is_active = MCPDFT::is_active();
+      size_t nnz = get_nnz();
+      // std::printf("nnz = %6.lu",nnz);
+      arma::vec val_a(nnz, arma::fill::zeros);
+      arma::vec val_b(nnz, arma::fill::zeros);
+      arma::Col<int> row_idx_a(nnz, arma::fill::zeros);
+      arma::Col<int> row_idx_b(nnz, arma::fill::zeros);
+      arma::Col<int> col_idx_a(nnz, arma::fill::zeros);
+      arma::Col<int> col_idx_b(nnz, arma::fill::zeros);
+
+      HDF5Utility* h5utl = new HDF5Utility();
+      h5utl->read_sparse_coo_opdm(val_a, row_idx_a, col_idx_a, is_active, "D1A");
+      h5utl->read_sparse_coo_opdm(val_b, row_idx_b, col_idx_b, is_active, "D1B");
+      delete h5utl;
+
+      for (size_t n = 0; n < nnz; n++) {
+	 size_t i_a = row_idx_a(n);
+	 size_t i_b = row_idx_b(n);
+	 size_t j_a = col_idx_a(n);
+	 size_t j_b = col_idx_b(n);
+	 double tmp_val_a = val_a(n);
+	 double tmp_val_b = val_b(n);
+         for(size_t p = 0; p < npts; p++) {
+            rho_a_x(p) += ( phi_x(i_a, p) * phi(j_a, p) + phi(i_a, p) * phi_x(j_a, p) ) * tmp_val_a;
+            rho_b_x(p) += ( phi_x(i_b, p) * phi(j_b, p) + phi(i_b, p) * phi_x(j_b, p) ) * tmp_val_b;
+            rho_a_y(p) += ( phi_y(i_a, p) * phi(j_a, p) + phi(i_a, p) * phi_y(j_a, p) ) * tmp_val_a;
+            rho_b_y(p) += ( phi_y(i_b, p) * phi(j_b, p) + phi(i_b, p) * phi_y(j_b, p) ) * tmp_val_b;
+            rho_a_z(p) += ( phi_z(i_a, p) * phi(j_a, p) + phi(i_a, p) * phi_z(j_a, p) ) * tmp_val_a;
+            rho_b_z(p) += ( phi_z(i_b, p) * phi(j_b, p) + phi(i_b, p) * phi_z(j_b, p) ) * tmp_val_b;
+	 }
+      }
+      set_rhoa_x(rho_a_x);
+      set_rhob_x(rho_b_x);
+      set_rhoa_y(rho_a_y);
+      set_rhob_y(rho_b_y);
+      set_rhoa_z(rho_a_z);
+      set_rhob_z(rho_b_z);
+
+      for (int p = 0; p < npts; p++) {
+         sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
+         sigma_bb(p) = ( rho_b_x(p) * rho_b_x(p) ) +  ( rho_b_y(p) * rho_b_y(p) ) + ( rho_b_z(p) * rho_b_z(p) );
+         sigma_ab(p) = ( rho_a_x(p) * rho_b_x(p) ) +  ( rho_a_y(p) * rho_b_y(p) ) + ( rho_a_z(p) * rho_b_z(p) );
+      }
+      set_sigma_aa(sigma_aa);
+      set_sigma_ab(sigma_ab);
+      set_sigma_bb(sigma_bb);
+   } 
 
 #if 0
    void MCPDFT::build_density_gradients() {
@@ -1036,7 +1162,11 @@ namespace mcpdft {
       return tmp;
    }
  
+   bool MCPDFT::is_ao() const { return is_ao_; }
    bool MCPDFT::is_gga() const { return is_gga_; }
+   bool MCPDFT::is_sparse() const { return is_sparse_; }
+   bool MCPDFT::is_active() const { return is_active_; }
+   size_t MCPDFT::get_nnz() const { return nnz_; }
    size_t MCPDFT::get_npts() const { return npts_; }
    size_t MCPDFT::get_nbfs() const { return nbfs_; }
    size_t MCPDFT::get_nao() const { return nao_; }
@@ -1086,6 +1216,7 @@ namespace mcpdft {
    arma::vec MCPDFT::get_tr_sigma_ab() const { return tr_sigma_ab_; }
    arma::vec MCPDFT::get_tr_sigma_bb() const { return tr_sigma_bb_; }
 
+   void MCPDFT::set_nnz(const size_t nnz) { nnz_ = nnz; }
    void MCPDFT::set_npts(const size_t npts) { npts_ = npts; }
    void MCPDFT::set_nbfs(const size_t nbfs)    { nbfs_ = nbfs; }
    void MCPDFT::set_nao(const size_t nao) { nao_ = nao; }
