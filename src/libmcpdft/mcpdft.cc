@@ -47,12 +47,11 @@ namespace mcpdft {
 
       /* reading naos, nmos and npts from data.h5 HDF5 file */	   
       size_t nao{0}, nmo{0}, npts{0}, nnz{0};
-      h5utl->read_basics(nao, nmo, npts, nnz, is_sparse_, "D1A");
-//      std::printf("NAO, NMO, NPTS, NNZ = %ld, %ld, %ld %ld\n",nao,nmo,npts,nnz);
+      h5utl->read_basics(nao, nmo, npts);
+//      std::printf("NAO, NMO, NPTS = %ld, %ld, %ld\n",nao,nmo,npts);
       set_nao(nao);
       set_nmo(nmo);
       set_npts(npts);
-      set_nnz(nnz);
 
       /* reading active space details from data.h5 HDF5 file */
       size_t nactele{0}, nactorb{0};
@@ -158,8 +157,10 @@ namespace mcpdft {
       delete h5utl;
    }
 
-   void MCPDFT::build_rho(const bool is_sparse) {
-      if(is_sparse) { /* using dens RDMs*/
+   void MCPDFT::build_rho() {
+      const bool is_sparse = MCPDFT::is_sparse();
+
+      if(!is_sparse) { /* using dens RDMs*/
          build_density_functions();
          if ( is_gga_ ) {
             build_density_gradients();
@@ -240,8 +241,13 @@ namespace mcpdft {
       arma::vec rhob(npts, arma::fill::zeros);
       arma::vec rho(npts, arma::fill::zeros);
       bool is_active = MCPDFT::is_active();
-      size_t nnz = get_nnz();
+
+      size_t nnz{0};
+      HDF5Utility* h5utl = new HDF5Utility();
+
+      h5utl->read_nnz(nnz, is_active, "D1A");
       // std::printf("nnz = %6.lu",nnz);
+
       arma::vec val_a(nnz, arma::fill::zeros);
       arma::vec val_b(nnz, arma::fill::zeros);
       arma::Col<int> row_idx_a(nnz, arma::fill::zeros);
@@ -249,9 +255,9 @@ namespace mcpdft {
       arma::Col<int> col_idx_a(nnz, arma::fill::zeros);
       arma::Col<int> col_idx_b(nnz, arma::fill::zeros);
 
-      HDF5Utility* h5utl = new HDF5Utility();
       h5utl->read_sparse_coo_opdm(val_a, row_idx_a, col_idx_a, is_active, "D1A");
       h5utl->read_sparse_coo_opdm(val_b, row_idx_b, col_idx_b, is_active, "D1B");
+
       delete h5utl;
 
       for (size_t n = 0; n < nnz; n++) {
@@ -259,11 +265,15 @@ namespace mcpdft {
 	 size_t i_b = row_idx_b(n);
 	 size_t j_a = col_idx_a(n);
 	 size_t j_b = col_idx_b(n);
+	 /* since we stored upper triangular part of the symmetric 1-RDM,
+	    we need a factor of 2.0 for off-diagonal elements here */
+	 double s_a = (i_a != j_a) ? 2.0 : 1.0;
+	 double s_b = (i_b != j_b) ? 2.0 : 1.0;
 	 double tmp_val_a = val_a(n);
 	 double tmp_val_b = val_b(n);
          for(size_t p = 0; p < npts; p++) {
-	    rhoa(p) += tmp_val_a * phi(i_a, p) * phi(j_a, p);
-	    rhob(p) += tmp_val_b * phi(i_b, p) * phi(j_b, p);
+	    rhoa(p) += s_a * tmp_val_a * phi(i_a, p) * phi(j_a, p);
+	    rhob(p) += s_b * tmp_val_b * phi(i_b, p) * phi(j_b, p);
 	 }
       }
       set_rhoa(rhoa);
@@ -278,9 +288,9 @@ namespace mcpdft {
       double dum_b = arma::dot(rhob, W);
       double dum_tot = arma::dot(rho, W);
       printf("\n");
-      printf("  Integrated alpha density = %20.12lf\n",dum_a);
-      printf("  Integrated beta density  = %20.12lf\n",dum_b);
-      printf("  Integrated total density = %20.12lf\n",dum_tot);
+      printf("  Integrated alpha density (sparse) = %20.12lf\n",dum_a);
+      printf("  Integrated beta density  (sparse) = %20.12lf\n",dum_b);
+      printf("  Integrated total density (sparse) = %20.12lf\n",dum_tot);
       printf("\n");
    } 
 #if 0
@@ -400,6 +410,7 @@ namespace mcpdft {
       set_rhob_y(rho_b_y);
       set_rhoa_z(rho_a_z);
       set_rhob_z(rho_b_z);
+      // rho_a_x.print();
 
       for (int p = 0; p < npts; p++) {
          sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
@@ -427,8 +438,13 @@ namespace mcpdft {
       arma::vec sigma_ab(npts, arma::fill::zeros);
       arma::vec sigma_bb(npts, arma::fill::zeros);
       bool is_active = MCPDFT::is_active();
-      size_t nnz = get_nnz();
+
+      size_t nnz{0};
+      HDF5Utility* h5utl = new HDF5Utility();
+
+      h5utl->read_nnz(nnz, is_active, "D1A");
       // std::printf("nnz = %6.lu",nnz);
+
       arma::vec val_a(nnz, arma::fill::zeros);
       arma::vec val_b(nnz, arma::fill::zeros);
       arma::Col<int> row_idx_a(nnz, arma::fill::zeros);
@@ -436,7 +452,6 @@ namespace mcpdft {
       arma::Col<int> col_idx_a(nnz, arma::fill::zeros);
       arma::Col<int> col_idx_b(nnz, arma::fill::zeros);
 
-      HDF5Utility* h5utl = new HDF5Utility();
       h5utl->read_sparse_coo_opdm(val_a, row_idx_a, col_idx_a, is_active, "D1A");
       h5utl->read_sparse_coo_opdm(val_b, row_idx_b, col_idx_b, is_active, "D1B");
       delete h5utl;
@@ -446,15 +461,19 @@ namespace mcpdft {
 	 size_t i_b = row_idx_b(n);
 	 size_t j_a = col_idx_a(n);
 	 size_t j_b = col_idx_b(n);
+	 /* since we stored upper triangular part of the symmetric 1-RDM,
+	    we need a factor of 2.0 for off-diagonal elements here */
+	 double s_a = (i_a != j_a) ? 2.0 : 1.0;
+	 double s_b = (i_b != j_b) ? 2.0 : 1.0;
 	 double tmp_val_a = val_a(n);
 	 double tmp_val_b = val_b(n);
          for(size_t p = 0; p < npts; p++) {
-            rho_a_x(p) += ( phi_x(i_a, p) * phi(j_a, p) + phi(i_a, p) * phi_x(j_a, p) ) * tmp_val_a;
-            rho_b_x(p) += ( phi_x(i_b, p) * phi(j_b, p) + phi(i_b, p) * phi_x(j_b, p) ) * tmp_val_b;
-            rho_a_y(p) += ( phi_y(i_a, p) * phi(j_a, p) + phi(i_a, p) * phi_y(j_a, p) ) * tmp_val_a;
-            rho_b_y(p) += ( phi_y(i_b, p) * phi(j_b, p) + phi(i_b, p) * phi_y(j_b, p) ) * tmp_val_b;
-            rho_a_z(p) += ( phi_z(i_a, p) * phi(j_a, p) + phi(i_a, p) * phi_z(j_a, p) ) * tmp_val_a;
-            rho_b_z(p) += ( phi_z(i_b, p) * phi(j_b, p) + phi(i_b, p) * phi_z(j_b, p) ) * tmp_val_b;
+            rho_a_x(p) += s_a * ( phi_x(i_a, p) * phi(j_a, p) + phi(i_a, p) * phi_x(j_a, p) ) * tmp_val_a;
+            rho_b_x(p) += s_b * ( phi_x(i_b, p) * phi(j_b, p) + phi(i_b, p) * phi_x(j_b, p) ) * tmp_val_b;
+            rho_a_y(p) += s_a * ( phi_y(i_a, p) * phi(j_a, p) + phi(i_a, p) * phi_y(j_a, p) ) * tmp_val_a;
+            rho_b_y(p) += s_b * ( phi_y(i_b, p) * phi(j_b, p) + phi(i_b, p) * phi_y(j_b, p) ) * tmp_val_b;
+            rho_a_z(p) += s_a * ( phi_z(i_a, p) * phi(j_a, p) + phi(i_a, p) * phi_z(j_a, p) ) * tmp_val_a;
+            rho_b_z(p) += s_b * ( phi_z(i_b, p) * phi(j_b, p) + phi(i_b, p) * phi_z(j_b, p) ) * tmp_val_b;
 	 }
       }
       set_rhoa_x(rho_a_x);
@@ -463,6 +482,7 @@ namespace mcpdft {
       set_rhob_y(rho_b_y);
       set_rhoa_z(rho_a_z);
       set_rhob_z(rho_b_z);
+      // rho_a_x.print();
 
       for (int p = 0; p < npts; p++) {
          sigma_aa(p) = ( rho_a_x(p) * rho_a_x(p) ) +  ( rho_a_y(p) * rho_a_y(p) ) + ( rho_a_z(p) * rho_a_z(p) );
@@ -540,9 +560,18 @@ namespace mcpdft {
 #endif
 
    void MCPDFT::build_pi(const arma::mat &D2ab) {
-      build_ontop_pair_density(D2ab);
-      if ( is_gga_ ) {
-         build_ontop_pair_density_gradients(D2ab);
+      const bool is_sparse = MCPDFT::is_sparse();
+
+      if(!is_sparse) { /* using dens RDMs*/
+         build_ontop_pair_density(D2ab);
+         if ( is_gga_ ) {
+            build_ontop_pair_density_gradients(D2ab);
+         }
+      }else{ /* using sparse RDMs*/
+         build_sparse_ontop_pair_density();
+         if ( is_gga_ ) {
+            build_sparse_ontop_pair_density_gradients(D2ab);
+         }
       }
    }
 
@@ -577,8 +606,52 @@ namespace mcpdft {
          }
       } /* end of omp parallel for loop */
       set_pi(temp);
+//      temp.print();
    }
 
+   void MCPDFT::build_sparse_ontop_pair_density() {
+      size_t npts = get_npts();
+      arma::mat phi(get_phi());
+      arma::vec temp(npts, arma::fill::zeros);
+      bool is_active = MCPDFT::is_active();
+      size_t nnz{0};
+      HDF5Utility* h5utl = new HDF5Utility();
+
+      h5utl->read_nnz(nnz, is_active, "D2AB");
+      //std::printf("nnz = %6.ld\n",nnz);
+      
+      arma::vec val_ab(nnz, arma::fill::zeros);
+      arma::Col<int> idx_dim1(nnz, arma::fill::zeros);
+      arma::Col<int> idx_dim2(nnz, arma::fill::zeros);
+      arma::Col<int> idx_dim3(nnz, arma::fill::zeros);
+      arma::Col<int> idx_dim4(nnz, arma::fill::zeros);
+
+      h5utl->read_sparse_coo_tpdm(val_ab,
+		                  idx_dim1,
+		                  idx_dim2,
+		                  idx_dim3,
+		                  idx_dim4,
+				  is_active,
+				  "D2AB");
+      //val_ab.print();
+      delete h5utl;
+
+      for (size_t n = 0; n < nnz; n++) {
+	 size_t idx1 = idx_dim1(n);
+	 size_t idx2 = idx_dim2(n);
+	 size_t idx3 = idx_dim3(n);
+	 size_t idx4 = idx_dim4(n);
+         /* since we stored upper triangular part of the symmetric 2-RDM,
+         we need a factor of 2.0 for off-diagonal elements here */
+	 double s_ab = (idx1 != idx2 || idx3 != idx4) ? 2.0 : 1.0 ;
+	 double tmp_val_ab = val_ab(n);
+         for(size_t p = 0; p < npts; p++) {
+            temp(p) += s_ab * phi(idx1, p) * phi(idx2, p) * phi(idx3, p) * phi(idx4, p) * tmp_val_ab;
+	 }
+      }
+      set_pi(temp);
+//      temp.print();
+   }
 #if 0   
    void MCPDFT::build_ontop_pair_density(const arma::mat &D2ab) {
       double tol = 1.0e-20;
@@ -1291,9 +1364,9 @@ namespace mcpdft {
 
       printf("\n           Please cite the following article(s):\n\n");
 
-      printf("   \# M. Mostafanejad and A. E. DePrince III\n");
+      printf("   # M. Mostafanejad and A. E. DePrince III\n");
       printf("      J. Chem. Theory Comput. 15, 290-302 (2019).\n\n");
-      printf("   \# M. Mostafanejad, M. D. Liebenthal, and A. E. DePrince III\n");
+      printf("   # M. Mostafanejad, M. D. Liebenthal, and A. E. DePrince III\n");
       printf("      J. Chem. Theory Comput. 16, 2274-2283 (2020).\n\n");
    }
 }

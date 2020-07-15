@@ -693,6 +693,7 @@ class MCPDFT:
       # (COO sparse format with matrix symmetry)
       if self.ref_method == 'MCSCF':
          self.write_rdm2s_d2sp_coo(casdm2aa,casdm2ab,casdm2bb,is_active=True,f=f)
+         self.write_rdm2s_d2sp_coo(dm2aa,dm2ab,dm2bb,is_active=False,f=f)
       else: # ref_method == 'DMRG'
          # writing spin-free full 1- and 2-RDMs into HDF5 file object f
          # (COO sparse format with matrix symmetry)

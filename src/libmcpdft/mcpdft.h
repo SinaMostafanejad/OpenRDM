@@ -26,7 +26,7 @@ class MCPDFT {
       void build_tpdm();
 
       /// build density functions and their gradients on the grid points
-      void build_rho(const bool is_sparse = false);
+      void build_rho();
 
       /// build spin and total density functions rhoa(r), rhob(r) and rho(r)
       void build_density_functions();
@@ -46,8 +46,14 @@ class MCPDFT {
       /// build on-top pair-density pi(r,r) on the grids
       void build_ontop_pair_density(const arma::mat &D2ab);
 
+      /// build on-top pair-density pi(r,r) on the grids using sparse D2ab
+      void build_sparse_ontop_pair_density();
+
       /// build on-top pair-density gradinets pi_x(r,r), pi_y(r,r) ... on the grids
       void build_ontop_pair_density_gradients(const arma::mat &D2ab);
+
+      /// build on-top pair-density gradinets pi_x(r,r), pi_y(r,r) ... on the grids using sparse D2ab
+      void build_sparse_ontop_pair_density_gradients();
 
       /// build R(r) factor
       void build_R();

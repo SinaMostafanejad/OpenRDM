@@ -16,10 +16,7 @@ class HDF5Utility {
       /// read the number of grid point numbers and basis functions (AOs, MOs, NO, etc.)
       void read_basics(size_t &nao,
 		       size_t &nmo,
-		       size_t &npts,
-		       size_t &nnz,
-		       const bool is_sparse,
-		       const std::string &rdm_type);
+		       size_t &npts);
 
       /// read active space variables (nactele, nactorb, ncore, etc.)
       void read_active_space_vars(size_t &nactele,
@@ -60,6 +57,11 @@ class HDF5Utility {
       /* sparse utilities */
       // TODO: maybe think about a different class of including these in the HDF5 factory class
 
+      /// read number of non-zero entries in sparse RDMs
+      void read_nnz(size_t &nnz,
+		    const bool is_active,
+		    const std::string &rdm_type);
+
       /// read sparse 1-RDMs in coordinate format
       void read_sparse_coo_opdm(arma::vec &val,
    				arma::Col<int> &row_idx,
@@ -68,7 +70,13 @@ class HDF5Utility {
 				const std::string &rdm_type);
 
       /// read sparse 2-RDMs in coordinate format
-      void read_sparse_coo_tpdm();
+      void read_sparse_coo_tpdm(arma::vec &val,
+		                arma::Col<int> &idx_dim1, 
+		                arma::Col<int> &idx_dim2, 
+		                arma::Col<int> &idx_dim3, 
+		                arma::Col<int> &idx_dim4, 
+   		                const bool is_active,
+				const std::string &rdm_type);
 };
 
 }
