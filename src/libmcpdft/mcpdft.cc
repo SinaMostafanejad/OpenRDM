@@ -570,7 +570,7 @@ namespace mcpdft {
       }else{ /* using sparse RDMs*/
          build_sparse_ontop_pair_density();
          if ( is_gga_ ) {
-            build_sparse_ontop_pair_density_gradients(D2ab);
+            build_sparse_ontop_pair_density_gradients();
          }
       }
    }
@@ -739,6 +739,70 @@ namespace mcpdft {
                  }
              }
          }
+      }
+      set_pi_x(pi_x);
+      set_pi_z(pi_y);
+      set_pi_z(pi_z);
+   }
+
+   void MCPDFT::build_sparse_ontop_pair_density_gradients() {
+      size_t npts = get_npts();
+      arma::mat phi(get_phi());
+      arma::mat phi_x(get_phi_x());
+      arma::mat phi_y(get_phi_y());
+      arma::mat phi_z(get_phi_z());
+      arma::vec pi_x(npts, arma::fill::zeros);
+      arma::vec pi_y(npts, arma::fill::zeros);
+      arma::vec pi_z(npts, arma::fill::zeros);
+      arma::vec temp(npts, arma::fill::zeros);
+      bool is_active = MCPDFT::is_active();
+      size_t nnz{0};
+      HDF5Utility* h5utl = new HDF5Utility();
+
+      h5utl->read_nnz(nnz, is_active, "D2AB");
+      //std::printf("nnz = %6.ld\n",nnz);
+      
+      arma::vec val_ab(nnz, arma::fill::zeros);
+      arma::Col<int> idx_dim1(nnz, arma::fill::zeros);
+      arma::Col<int> idx_dim2(nnz, arma::fill::zeros);
+      arma::Col<int> idx_dim3(nnz, arma::fill::zeros);
+      arma::Col<int> idx_dim4(nnz, arma::fill::zeros);
+
+      h5utl->read_sparse_coo_tpdm(val_ab,
+		                  idx_dim1,
+		                  idx_dim2,
+		                  idx_dim3,
+		                  idx_dim4,
+				  is_active,
+				  "D2AB");
+      //val_ab.print();
+      delete h5utl;
+
+      for (size_t n = 0; n < nnz; n++) {
+	 size_t idx1 = idx_dim1(n);
+	 size_t idx2 = idx_dim2(n);
+	 size_t idx3 = idx_dim3(n);
+	 size_t idx4 = idx_dim4(n);
+         /* since we stored upper triangular part of the symmetric 2-RDM,
+         we need a factor of 2.0 for off-diagonal elements here */
+	 double s_ab = (idx1 != idx2 || idx3 != idx4) ? 2.0 : 1.0 ;
+	 double tmp_val_ab = val_ab(n);
+         for(size_t p = 0; p < npts; p++) {
+            pi_x(p) += s_ab * ( phi_x(idx1, p) * phi(idx2, p)   * phi(idx3, p)    * phi(idx4, p) +
+                                phi(idx1, p)   * phi_x(idx2, p) * phi(idx3, p)    * phi(idx4, p) +
+                                phi(idx1, p)   * phi(idx2, p)   * phi_x(idx3, p)  * phi(idx4, p) +
+                                phi(idx1, p)   * phi(idx2, p)   * phi(idx3, p)    * phi_x(idx4, p) ) * tmp_val_ab;
+
+            pi_y(p) += s_ab * ( phi_y(idx1, p) * phi(idx2, p)   * phi(idx3, p)    * phi(idx4, p) +
+                                phi(idx1, p)   * phi_y(idx2, p) * phi(idx3, p)    * phi(idx4, p) +
+                                phi(idx1, p)   * phi(idx2, p)   * phi_y(idx3, p)  * phi(idx4, p) +
+                                phi(idx1, p)   * phi(idx2, p)   * phi(idx3, p)    * phi_y(idx4, p) ) * tmp_val_ab;
+
+            pi_z(p) += s_ab * ( phi_z(idx1, p) * phi(idx2, p)   * phi(idx3, p)    * phi(idx4, p) +
+                                phi(idx1, p)   * phi_z(idx2, p) * phi(idx3, p)    * phi(idx4, p) +
+                                phi(idx1, p)   * phi(idx2, p)   * phi_z(idx3, p)  * phi(idx4, p) +
+                                phi(idx1, p)   * phi(idx2, p)   * phi(idx3, p)    * phi_z(idx4, p) ) * tmp_val_ab;
+	 }
       }
       set_pi_x(pi_x);
       set_pi_z(pi_y);
