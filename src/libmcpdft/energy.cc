@@ -34,18 +34,18 @@ namespace mcpdft {
       double tot_energy = 0.0;
 
       // getting the value of the classical energy
-      //double eclass = mc->get_eclass();
+      // double eclass = mc->get_eclass();
       // double eclass = -2.47443074 + 1.34513977 + 0.70556961;
 
       /* calculate core (kinetic + nuclear attraction) energy */
       arma::mat Hcore(mc->get_hcore());
       arma::mat D1(D1a+D1b);
-      double ecore = mc->core_energy(D1,Hcore);
-      //printf("ecore = %-20.15lf\n",ecore);
+      double e1el = mc->core_energy(D1,Hcore);
+      //printf("e1el = %-20.15lf\n",e1el);
 
       /* get nuclear repulsion energy */
       double enuc = mc->get_enuc();
-      //printf("enuc = %-20.15lf\n",enuc);
+      // printf("enuc = %-20.15lf\n",enuc);
 
       /* classical Hartree electronic repulsion energy */
       arma::mat Ja(mc->get_ja());
@@ -131,14 +131,14 @@ namespace mcpdft {
 #endif
 
       tot_energy += enuc;
-      tot_energy += ecore;
+      tot_energy += e1el;
       tot_energy += eHartree;
       tot_energy += Ex;
       tot_energy += Ec;
 
       printf("-----------------------------------------------------\n");
       printf("   Nuclear repulsion energy = %20.12lf\n", enuc);
-      printf("   Core energy              = %20.12lf\n", ecore);
+      printf("   One-electron energy      = %20.12lf\n", e1el);
       printf("   Classical Hartree energy = %20.12lf\n", eHartree);
       printf("   Ex                       = %20.12lf\n", Ex);
       printf("   Ec                       = %20.12lf\n", Ec);

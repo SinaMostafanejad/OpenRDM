@@ -396,11 +396,10 @@ class MCPDFT:
       dim4_idx.clear()
       nnz = 0  #number of non-zero elements in the upper triangle
 
-      # alpha-beta block
       for i in range(dim1):
-         for j in range(i,dim2):
+         for j in range(dim2):
             for k in range(dim3):
-               for l in range(k,dim4):
+               for l in range(dim4):
                   dum = dm2ab[i,j,k,l]
                   if (abs(dum) > tol):
                      val.append(dum)
@@ -409,6 +408,22 @@ class MCPDFT:
                      dim3_idx.append(k)
                      dim4_idx.append(l)
                      nnz = nnz + 1
+#                     print("val, dim1, dim2, dim3, dim4 = {}, {}, {}, {}, {}\n" .format(val,i,j,k,l))
+
+#      # alpha-beta block
+#      for i in range(dim1):
+#         for j in range(i,dim2):
+#            for k in range(dim3):
+#               for l in range(k,dim4):
+#                  dum = dm2ab[i,j,k,l]
+#                  if (abs(dum) > tol):
+#                     val.append(dum)
+#                     dim1_idx.append(i)
+#                     dim2_idx.append(j)
+#                     dim3_idx.append(k)
+#                     dim4_idx.append(l)
+#                     nnz = nnz + 1
+#                     print("val, dim1, dim2, dim3, dim4 = {}, {}, {}, {}, {}\n" .format(val,i,j,k,l))
 
       if (is_active == False):
          f["/SP_SYM_D2/FULL_D2ab_MO/NNZ"] = nnz
@@ -580,7 +595,7 @@ class MCPDFT:
       #print("\n D2aa:\n %s" % casdm2aa)
       #print("\n D2ab:\n %s" % casdm2ab)
       #print("\n D2bb:\n %s" % casdm2bb)
-      print("\n CAS D2:\n %s" % casdm2)
+      #print("\n CAS D2:\n %s" % casdm2)
       #print("\n FULL D2:\n %s" % dm2)
       #print(casdm2 == dm2)
       #--------------------------------------------- nuclear repulsion 
@@ -595,6 +610,7 @@ class MCPDFT:
       Ja_mo = ao2mo_transform(self.C_mo,Ja)
       Jb_mo = ao2mo_transform(self.C_mo,Jb)
       E_j   = Hartree_energy(Ja_mo, Jb_mo, dm1a, dm1b)
+      #print(hcore_energies(h_mo, dm1a, dm1b))
       #---------------------------------------------
 
       print('=======================================================')
@@ -646,13 +662,20 @@ class MCPDFT:
       f["/D/D1/ACT_D1_MO"]  = casdm1 
 
       if self.ref_method == 'MCSCF':
-         dm2aa_r = dm2aa.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
-         dm2ab_r = dm2ab.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
-         dm2bb_r = dm2bb.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
+         # turning these RDMs to physicist notation to be able to use the symmetry in sparsity
+         dm2aa_r = dm2aa.transpose(0,2,1,3).reshape((self.nmo*self.nmo, self.nmo*self.nmo))
+         #dm2aa_r = dm2aa.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
+         dm2ab_r = dm2ab.transpose(0,2,1,3).reshape((self.nmo*self.nmo, self.nmo*self.nmo))
+         #dm2ab_r = dm2ab.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
+         dm2bb_r = dm2bb.transpose(0,2,1,3).reshape((self.nmo*self.nmo, self.nmo*self.nmo))
+         #dm2bb_r = dm2bb.reshape((self.nmo*self.nmo, self.nmo*self.nmo))
 
-         casdm2aa_r = casdm2aa.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
-         casdm2ab_r = casdm2ab.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
-         casdm2bb_r = casdm2bb.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+         casdm2aa_r = casdm2aa.transpose(0,2,1,3).reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+         #casdm2aa_r = casdm2aa.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+         casdm2ab_r = casdm2ab.transpose(0,2,1,3).reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+         #casdm2ab_r = casdm2ab.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+         casdm2bb_r = casdm2bb.transpose(0,2,1,3).reshape((self.ncas*self.ncas, self.ncas*self.ncas))
+         #casdm2bb_r = casdm2bb.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
 
          f["/D/D2/FULL_D2AA_MO"] = dm2aa_r 
          f["/D/D2/FULL_D2AB_MO"] = dm2ab_r
@@ -666,6 +689,9 @@ class MCPDFT:
       casdm2_r = casdm2.reshape((self.ncas*self.ncas, self.ncas*self.ncas))
       f["/D/D2/FULL_D2_MO"]  = dm2_r
       f["/D/D2/ACT_D2_MO"]   = casdm2_r
+
+      #print(dm2ab)
+      #print(dm2ab_r)
 
       f["/GRIDS/W"] = weights
       f["/GRIDS/X"] = coords[:,0]
