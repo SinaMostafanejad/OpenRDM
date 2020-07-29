@@ -33,10 +33,6 @@ namespace mcpdft {
 
       double tot_energy = 0.0;
 
-      // getting the value of the classical energy
-      // double eclass = mc->get_eclass();
-      // double eclass = -2.47443074 + 1.34513977 + 0.70556961;
-
       /* calculate core (kinetic + nuclear attraction) energy */
       arma::mat Hcore(mc->get_hcore());
       arma::mat D1(D1a+D1b);
