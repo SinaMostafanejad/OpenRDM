@@ -35,11 +35,6 @@
       <a href="https://www.linuxfoundation.org/"><img alt="GitHub license" src="https://img.shields.io/badge/Platforms-Linux-blue"></a>
     </th>
   </tr>
-  <tr>
-    <th align="left">Miscellaneous</th>
-    <th align="left">
-    <a href="http://hits.dwyl.io/SinaMostafanejad/OpenRDM"><img alt="Hit counts" src="http://hits.dwyl.io/SinaMostafanejad/OpenRDM.svg"></a>
-  </tr>
 </table>
 
 
