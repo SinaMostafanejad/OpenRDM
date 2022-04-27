@@ -8,7 +8,6 @@
   <tr>
      <th align="left">CI/CD</th>
      <th align="left">
-        <a href="https://travis-ci.com/SinaMostafanejad/OpenRDM"><img alt="Travis CI" src="https://travis-ci.com/SinaMostafanejad/OpenRDM.svg?token=aVpZaqKz4Vv5czxgJ8WE&branch=master"></a>
         <a href="https://ci.appveyor.com/project/SinaMostafanejad/openrdm"><img alt="AppVeyor" src="https://ci.appveyor.com/api/projects/status/67t0souy2fhoc7l5?svg=true"></a>
      </th>
   </tr>
