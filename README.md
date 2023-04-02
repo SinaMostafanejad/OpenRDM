@@ -1,4 +1,10 @@
+## Note: 
+Thanks to the support of **Prof. Eugene DePrince III** and **Dr. Rain Li**, 
+the **OpenRDM** package for density-driven pair-density functional theory is now available 
+in Q-Chem 6.0 as a part of [v2RDM-CASSCF module](https://manual.q-chem.com/latest/sec_v2rdm.html).
+*The OpenRDM package is archived in April 1, 2023.*
 
+<br>
 <p align="center">
 <img src="OpenRDM.png" object-fit: contain'/> 
 <br>
